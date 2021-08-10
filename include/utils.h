@@ -2,11 +2,14 @@
 #define UTILS_H
 
 #include <QJsonObject>
-#include <QObject>
 
 namespace kjarni::utils
 {
-void mergeJson(QJsonObject& src, const QJsonObject& other);
+// Merge two JSON in one
+QJsonObject mergeJson(QJsonObject& src, const QJsonObject& other);
+
+// Insert value in array
+QJsonObject insertInArray(QJsonObject& src, const QString& path, const QJsonValue& value);
 } // namespace kjarni::utils
 
 #endif // UTILS_H

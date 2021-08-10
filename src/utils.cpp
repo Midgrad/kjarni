@@ -4,7 +4,7 @@
 
 namespace kjarni::utils
 {
-void mergeJson(QJsonObject& src, const QJsonObject& other)
+QJsonObject mergeJson(QJsonObject& src, const QJsonObject& other)
 {
     for (auto it = other.constBegin(); it != other.constEnd(); ++it)
     {
@@ -32,5 +32,15 @@ void mergeJson(QJsonObject& src, const QJsonObject& other)
             src[it.key()] = it.value();
         }
     }
+    return src;
 }
+
+QJsonObject insertInArray(QJsonObject& src, const QString& path, const QJsonValue& value)
+{
+    QJsonArray array = src.value(path).toArray();
+    array.append(value);
+    src.insert(path, array);
+    return src;
+}
+
 } // namespace kjarni::utils

@@ -1,8 +1,9 @@
 #ifndef I_MODULE_H
 #define I_MODULE_H
 
-#include <QJsonObject>
 #include <QObject>
+
+#include "utils.h"
 
 namespace kjarni::app
 {
@@ -12,10 +13,18 @@ public:
     IModule() = default;
     virtual ~IModule() = default;
 
-    virtual void init() = 0;
-    virtual void done() = 0;
+    virtual void init()
+    {
+    }
 
-    virtual QJsonObject qmlEntries() const = 0;
+    virtual void done()
+    {
+    }
+
+    virtual void visit(QJsonObject& features)
+    {
+        Q_UNUSED(features);
+    };
 };
 } // namespace kjarni::app
 
