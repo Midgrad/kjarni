@@ -1,23 +1,18 @@
 #ifndef I_PROPERTY_TREE_H
 #define I_PROPERTY_TREE_H
 
-#include <functional>
-
+#include "traits.h"
 #include "utils.h"
 
 namespace kjarni::domain
 {
-class IPropertyTree
+class IPropertyTree : public IService
 {
 public:
     using PropertyCallback = std::function<void(const QJsonValue&)>;
 
-    IPropertyTree() = default;
-    virtual ~IPropertyTree() = default;
-
-    virtual void setData(const QString& path, const QJsonValue& value) = 0;
-    virtual void subscribe(const QString& path, PropertyCallback callback) = 0;
-    virtual void unsubscribe(const QString& path, PropertyCallback callback) = 0;
+    virtual QJsonValue property(const QString& path) = 0;
+    virtual void setProperty(const QString& path, const QJsonValue& value) = 0;
 };
 } // namespace kjarni::domain
 
