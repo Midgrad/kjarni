@@ -2,12 +2,17 @@
 
 using namespace kjarni::domain;
 
-QJsonValue PropertyTree::property(const QString& path)
+QStringList PropertyTree::rootNodes() const
+{
+    return m_properties.keys();
+}
+
+QJsonObject PropertyTree::property(const QString& path) const
 {
     return m_properties.value(path);
 }
 
-void PropertyTree::setProperty(const QString& path, const QJsonValue& value)
+void PropertyTree::setProperty(const QString& path, const QJsonObject& property)
 {
-    m_properties.insert(path, value);
+    m_properties.insert(path, property);
 }

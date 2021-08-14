@@ -3,16 +3,20 @@
 
 #include "i_property_tree.h"
 
+#include <QMap>
+
 namespace kjarni::domain
 {
 class PropertyTree : public IPropertyTree
 {
 public:
-    QJsonValue property(const QString& path) override;
-    void setProperty(const QString& path, const QJsonValue& value) override;
+    QStringList rootNodes() const override;
+    QJsonObject property(const QString& path) const override;
+
+    void setProperty(const QString& path, const QJsonObject& property) override;
 
 private:
-    QJsonObject m_properties;
+    QMap<QString, QJsonObject> m_properties;
 };
 } // namespace kjarni::domain
 
