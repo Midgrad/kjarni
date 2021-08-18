@@ -1,5 +1,5 @@
-#ifndef TRAITS_H
-#define TRAITS_H
+#ifndef I_SERVICE_H
+#define I_SERVICE_H
 
 namespace kjarni::domain
 {
@@ -10,4 +10,4 @@ public:
     virtual ~IService() = default;
 };
 } // namespace kjarni::domain
-#endif // TRAITS_H
+#endif // I_SERVICE_H

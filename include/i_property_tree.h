@@ -1,7 +1,7 @@
 #ifndef I_PROPERTY_TREE_H
 #define I_PROPERTY_TREE_H
 
-#include "traits.h"
+#include "i_service.h"
 #include "utils.h"
 
 namespace kjarni::domain

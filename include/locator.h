@@ -1,7 +1,7 @@
 #ifndef LOCATOR_H
 #define LOCATOR_H
 
-#include "traits.h"
+#include "i_service.h"
 
 #include <unordered_map>
 
