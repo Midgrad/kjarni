@@ -1,6 +1,7 @@
 #include "utils.h"
 
 #include <QJsonArray>
+#include <QStringList>
 
 namespace kjarni::utils
 {
@@ -47,6 +48,20 @@ QString nameToFilename(const QString& name, const QString& extension)
 {
     QString result = name.toLower();
     return result.replace(' ', '_') + "." + extension;
+}
+
+QString nameFromType(const QString& type, const QStringList& occupiedNames)
+{
+    QString name = type;
+
+    for (int i = 1;; i++)
+    {
+        name = type + " " + QString::number(i);
+
+        if (!occupiedNames.contains(name))
+            break;
+    }
+    return name;
 }
 
 } // namespace kjarni::utils
