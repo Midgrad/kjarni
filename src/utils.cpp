@@ -43,4 +43,10 @@ QJsonObject insertInArray(QJsonObject& src, const QString& path, const QJsonValu
     return src;
 }
 
+QString nameToFilename(const QString& name, const QString& extension)
+{
+    QString result = name.toLower();
+    return result.replace(' ', '_') + "." + extension;
+}
+
 } // namespace kjarni::utils
