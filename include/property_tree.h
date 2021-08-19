@@ -13,7 +13,8 @@ public:
     QStringList rootNodes() const override;
     QJsonObject property(const QString& path) const override;
 
-    void setProperty(const QString& path, const QJsonObject& property) override;
+    void setProperties(const QString& path, const QJsonObject& property) override;
+    void appendProperties(const QString& path, const QJsonObject& properties) override;
 
 private:
     QMap<QString, QJsonObject> m_properties;

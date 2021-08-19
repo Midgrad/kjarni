@@ -14,7 +14,8 @@ public:
     virtual QStringList rootNodes() const = 0;
     virtual QJsonObject property(const QString& path) const = 0;
 
-    virtual void setProperty(const QString& path, const QJsonObject& properties) = 0;
+    virtual void setProperties(const QString& path, const QJsonObject& properties) = 0;
+    virtual void appendProperties(const QString& path, const QJsonObject& properties) = 0;
 };
 } // namespace kjarni::domain
 
