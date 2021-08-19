@@ -41,13 +41,12 @@ void JsonRepositoryFiles::save(const QJsonObject& data)
     if (name.isEmpty())
         return;
 
-    auto routeId = kjarni::utils::nameToFilename(name, "json");
+    auto itemId = kjarni::utils::nameToFilename(name, "json");
+    QJsonObject modified = data;
+    modified[json_params::id] = itemId;
 
-    QFile file(m_dir.path() + "/" + routeId);
+    QFile file(m_dir.path() + "/" + itemId);
     file.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);
-
-    QJsonObject modified(data);
-    modified.remove(json_params::id);
 
     QJsonDocument doc(modified);
     file.write(doc.toJson());
@@ -62,32 +61,31 @@ void JsonRepositoryFiles::remove(const QString& id)
 
 void JsonRepositoryFiles::scan()
 {
-    QStringList routeIds;
+    QStringList itemIds;
     for (const QFileInfo& fileInfo : m_dir.entryList({ "*.json" }, QDir::Files))
     {
-        auto routeId = fileInfo.fileName();
-        QFile file(m_dir.path() + "/" + routeId);
+        auto itemId = fileInfo.fileName();
+        QFile file(m_dir.path() + "/" + itemId);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
             continue;
 
         QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
         file.close();
 
-        QJsonObject routeData = doc.object();
-        if (routeData.isEmpty())
+        QJsonObject itemData = doc.object();
+        if (itemData.isEmpty())
             continue;
 
-        routeIds += routeId;
-        routeData.insert(json_params::id, routeId);
-        m_items[routeId] = routeData;
+        itemIds += itemId;
+        m_items[itemId] = itemData;
     }
 
-    for (const QString& routeId : m_items.keys())
+    for (const QString& itemId : m_items.keys())
     {
-        if (routeIds.contains(routeId))
+        if (itemIds.contains(itemId))
             continue;
 
-        m_items.remove(routeId);
+        m_items.remove(itemId);
     }
     emit itemsChanged();
 }
