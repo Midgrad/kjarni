@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QJsonDocument>
 
+#include "kjarni_traits.h"
 #include "utils.h"
 
 using namespace kjarni::domain;
@@ -54,13 +55,13 @@ QJsonObject JsonRepositoryFiles::read(const QString& id) const
 
 void JsonRepositoryFiles::save(QJsonObject& data)
 {
-    QString name = data.value(json_params::name).toString();
+    QString name = data.value(kjarni_params::name).toString();
     if (name.isEmpty())
         return;
 
     auto itemId = kjarni::utils::nameToFilename(name, "json");
     // Override id with filename
-    data[json_params::id] = itemId;
+    data[kjarni_params::id] = itemId;
 
     QFile file(m_dir.path() + "/" + itemId);
     file.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);

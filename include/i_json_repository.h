@@ -6,12 +6,6 @@
 
 namespace kjarni::domain
 {
-namespace json_params
-{
-constexpr char id[] = "id";
-constexpr char name[] = "name";
-} // namespace json_params
-
 class IJsonRepository : public QObject
 {
     Q_OBJECT
