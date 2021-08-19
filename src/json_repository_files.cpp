@@ -52,7 +52,7 @@ QJsonObject JsonRepositoryFiles::read(const QString& id) const
     return doc.object();
 }
 
-void JsonRepositoryFiles::save(const QJsonObject& data)
+void JsonRepositoryFiles::save(QJsonObject& data)
 {
     QString name = data.value(json_params::name).toString();
     if (name.isEmpty())
@@ -60,13 +60,12 @@ void JsonRepositoryFiles::save(const QJsonObject& data)
 
     auto itemId = kjarni::utils::nameToFilename(name, "json");
     // Override id with filename
-    QJsonObject modified = data;
-    modified[json_params::id] = itemId;
+    data[json_params::id] = itemId;
 
     QFile file(m_dir.path() + "/" + itemId);
     file.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);
 
-    QJsonDocument doc(modified);
+    QJsonDocument doc(data);
     file.write(doc.toJson());
     file.close();
 }
