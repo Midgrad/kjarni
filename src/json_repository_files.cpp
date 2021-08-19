@@ -15,24 +15,41 @@ JsonRepositoryFiles::JsonRepositoryFiles(const QString& path, QObject* parent) :
         m_dir.mkpath(".");
 
     m_watcher.addPath(m_dir.path());
-    connect(&m_watcher, &QFileSystemWatcher::directoryChanged, this, &JsonRepositoryFiles::scan);
-
-    this->scan();
+    connect(&m_watcher, &QFileSystemWatcher::directoryChanged, this,
+            &JsonRepositoryFiles::itemsChanged);
 }
 
-QStringList JsonRepositoryFiles::ids() const
+QStringList JsonRepositoryFiles::selectIds() const
 {
-    return m_items.keys();
+    QStringList itemIds;
+    for (const QFileInfo& fileInfo : m_dir.entryList({ "*.json" }, QDir::Files))
+    {
+        // Use fileName as itemId
+        itemIds.append(fileInfo.fileName());
+    }
+    return itemIds;
 }
 
-QList<QJsonObject> JsonRepositoryFiles::values() const
+QList<QJsonObject> JsonRepositoryFiles::selectAll() const
 {
-    return m_items.values();
+    QList<QJsonObject> items;
+    for (const QString& itemId : this->selectIds())
+    {
+        items += this->read(itemId);
+    }
+    return items;
 }
 
-QJsonObject JsonRepositoryFiles::value(const QString& id) const
+QJsonObject JsonRepositoryFiles::read(const QString& id) const
 {
-    return m_items.value(id);
+    QFile file(m_dir.path() + "/" + id);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return QJsonObject();
+
+    QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
+    file.close();
+
+    return doc.object();
 }
 
 void JsonRepositoryFiles::save(const QJsonObject& data)
@@ -42,6 +59,7 @@ void JsonRepositoryFiles::save(const QJsonObject& data)
         return;
 
     auto itemId = kjarni::utils::nameToFilename(name, "json");
+    // Override id with filename
     QJsonObject modified = data;
     modified[json_params::id] = itemId;
 
@@ -57,35 +75,4 @@ void JsonRepositoryFiles::remove(const QString& id)
 {
     QFile file(m_dir.path() + "/" + id);
     file.remove();
-}
-
-void JsonRepositoryFiles::scan()
-{
-    QStringList itemIds;
-    for (const QFileInfo& fileInfo : m_dir.entryList({ "*.json" }, QDir::Files))
-    {
-        auto itemId = fileInfo.fileName();
-        QFile file(m_dir.path() + "/" + itemId);
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-            continue;
-
-        QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
-        file.close();
-
-        QJsonObject itemData = doc.object();
-        if (itemData.isEmpty())
-            continue;
-
-        itemIds += itemId;
-        m_items[itemId] = itemData;
-    }
-
-    for (const QString& itemId : m_items.keys())
-    {
-        if (itemIds.contains(itemId))
-            continue;
-
-        m_items.remove(itemId);
-    }
-    emit itemsChanged();
 }

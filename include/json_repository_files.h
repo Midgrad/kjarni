@@ -16,20 +16,16 @@ class JsonRepositoryFiles : public IJsonRepository
 public:
     JsonRepositoryFiles(const QString& path, QObject* parent = nullptr);
 
-    QStringList ids() const;
-    QList<QJsonObject> values() const override;
-    QJsonObject value(const QString& id) const override;
+    QStringList selectIds() const;
+    QList<QJsonObject> selectAll() const override;
+    QJsonObject read(const QString& id) const override;
 
     void save(const QJsonObject& data) override;
     void remove(const QString& id) override;
 
-private slots:
-    void scan();
-
 private:
     const QDir m_dir;
     QFileSystemWatcher m_watcher;
-    QMap<QString, QJsonObject> m_items;
 };
 } // namespace kjarni::domain
 

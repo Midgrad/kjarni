@@ -21,9 +21,9 @@ public:
     {
     }
 
-    virtual QStringList ids() const = 0;
-    virtual QList<QJsonObject> values() const = 0;
-    virtual QJsonObject value(const QString& id) const = 0;
+    virtual QStringList selectIds() const = 0;
+    virtual QList<QJsonObject> selectAll() const = 0;
+    virtual QJsonObject read(const QString& id) const = 0;
 
     virtual void save(const QJsonObject& data) = 0;
     virtual void remove(const QString& id) = 0;
