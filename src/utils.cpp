@@ -16,22 +16,24 @@ QJsonObject mergeJson(QJsonObject& src, const QJsonObject& other)
                 QJsonObject one(src.value(it.key()).toObject());
                 QJsonObject two(other.value(it.key()).toObject());
 
-                mergeJson(one, two);
-                src[it.key()] = one;
+                src[it.key()] = mergeJson(one, two);
+                continue;
             }
             else if (src.value(it.key()).isArray() && other.value(it.key()).isArray())
             {
                 QJsonArray arr = other.value(it.key()).toArray();
                 QJsonArray srcArr = src.value(it.key()).toArray();
+
                 for (int i = 0; i < arr.size(); i++)
+                {
                     srcArr.append(arr[i]);
+                }
                 src[it.key()] = srcArr;
-            }
-            else
-            {
-                src[it.key()] = it.value();
+                continue;
             }
         }
+
+        src[it.key()] = it.value();
     }
     return src;
 }
