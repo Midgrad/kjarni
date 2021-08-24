@@ -4,18 +4,31 @@
 #include "i_service.h"
 #include "utils.h"
 
+#include <QObject>
+
 namespace kjarni::domain
 {
-class IPropertyTree : public IService
+class IPropertyTree
+    : public QObject
+    , public IService
 {
+    Q_OBJECT
+
 public:
-    using PropertyCallback = std::function<void(const QJsonValue&)>;
+    IPropertyTree(QObject* parent) : QObject(parent)
+    {
+    }
 
     virtual QStringList rootNodes() const = 0;
     virtual QJsonObject property(const QString& path) const = 0;
 
     virtual void setProperties(const QString& path, const QJsonObject& properties) = 0;
     virtual void appendProperties(const QString& path, const QJsonObject& properties) = 0;
+    virtual void removeNode(const QString& path) = 0;
+
+signals:
+    void nodesChanged(QStringList nodes);
+    void propertiesChanged(QString path, QJsonObject properties);
 };
 } // namespace kjarni::domain
 
