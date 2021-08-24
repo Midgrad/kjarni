@@ -1,6 +1,5 @@
 #include "utils.h"
 
-#include <QDebug>
 #include <QJsonArray>
 #include <QStringList>
 
