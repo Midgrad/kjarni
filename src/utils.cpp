@@ -1,5 +1,6 @@
 #include "utils.h"
 
+#include <QDebug>
 #include <QJsonArray>
 #include <QStringList>
 
@@ -27,10 +28,10 @@ QJsonObject mergeJson(QJsonObject& src, const QJsonObject& other)
                     srcArr.append(arr[i]);
                 src[it.key()] = srcArr;
             }
-        }
-        else
-        {
-            src[it.key()] = it.value();
+            else
+            {
+                src[it.key()] = it.value();
+            }
         }
     }
     return src;
