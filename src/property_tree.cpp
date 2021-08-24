@@ -16,12 +16,12 @@ QJsonObject PropertyTree::properties(const QString& path) const
     return m_properties.value(path);
 }
 
-void PropertyTree::setProperties(const QString& path, const QJsonObject& property)
+void PropertyTree::setProperties(const QString& path, const QJsonObject& properties)
 {
     bool contains = m_properties.contains(path);
 
-    m_properties.insert(path, property);
-    emit propertiesChanged(path, property);
+    m_properties.insert(path, properties);
+    emit propertiesChanged(path, properties);
 
     if (!contains)
         emit rootNodesChanged(m_properties.keys());
@@ -30,10 +30,11 @@ void PropertyTree::setProperties(const QString& path, const QJsonObject& propert
 void PropertyTree::appendProperties(const QString& path, const QJsonObject& properties)
 {
     bool contains = m_properties.contains(path);
-    if (contains)
-        emit propertiesChanged(path, utils::mergeJson(m_properties[path], properties));
-    else
-        this->setProperties(path, properties);
+
+    emit propertiesChanged(path, utils::mergeJson(m_properties[path], properties));
+
+    if (!contains)
+        emit rootNodesChanged(m_properties.keys());
 }
 
 void PropertyTree::removeNode(const QString& path)

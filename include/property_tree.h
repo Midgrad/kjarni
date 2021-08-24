@@ -17,7 +17,7 @@ public:
     QStringList rootNodes() const override;
     QJsonObject properties(const QString& path) const override;
 
-    void setProperties(const QString& path, const QJsonObject& property) override;
+    void setProperties(const QString& path, const QJsonObject& properties) override;
     void appendProperties(const QString& path, const QJsonObject& properties) override;
     void removeNode(const QString& path) override;
 
