@@ -15,7 +15,7 @@ public:
     PropertyTree(QObject* parent = nullptr);
 
     QStringList rootNodes() const override;
-    QJsonObject property(const QString& path) const override;
+    QJsonObject properties(const QString& path) const override;
 
     void setProperties(const QString& path, const QJsonObject& property) override;
     void appendProperties(const QString& path, const QJsonObject& properties) override;

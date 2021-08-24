@@ -20,14 +20,14 @@ public:
     }
 
     virtual QStringList rootNodes() const = 0;
-    virtual QJsonObject property(const QString& path) const = 0;
+    virtual QJsonObject properties(const QString& path) const = 0;
 
     virtual void setProperties(const QString& path, const QJsonObject& properties) = 0;
     virtual void appendProperties(const QString& path, const QJsonObject& properties) = 0;
     virtual void removeNode(const QString& path) = 0;
 
 signals:
-    void nodesChanged(QStringList nodes);
+    void rootNodesChanged(QStringList nodes);
     void propertiesChanged(QString path, QJsonObject properties);
 };
 } // namespace kjarni::domain

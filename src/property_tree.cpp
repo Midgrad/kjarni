@@ -11,7 +11,7 @@ QStringList PropertyTree::rootNodes() const
     return m_properties.keys();
 }
 
-QJsonObject PropertyTree::property(const QString& path) const
+QJsonObject PropertyTree::properties(const QString& path) const
 {
     return m_properties.value(path);
 }
@@ -24,7 +24,7 @@ void PropertyTree::setProperties(const QString& path, const QJsonObject& propert
     emit propertiesChanged(path, property);
 
     if (!contains)
-        emit nodesChanged(m_properties.keys());
+        emit rootNodesChanged(m_properties.keys());
 }
 
 void PropertyTree::appendProperties(const QString& path, const QJsonObject& properties)
@@ -43,5 +43,5 @@ void PropertyTree::removeNode(const QString& path)
         return;
 
     m_properties.remove(path);
-    emit nodesChanged(m_properties.keys());
+    emit rootNodesChanged(m_properties.keys());
 }
