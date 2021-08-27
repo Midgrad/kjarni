@@ -14,6 +14,7 @@ class ModuleLoader : public QObject
 
 public:
     explicit ModuleLoader(QObject* parent = nullptr);
+    ~ModuleLoader() override;
 
     QStringList discoveredModules() const;
     QStringList loadedModules() const;

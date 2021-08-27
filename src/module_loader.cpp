@@ -10,8 +10,17 @@ constexpr char modulesPath[] = "./modules";
 
 using namespace kjarni::app;
 
-ModuleLoader::ModuleLoader(QObject* parent)
+ModuleLoader::ModuleLoader(QObject* parent) : QObject(parent)
 {
+}
+
+ModuleLoader::~ModuleLoader()
+{
+    for (auto it = m_loadedModules.begin(); it != m_loadedModules.end(); ++it)
+    {
+        it.value()->done();
+        m_discoveredLoaders.value(it.key())->unload();
+    }
 }
 
 QStringList ModuleLoader::discoveredModules() const
