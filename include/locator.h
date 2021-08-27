@@ -5,9 +5,9 @@
 
 #include <unordered_map>
 
-namespace kjarni::domain
+namespace kjarni::app
 {
-using ServiceMap = std::unordered_map<size_t, IService*>;
+using ServiceMap = std::unordered_map<size_t, domain::IService*>;
 
 class Locator
 {
@@ -29,6 +29,6 @@ private:
 
     static ServiceMap m_services;
 };
-} // namespace kjarni::domain
+} // namespace kjarni::app
 
 #endif // LOCATOR_H
