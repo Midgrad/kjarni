@@ -26,7 +26,8 @@ QJsonObject mergeJson(QJsonObject& src, const QJsonObject& other)
 
                 for (int i = 0; i < arr.size(); i++)
                 {
-                    srcArr.append(arr[i]);
+                    if (!srcArr.contains(arr[i]))
+                        srcArr.append(arr[i]);
                 }
                 src[it.key()] = srcArr;
                 continue;
