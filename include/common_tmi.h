@@ -29,16 +29,16 @@ constexpr char desiredRoll[] = "desiredRoll";
 constexpr char desiredPitch[] = "desiredPitch";
 constexpr char desiredHeading[] = "desiredHeading";
 
-// Altitudes
-constexpr char altitudeAmsl[] = "altitudeAmsl";
-constexpr char altitudeRelative[] = "altitudeRelative";
-constexpr char altitudeTerrain[] = "altitudeTerrain";
-constexpr char climb[] = "climb";
-
 // Speeds
 constexpr char gs[] = "gs";
 constexpr char ias[] = "ias";
 constexpr char tas[] = "tas";
+
+// Altitudes
+constexpr char climb[] = "climb";
+constexpr char altitudeAmsl[] = "altitudeAmsl";
+constexpr char altitudeRelative[] = "altitudeRelative";
+constexpr char altitudeTerrain[] = "altitudeTerrain";
 
 // Position
 constexpr char latitude[] = "latitude";
