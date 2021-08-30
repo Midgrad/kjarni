@@ -1,5 +1,5 @@
 #include "locator.h"
 
-using namespace kjarni::app;
+using namespace md::app;
 
 ServiceMap Locator::m_services = ServiceMap();

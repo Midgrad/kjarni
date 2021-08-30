@@ -8,7 +8,7 @@ namespace
 constexpr char modulesPath[] = "./modules";
 }
 
-using namespace kjarni::app;
+using namespace md::app;
 
 ModuleLoader::ModuleLoader(QObject* parent) : QObject(parent)
 {

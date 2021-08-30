@@ -4,7 +4,7 @@
 #include <QJsonObject>
 #include <QObject>
 
-namespace kjarni::domain
+namespace md::data_source
 {
 class IJsonRepository : public QObject
 {
@@ -25,5 +25,5 @@ public:
 signals:
     void itemsChanged();
 };
-} // namespace kjarni::domain
+} // namespace md::data_source
 #endif // I_JSON_REPOSITORY_H

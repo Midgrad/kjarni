@@ -5,7 +5,7 @@
 
 #include "utils.h"
 
-namespace kjarni::app
+namespace md::app
 {
 class IModule
 {
@@ -26,8 +26,8 @@ public:
         Q_UNUSED(features);
     };
 };
-} // namespace kjarni::app
+} // namespace md::app
 
-Q_DECLARE_INTERFACE(kjarni::app::IModule, "Midgrad.IModule")
+Q_DECLARE_INTERFACE(md::app::IModule, "Midgrad.IModule")
 
 #endif // I_MODULE_H

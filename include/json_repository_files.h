@@ -7,7 +7,7 @@
 #include <QFileSystemWatcher>
 #include <QMap>
 
-namespace kjarni::domain
+namespace md::data_source
 {
 class JsonRepositoryFiles : public IJsonRepository
 {
@@ -16,7 +16,7 @@ class JsonRepositoryFiles : public IJsonRepository
 public:
     JsonRepositoryFiles(const QString& path, QObject* parent = nullptr);
 
-    QStringList selectIds() const;
+    QStringList selectIds() const override;
     QList<QJsonObject> selectAll() const override;
     QJsonObject read(const QString& id) const override;
 
@@ -27,6 +27,6 @@ private:
     const QDir m_dir;
     QFileSystemWatcher m_watcher;
 };
-} // namespace kjarni::domain
+} // namespace md::data_source
 
 #endif // JSON_REPOSITORY_FILES_H

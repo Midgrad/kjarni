@@ -1,6 +1,6 @@
 #include "property_tree.h"
 
-using namespace kjarni::domain;
+using namespace md::domain;
 
 PropertyTree::PropertyTree(QObject* parent) : IPropertyTree(parent)
 {

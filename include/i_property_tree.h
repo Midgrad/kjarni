@@ -6,7 +6,7 @@
 
 #include <QObject>
 
-namespace kjarni::domain
+namespace md::domain
 {
 class IPropertyTree
     : public QObject
@@ -30,6 +30,6 @@ signals:
     void rootNodesChanged(QStringList nodes);
     void propertiesChanged(QString path, QJsonObject properties);
 };
-} // namespace kjarni::domain
+} // namespace md::domain
 
 #endif // I_PROPERTY_TREE_H

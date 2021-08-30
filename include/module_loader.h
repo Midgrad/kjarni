@@ -6,7 +6,7 @@
 #include <QMap>
 #include <QPluginLoader>
 
-namespace kjarni::app
+namespace md::app
 {
 class ModuleLoader : public QObject
 {
@@ -36,6 +36,6 @@ private:
     QMap<QString, QPluginLoader*> m_discoveredLoaders;
     QMap<QString, IModule*> m_loadedModules;
 };
-} // namespace kjarni::app
+} // namespace md::app
 
 #endif // MODULE_LOADER_H

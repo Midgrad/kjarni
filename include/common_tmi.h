@@ -1,7 +1,7 @@
 #ifndef COMMON_TMI_H
 #define COMMON_TMI_H
 
-namespace tmi
+namespace md::tmi
 {
 // System
 constexpr char state[] = "state";
@@ -59,6 +59,6 @@ constexpr char setWpStatus[] = "setWpStatus";
 constexpr char wpDistance[] = "wpDistance";
 constexpr char targetBearing[] = "targetBearing";
 
-} // namespace tmi
+} // namespace md::tmi
 
 #endif // COMMON_TMI_H

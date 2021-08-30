@@ -3,7 +3,7 @@
 #include <QJsonArray>
 #include <QStringList>
 
-namespace kjarni::utils
+namespace md::utils
 {
 QJsonObject mergeJson(QJsonObject& src, const QJsonObject& other)
 {
@@ -67,4 +67,4 @@ QString nameFromType(const QString& type, const QStringList& occupiedNames)
     return name;
 }
 
-} // namespace kjarni::utils
+} // namespace md::utils

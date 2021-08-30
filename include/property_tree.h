@@ -5,7 +5,7 @@
 
 #include <QMap>
 
-namespace kjarni::domain
+namespace md::domain
 {
 class PropertyTree : public IPropertyTree
 {
@@ -24,6 +24,6 @@ public:
 private:
     QMap<QString, QJsonObject> m_properties;
 };
-} // namespace kjarni::domain
+} // namespace md::domain
 
 #endif // PROPERTY_TREE_H

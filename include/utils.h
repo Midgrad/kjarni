@@ -3,7 +3,7 @@
 
 #include <QJsonObject>
 
-namespace kjarni::utils
+namespace md::utils
 {
 // Merge two JSON in one
 QJsonObject mergeJson(QJsonObject& src, const QJsonObject& other);
@@ -16,6 +16,6 @@ QString nameToFilename(const QString& name, const QString& extension);
 
 // Generate numerated name from type
 QString nameFromType(const QString& type, const QStringList& occupiedNames);
-} // namespace kjarni::utils
+} // namespace md::utils
 
 #endif // UTILS_H

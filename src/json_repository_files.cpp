@@ -6,7 +6,7 @@
 #include "kjarni_traits.h"
 #include "utils.h"
 
-using namespace kjarni::domain;
+using namespace md::data_source;
 
 JsonRepositoryFiles::JsonRepositoryFiles(const QString& path, QObject* parent) :
     IJsonRepository(parent),
@@ -55,13 +55,13 @@ QJsonObject JsonRepositoryFiles::read(const QString& id) const
 
 void JsonRepositoryFiles::save(QJsonObject& data)
 {
-    QString name = data.value(kjarni_params::name).toString();
+    QString name = data.value(params::name).toString();
     if (name.isEmpty())
         return;
 
-    auto itemId = kjarni::utils::nameToFilename(name, "json");
+    auto itemId = md::utils::nameToFilename(name, "json");
     // Override id with filename
-    data[kjarni_params::id] = itemId;
+    data[params::id] = itemId;
 
     QFile file(m_dir.path() + "/" + itemId);
     file.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);
