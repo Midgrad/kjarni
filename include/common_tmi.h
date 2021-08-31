@@ -52,7 +52,7 @@ constexpr char homeLongitude[] = "homeLongitude";
 constexpr char homeAltitude[] = "homeAltitude";
 
 // Mission
-constexpr char wpCount[] = "wp";
+constexpr char wpCount[] = "wpCount";
 constexpr char wp[] = "wp";
 constexpr char setWp[] = "setWp";
 constexpr char setWpStatus[] = "setWpStatus";
