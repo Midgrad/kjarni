@@ -11,30 +11,48 @@ QStringList PropertyTree::rootNodes() const
     return m_properties.keys();
 }
 
-QJsonObject PropertyTree::properties(const QString& path) const
+QVariantMap PropertyTree::properties(const QString& path) const
 {
     return m_properties.value(path);
 }
 
-void PropertyTree::setProperties(const QString& path, const QJsonObject& properties)
+void PropertyTree::setProperties(const QString& path, const QVariantMap& properties)
 {
     bool contains = m_properties.contains(path);
 
-    m_properties.insert(path, properties);
+    m_properties[path] = properties;
     emit propertiesChanged(path, properties);
 
     if (!contains)
         emit rootNodesChanged(m_properties.keys());
 }
 
-void PropertyTree::appendProperties(const QString& path, const QJsonObject& properties)
+void PropertyTree::appendProperties(const QString& path, const QVariantMap& properties)
 {
-    bool contains = m_properties.contains(path);
+    // Merge with old params
+    QVariantMap merged = m_properties.value(path);
+    for (auto it = properties.constBegin(); it != properties.constEnd(); ++it)
+    {
+        merged[it.key()] = it.value();
+    }
 
-    emit propertiesChanged(path, utils::mergeJson(m_properties[path], properties));
+    this->setProperties(path, merged);
+}
 
-    if (!contains)
-        emit rootNodesChanged(m_properties.keys());
+void PropertyTree::removeProperties(const QString& path, const QStringList& properties)
+{
+    if (!m_properties.contains(path))
+        return;
+
+    bool changed = false;
+    for (const QString& key : properties)
+    {
+        if (m_properties[path].remove(key))
+            changed = true;
+    }
+
+    if (changed)
+        emit propertiesChanged(path, m_properties[path]);
 }
 
 void PropertyTree::removeNode(const QString& path)
@@ -45,4 +63,5 @@ void PropertyTree::removeNode(const QString& path)
 
     m_properties.remove(path);
     emit rootNodesChanged(m_properties.keys());
+    emit propertiesChanged(path, QVariantMap());
 }

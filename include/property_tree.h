@@ -15,14 +15,15 @@ public:
     PropertyTree(QObject* parent = nullptr);
 
     QStringList rootNodes() const override;
-    QJsonObject properties(const QString& path) const override;
+    QVariantMap properties(const QString& path) const override;
 
-    void setProperties(const QString& path, const QJsonObject& properties) override;
-    void appendProperties(const QString& path, const QJsonObject& properties) override;
+    void setProperties(const QString& path, const QVariantMap& properties) override;
+    void appendProperties(const QString& path, const QVariantMap& properties) override;
+    void removeProperties(const QString& path, const QStringList& properties) override;
     void removeNode(const QString& path) override;
 
 private:
-    QMap<QString, QJsonObject> m_properties;
+    QMap<QString, QVariantMap> m_properties;
 };
 } // namespace md::domain
 

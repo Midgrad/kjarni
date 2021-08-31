@@ -16,3 +16,8 @@ target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
 
 # Link with libraries
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
+
+# Tests
+if(TESTS_ENABLED)
+    add_subdirectory(tests)
+endif(TESTS_ENABLED)
