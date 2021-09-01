@@ -19,6 +19,11 @@ constexpr char modes[] = "modes";
 constexpr char setMode[] = "setMode";
 constexpr char setModeStatus[] = "setModeStatus";
 
+// Devices
+constexpr char enabled[] = "enabled";
+constexpr char present[] = "present";
+constexpr char health[] = "health";
+
 // Attitude
 constexpr char pitch[] = "pitch";
 constexpr char roll[] = "roll";
