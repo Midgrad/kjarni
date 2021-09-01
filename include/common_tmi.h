@@ -3,6 +3,9 @@
 
 namespace md::tmi
 {
+// Global
+constexpr char name[] = "name";
+
 // System
 constexpr char state[] = "state";
 constexpr char type[] = "type";
@@ -20,6 +23,7 @@ constexpr char setMode[] = "setMode";
 constexpr char setModeStatus[] = "setModeStatus";
 
 // Devices
+constexpr char devices[] = "devices";
 constexpr char enabled[] = "enabled";
 constexpr char present[] = "present";
 constexpr char health[] = "health";
