@@ -67,8 +67,6 @@ void JsonRepositoryFiles::save(const QJsonObject& data)
     QJsonDocument doc(data);
     file.write(doc.toJson());
     file.close();
-
-    emit itemsChanged();
 }
 
 void JsonRepositoryFiles::remove(const QString& id)

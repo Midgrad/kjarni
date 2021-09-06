@@ -26,4 +26,5 @@ signals:
     void itemsChanged();
 };
 } // namespace md::data_source
+
 #endif // I_JSON_REPOSITORY_H
