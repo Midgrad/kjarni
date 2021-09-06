@@ -20,7 +20,7 @@ public:
     QList<QJsonObject> selectAll() const override;
     QJsonObject read(const QString& id) const override;
 
-    void save(QJsonObject& data) override;
+    void save(const QJsonObject& data) override;
     void remove(const QString& id) override;
 
 private:

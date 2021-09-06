@@ -53,15 +53,13 @@ QJsonObject JsonRepositoryFiles::read(const QString& id) const
     return doc.object();
 }
 
-void JsonRepositoryFiles::save(QJsonObject& data)
+void JsonRepositoryFiles::save(const QJsonObject& data)
 {
     QString name = data.value(params::name).toString();
     if (name.isEmpty())
         return;
 
     auto itemId = md::utils::nameToFilename(name, "json");
-    // Override id with filename
-    data[params::id] = itemId;
 
     QFile file(m_dir.path() + "/" + itemId);
     file.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);
@@ -69,6 +67,8 @@ void JsonRepositoryFiles::save(QJsonObject& data)
     QJsonDocument doc(data);
     file.write(doc.toJson());
     file.close();
+
+    emit itemsChanged();
 }
 
 void JsonRepositoryFiles::remove(const QString& id)
