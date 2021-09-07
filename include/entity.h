@@ -15,7 +15,7 @@ public:
     Entity(QObject* parent = nullptr);
     virtual ~Entity();
 
-    QVariantMap parameters() const;
+    const QVariantMap& parameters() const;
     QVariant parameter(const QString& key) const;
 
 public slots:

@@ -10,7 +10,7 @@ Entity::~Entity()
 {
 }
 
-QVariantMap Entity::parameters() const
+const QVariantMap& Entity::parameters() const
 {
     return m_parameters;
 }
@@ -28,7 +28,9 @@ void Entity::setParameters(const QVariantMap& parameters)
     m_parameters = parameters;
 
     for (auto it = parameters.constBegin(); it != parameters.constEnd(); ++it)
+    {
         emit parameterChanged(it.key(), it.value());
+    }
     emit parametersChanged();
 }
 
