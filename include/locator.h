@@ -19,6 +19,12 @@ public:
     }
 
     template<typename ServiceType>
+    static void unprovide()
+    {
+        m_services.erase(typeid(ServiceType).hash_code());
+    }
+
+    template<typename ServiceType>
     static ServiceType* get()
     {
         return static_cast<ServiceType*>(m_services[typeid(ServiceType).hash_code()]);
