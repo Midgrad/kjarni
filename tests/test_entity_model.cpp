@@ -23,7 +23,7 @@ public:
 TEST_F(EntityModelTest, testEmpty)
 {
     EXPECT_EQ(model.data(model.index(0), Model::EntityRole).value<Entity*>(), nullptr);
-    EXPECT_EQ(model.data(model.index(0), Model::ParametersRole), QVariant());
+    EXPECT_EQ(model.data(model.index(0), Model::DataRole), QVariant());
 }
 
 TEST_F(EntityModelTest, testAddEntities)
@@ -37,10 +37,10 @@ TEST_F(EntityModelTest, testAddEntities)
     model.add(&entity2);
 
     EXPECT_EQ(model.data(model.index(0), Model::EntityRole).value<Entity*>(), &entity1);
-    EXPECT_EQ(model.data(model.index(0), Model::ParametersRole).toMap(), entity1.parameters());
+    EXPECT_EQ(model.data(model.index(0), Model::DataRole).toMap(), entity1.parameters());
 
     EXPECT_EQ(model.data(model.index(1), Model::EntityRole).value<Entity*>(), &entity2);
-    EXPECT_EQ(model.data(model.index(1), Model::ParametersRole).toMap(), entity2.parameters());
+    EXPECT_EQ(model.data(model.index(1), Model::DataRole).toMap(), entity2.parameters());
 }
 
 TEST_F(EntityModelTest, testResetEntities)
@@ -56,8 +56,8 @@ TEST_F(EntityModelTest, testResetEntities)
     model.reset({ &entity1, &entity2 });
 
     EXPECT_EQ(model.data(model.index(0), Model::EntityRole).value<Entity*>(), &entity1);
-    EXPECT_EQ(model.data(model.index(0), Model::ParametersRole).toMap(), entity1.parameters());
+    EXPECT_EQ(model.data(model.index(0), Model::DataRole).toMap(), entity1.parameters());
 
     EXPECT_EQ(model.data(model.index(1), Model::EntityRole).value<Entity*>(), &entity2);
-    EXPECT_EQ(model.data(model.index(1), Model::ParametersRole).toMap(), entity2.parameters());
+    EXPECT_EQ(model.data(model.index(1), Model::DataRole).toMap(), entity2.parameters());
 }

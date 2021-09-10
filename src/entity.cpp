@@ -2,7 +2,17 @@
 
 using namespace md::domain;
 
-Entity::Entity(QObject* parent) : QObject(parent)
+Entity::Entity(const QVariantMap& parameters, QObject* parent) :
+    QObject(parent),
+    m_parameters(parameters)
+{
+}
+
+Entity::Entity(const QJsonObject& object, QObject* parent) : Entity(object.toVariantMap(), parent)
+{
+}
+
+Entity::Entity(QObject* parent) : Entity(QVariantMap(), parent)
 {
 }
 
@@ -18,6 +28,11 @@ const QVariantMap& Entity::parameters() const
 QVariant Entity::parameter(const QString& key) const
 {
     return m_parameters.value(key);
+}
+
+QJsonObject Entity::toJson() const
+{
+    return QJsonObject::fromVariantMap(m_parameters);
 }
 
 void Entity::setParameters(const QVariantMap& parameters)

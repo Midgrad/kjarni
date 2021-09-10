@@ -1,6 +1,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#include <QJsonObject>
 #include <QObject>
 #include <QVariantMap>
 
@@ -12,11 +13,16 @@ class Entity : public QObject
     Q_PROPERTY(QVariantMap parameters READ parameters WRITE setParameters NOTIFY parametersChanged)
 
 public:
+    Entity(const QVariantMap& parameters, QObject* parent = nullptr);
+    Entity(const QJsonObject& object, QObject* parent = nullptr);
     Entity(QObject* parent = nullptr);
+
     virtual ~Entity();
 
     const QVariantMap& parameters() const;
     QVariant parameter(const QString& key) const;
+
+    QJsonObject toJson() const;
 
 public slots:
     void setParameters(const QVariantMap& parameters);

@@ -16,7 +16,8 @@ public:
     enum EntityRoles
     {
         EntityRole = Qt::UserRole + 1,
-        ParametersRole,
+        DataRole,
+        JsonRole
     };
 
     explicit EntityModel(QObject* parent = nullptr);
