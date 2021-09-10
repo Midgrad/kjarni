@@ -1,59 +1,89 @@
 #include <gtest/gtest.h>
 
+#include <QDebug>
 #include <QSignalSpy>
+#include <QUuid>
 
 #include "entity.h"
+#include "kjarni_traits.h"
 
 using namespace md::domain;
 
-class EntityTest : public ::testing::Test
+struct TestArgs
 {
-public:
-    EntityTest()
-    {
-    }
-
-    Entity entity;
+    QVariant id;
+    QString name;
+    QVariantMap params;
 };
 
-TEST_F(EntityTest, testSetParameters)
+class EntityTest : public ::testing::TestWithParam<TestArgs>
 {
+public:
+    EntityTest() = default;
+};
+
+INSTANTIATE_TEST_SUITE_P(
+    instantiation, EntityTest,
+    ::testing::Values(TestArgs({ "text_id", "Name 665", {} }),
+                      TestArgs({ 56, "some_name", QVariantMap({ { "bool_propery", false } }) }),
+                      TestArgs({ 0, "entity", { { "int_propery", 34 }, { "float_propery", 34 } } }),
+                      TestArgs({ "123", "", { { "string_propery", "str123" } } })));
+
+TEST_P(EntityTest, testParameters)
+{
+    TestArgs args = GetParam();
+
+    Entity entity(GetParam().id, GetParam().name, GetParam().params);
     QSignalSpy oneSpy(&entity, &Entity::parameterChanged);
     QSignalSpy manySpy(&entity, &Entity::parametersChanged);
 
-    entity.setParameters({ { "param_1", 123 }, { "param_2", 3.123 }, { "param_3", "test" } });
+    EXPECT_EQ(entity.parameters(), args.params);
+    EXPECT_EQ(oneSpy.count(), 0);
+    EXPECT_EQ(manySpy.count(), 0);
 
-    EXPECT_EQ(entity.parameter("param_1"), 123);
-    EXPECT_EQ(entity.parameter("param_2"), 3.123);
-    EXPECT_EQ(entity.parameter("param_3"), "test");
+    entity.setParameters(
+        { { "bool_propery", true }, { "int_propery", -42 }, { "string_propery", "test" } });
+
+    EXPECT_EQ(entity.parameter("bool_propery"), true);
+    EXPECT_EQ(entity.parameter("int_propery"), -42);
+    EXPECT_EQ(entity.parameter("string_propery"), "test");
+
     EXPECT_EQ(oneSpy.count(), 3);
     EXPECT_EQ(manySpy.count(), 1);
+
+    entity.removeParameter("string_propery");
+
+    EXPECT_EQ(entity.parameter("string_propery"), QVariant());
+    EXPECT_EQ(oneSpy.count(), 4);
+    EXPECT_EQ(manySpy.count(), 2);
 }
 
-TEST_F(EntityTest, testSetParameter)
+TEST_P(EntityTest, testFromJson)
 {
-    QSignalSpy oneSpy(&entity, &Entity::parameterChanged);
-    QSignalSpy manySpy(&entity, &Entity::parametersChanged);
+    TestArgs args = GetParam();
 
-    entity.setParameter("param", 123);
+    QJsonObject json;
+    json.insert(md::params::id, QJsonValue::fromVariant(args.id));
+    json.insert(md::params::name, args.name);
+    json.insert(md::params::params, QJsonValue::fromVariant(args.params));
 
-    EXPECT_EQ(entity.parameter("param"), 123);
-    EXPECT_EQ(oneSpy.count(), 1);
-    EXPECT_EQ(manySpy.count(), 1);
+    Entity entity(json);
+
+    EXPECT_EQ(entity.id(), args.id);
+    EXPECT_EQ(entity.name(), args.name);
+    EXPECT_EQ(entity.parameters(), args.params);
 }
 
-TEST_F(EntityTest, testRemoveParameter)
+TEST_P(EntityTest, testToJson)
 {
-    entity.setParameters({ { "param_1", 123 }, { "param_2", 3.123 }, { "param_3", "test" } });
+    TestArgs args = GetParam();
 
-    QSignalSpy oneSpy(&entity, &Entity::parameterChanged);
-    QSignalSpy manySpy(&entity, &Entity::parametersChanged);
+    Entity entity(GetParam().id, GetParam().name, GetParam().params);
 
-    entity.removeParameter("param_2");
+    QJsonObject json;
+    json.insert(md::params::id, QJsonValue::fromVariant(args.id));
+    json.insert(md::params::name, args.name);
+    json.insert(md::params::params, QJsonValue::fromVariant(args.params));
 
-    EXPECT_EQ(entity.parameter("param_1"), 123);
-    EXPECT_EQ(entity.parameter("param_2"), QVariant());
-    EXPECT_EQ(entity.parameter("param_3"), "test");
-    EXPECT_EQ(oneSpy.count(), 1);
-    EXPECT_EQ(manySpy.count(), 1);
+    EXPECT_EQ(json, entity.toJson());
 }

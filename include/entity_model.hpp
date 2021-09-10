@@ -39,7 +39,11 @@ QVariant EntityModel<Entity>::data(const QModelIndex& index, int role) const
     {
     case EntityRole:
         return QVariant::fromValue(entity);
-    case DataRole:
+    case IdRole:
+        return entity->id();
+    case NameRole:
+        return entity->name();
+    case ParametersRole:
         return entity->parameters();
     case JsonRole:
         return entity->toJson();
@@ -97,7 +101,9 @@ QHash<int, QByteArray> EntityModel<Entity>::roleNames() const
     QHash<int, QByteArray> roles;
 
     roles[EntityRole] = "entity";
-    roles[DataRole] = "data";
+    roles[IdRole] = "id";
+    roles[NameRole] = "name";
+    roles[ParametersRole] = "params";
     roles[JsonRole] = "json";
 
     return roles;

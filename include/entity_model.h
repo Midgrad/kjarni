@@ -16,7 +16,9 @@ public:
     enum EntityRoles
     {
         EntityRole = Qt::UserRole + 1,
-        DataRole,
+        IdRole,
+        NameRole,
+        ParametersRole,
         JsonRole
     };
 

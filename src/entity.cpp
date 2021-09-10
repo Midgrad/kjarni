@@ -2,22 +2,38 @@
 
 using namespace md::domain;
 
-Entity::Entity(const QVariantMap& parameters, QObject* parent) :
+Entity::Entity(const QVariant& id, const QString& name, const QVariantMap& parameters,
+               QObject* parent) :
     QObject(parent),
+    m_id(id),
+    m_name(name),
     m_parameters(parameters)
 {
 }
 
-Entity::Entity(const QJsonObject& object, QObject* parent) : Entity(object.toVariantMap(), parent)
+Entity::Entity(const QJsonObject& object, QObject* parent) :
+    Entity(object.value(params::id), object.value(params::name).toString(),
+           object.value(params::params).toVariant().toMap(), parent)
 {
 }
 
-Entity::Entity(QObject* parent) : Entity(QVariantMap(), parent)
+Entity::Entity(const QVariant& id, const QString& name, QObject* parent) :
+    Entity(id, name, QVariantMap(), parent)
 {
 }
 
 Entity::~Entity()
 {
+}
+
+QVariant Entity::id() const
+{
+    return m_id;
+}
+
+QString Entity::name() const
+{
+    return m_name;
 }
 
 const QVariantMap& Entity::parameters() const
@@ -32,7 +48,13 @@ QVariant Entity::parameter(const QString& key) const
 
 QJsonObject Entity::toJson() const
 {
-    return QJsonObject::fromVariantMap(m_parameters);
+    QJsonObject json;
+
+    json.insert(params::id, QJsonValue::fromVariant(m_id));
+    json.insert(params::name, m_name);
+    json.insert(params::params, QJsonValue::fromVariant(m_parameters));
+
+    return json;
 }
 
 void Entity::setParameters(const QVariantMap& parameters)
@@ -66,4 +88,12 @@ void Entity::removeParameter(const QString& key)
         emit parameterChanged(key, QVariant());
         emit parametersChanged();
     }
+}
+
+void Entity::setName(const QString& name)
+{
+    if (m_name == name)
+        return;
+    m_name = name;
+    emit nameChanged();
 }
