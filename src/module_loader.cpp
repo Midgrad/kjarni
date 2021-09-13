@@ -64,7 +64,6 @@ void ModuleLoader::loadModule(const QString& moduleId)
     if (!module)
         return;
 
-    module->init();
     m_loadedModules.insert(moduleId, module);
     emit moduleLoaded(moduleId);
 }
@@ -74,6 +73,12 @@ void ModuleLoader::loadModules(const QStringList& moduleIds)
     for (const QString& moduleId : moduleIds)
     {
         this->loadModule(moduleId);
+    }
+
+    for (const QString& moduleId : moduleIds)
+    {
+        if (m_loadedModules.contains(moduleId))
+            m_loadedModules[moduleId]->init();
     }
 }
 
