@@ -22,6 +22,10 @@ Entity::Entity(const QVariant& id, const QString& name, QObject* parent) :
 {
 }
 
+Entity::Entity(const QString& name, QObject* parent) : Entity(QVariant(), name, parent)
+{
+}
+
 Entity::~Entity()
 {
 }

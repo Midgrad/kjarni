@@ -22,6 +22,7 @@ public:
            QObject* parent = nullptr);
     Entity(const QJsonObject& object, QObject* parent = nullptr);
     Entity(const QVariant& id, const QString& name, QObject* parent = nullptr);
+    Entity(const QString& name, QObject* parent = nullptr);
 
     virtual ~Entity();
 
