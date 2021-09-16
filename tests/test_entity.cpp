@@ -56,6 +56,12 @@ TEST_P(EntityTest, testParameters)
     EXPECT_EQ(entity.parameter("string_propery"), QVariant());
     EXPECT_EQ(oneSpy.count(), 4);
     EXPECT_EQ(manySpy.count(), 2);
+
+    entity.removeParameters({ "bool_propery", "int_propery" });
+
+    EXPECT_TRUE(entity.parameters().isEmpty());
+    EXPECT_EQ(oneSpy.count(), 6);
+    EXPECT_EQ(manySpy.count(), 3);
 }
 
 TEST_P(EntityTest, testFromJson)

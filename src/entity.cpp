@@ -85,6 +85,23 @@ void Entity::setParameter(const QString& key, const QVariant& value)
     emit parametersChanged();
 }
 
+void Entity::removeParameters(const QStringList& keys)
+{
+    bool changed = false;
+
+    for (const QString& key : keys)
+    {
+        if (m_parameters.remove(key))
+        {
+            changed = true;
+            emit parameterChanged(key, QVariant());
+        }
+    }
+
+    if (changed)
+        emit parametersChanged();
+}
+
 void Entity::removeParameter(const QString& key)
 {
     if (m_parameters.remove(key))

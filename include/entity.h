@@ -37,6 +37,7 @@ public slots:
     void setName(const QString& name);
     void setParameters(const QVariantMap& parameters);
     void setParameter(const QString& key, const QVariant& value);
+    void removeParameters(const QStringList& keys);
     void removeParameter(const QString& key);
 
 signals:
