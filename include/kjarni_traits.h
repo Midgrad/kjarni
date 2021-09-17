@@ -9,7 +9,6 @@ namespace params
 {
 constexpr char id[] = "id";
 constexpr char name[] = "name";
-constexpr char type[] = "type";
 constexpr char params[] = "params";
 constexpr char value[] = "value";
 } // namespace params
