@@ -31,7 +31,8 @@ public:
     const QVariantMap& parameters() const;
     QVariant parameter(const QString& key) const;
 
-    QJsonObject toJson() const;
+    virtual QJsonObject toJson() const;
+    virtual void fromJson(const QJsonObject& json);
 
 public slots:
     void setName(const QString& name);

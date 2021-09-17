@@ -12,7 +12,7 @@ QJsonObject mergeJson(QJsonObject& src, const QJsonObject& other);
 QJsonObject insertInArray(QJsonObject& src, const QString& path, const QJsonValue& value);
 
 // Name to filename
-QString nameToFilename(const QString& name, const QString& extension);
+QString nameToId(const QString& name);
 
 // Generate numerated name from type
 QString nameFromType(const QString& type, const QStringList& occupiedNames);

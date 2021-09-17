@@ -3,12 +3,16 @@
 
 #include <QJsonObject>
 
-namespace md::params
+namespace md::domain
+{
+namespace params
 {
 constexpr char id[] = "id";
 constexpr char name[] = "name";
+constexpr char type[] = "type";
 constexpr char params[] = "params";
 constexpr char value[] = "value";
-} // namespace md::params
+} // namespace params
+} // namespace md::domain
 
 #endif // KJARNI_TRAITS_H

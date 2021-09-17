@@ -1,5 +1,7 @@
 #include "entity.h"
 
+#include "utils.h"
+
 using namespace md::domain;
 
 Entity::Entity(const QVariant& id, const QString& name, const QVariantMap& parameters,
@@ -22,7 +24,7 @@ Entity::Entity(const QVariant& id, const QString& name, QObject* parent) :
 {
 }
 
-Entity::Entity(const QString& name, QObject* parent) : Entity(QVariant(), name, parent)
+Entity::Entity(const QString& name, QObject* parent) : Entity(utils::nameToId(name), name, parent)
 {
 }
 
@@ -54,11 +56,17 @@ QJsonObject Entity::toJson() const
 {
     QJsonObject json;
 
-    json.insert(params::id, QJsonValue::fromVariant(m_id));
+    // Don't save own id
     json.insert(params::name, m_name);
     json.insert(params::params, QJsonValue::fromVariant(m_parameters));
 
     return json;
+}
+
+void Entity::fromJson(const QJsonObject& json)
+{
+    this->setName(json.value(params::name).toString());
+    this->setParameters(json.value(params::params).toVariant().toMap());
 }
 
 void Entity::setParameters(const QVariantMap& parameters)

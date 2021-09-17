@@ -47,10 +47,10 @@ QJsonObject insertInArray(QJsonObject& src, const QString& path, const QJsonValu
     return src;
 }
 
-QString nameToFilename(const QString& name, const QString& extension)
+QString nameToId(const QString& name)
 {
     QString result = name.toLower();
-    return result.replace(' ', '_') + "." + extension;
+    return result.replace(' ', '_');
 }
 
 QString nameFromType(const QString& type, const QStringList& occupiedNames)
