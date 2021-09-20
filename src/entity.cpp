@@ -14,7 +14,7 @@ Entity::Entity(const QVariant& id, const QString& name, const QVariantMap& param
 }
 
 Entity::Entity(const QJsonObject& object, QObject* parent) :
-    Entity(object.value(params::id), object.value(params::name).toString(),
+    Entity(object.value(params::id).toString(), object.value(params::name).toString(),
            object.value(params::params).toVariant().toMap(), parent)
 {
 }
@@ -56,7 +56,7 @@ QJsonObject Entity::toJson() const
 {
     QJsonObject json;
 
-    // Don't save own id
+    json.insert(params::id, m_id.toString());
     json.insert(params::name, m_name);
     json.insert(params::params, QJsonValue::fromVariant(m_parameters));
 

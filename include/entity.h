@@ -32,6 +32,7 @@ public:
     QVariant parameter(const QString& key) const;
 
     virtual QJsonObject toJson() const;
+    // TODO: think about EO immutable entities
     virtual void fromJson(const QJsonObject& json);
 
 public slots:
