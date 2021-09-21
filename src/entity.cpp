@@ -52,8 +52,10 @@ QVariant Entity::parameter(const QString& key) const
     return m_parameters.value(key);
 }
 
-QJsonObject Entity::toJson() const
+QJsonObject Entity::toJson(bool recursive) const
 {
+    Q_UNUSED(recursive)
+
     QJsonObject json;
 
     json.insert(params::id, m_id.toString());

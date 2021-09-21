@@ -46,7 +46,7 @@ QVariant EntityModel<Entity>::data(const QModelIndex& index, int role) const
     case ParametersRole:
         return entity->parameters();
     case JsonRole:
-        return entity->toJson();
+        return entity->toJson(true);
     }
     return QVariant();
 }
