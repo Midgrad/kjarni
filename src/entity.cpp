@@ -58,9 +58,12 @@ QJsonObject Entity::toJson(bool recursive) const
 
     QJsonObject json;
 
-    json.insert(params::id, m_id.toString());
-    json.insert(params::name, m_name);
-    json.insert(params::params, QJsonValue::fromVariant(m_parameters));
+    if (!m_id.isNull())
+        json.insert(params::id, m_id.toString());
+    if (!m_name.isNull())
+        json.insert(params::name, m_name);
+    if (!m_parameters.isEmpty())
+        json.insert(params::params, QJsonValue::fromVariant(m_parameters));
 
     return json;
 }

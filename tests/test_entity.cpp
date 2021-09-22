@@ -87,9 +87,12 @@ TEST_P(EntityTest, testToJson)
     Entity entity(GetParam().id, GetParam().name, GetParam().params);
 
     QJsonObject json;
-    json.insert(params::id, args.id.toString());
-    json.insert(params::name, args.name);
-    json.insert(params::params, QJsonValue::fromVariant(args.params));
+    if (!args.id.isNull())
+        json.insert(params::id, args.id.toString());
+    if (!args.name.isNull())
+        json.insert(params::name, args.name);
+    if (!args.params.isEmpty())
+        json.insert(params::params, QJsonValue::fromVariant(args.params));
 
     EXPECT_EQ(json, entity.toJson());
 }
