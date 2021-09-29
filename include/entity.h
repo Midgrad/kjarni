@@ -32,7 +32,6 @@ public:
     QVariant parameter(const QString& key) const;
 
     virtual QJsonObject toJson(bool recursive = true) const;
-    // TODO: think about EO immutable entities
     virtual void fromJson(const QJsonObject& json);
 
 public slots:

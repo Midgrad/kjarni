@@ -70,8 +70,10 @@ QJsonObject Entity::toJson(bool recursive) const
 
 void Entity::fromJson(const QJsonObject& json)
 {
-    this->setName(json.value(params::name).toString());
-    this->setParameters(json.value(params::params).toVariant().toMap());
+    if (json.contains(params::name))
+        this->setName(json.value(params::name).toString());
+    if (json.contains(params::params))
+        this->setParameters(json.value(params::params).toVariant().toMap());
 }
 
 void Entity::setParameters(const QVariantMap& parameters)
