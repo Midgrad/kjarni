@@ -1,6 +1,9 @@
 # Project
 project(kjarni)
 
+# CMake modules
+include(cmake/RecurseSubdirs.cmake)
+
 # Find Qt libraries
 find_package(Qt5 ${QT_REQUIRED_VERSION} COMPONENTS Core REQUIRED)
 
@@ -8,10 +11,11 @@ find_package(Qt5 ${QT_REQUIRED_VERSION} COMPONENTS Core REQUIRED)
 add_library(${PROJECT_NAME} SHARED "")
 
 # Include
-target_include_directories(${PROJECT_NAME} PUBLIC "include" PRIVATE "src")
+HEADER_DIRECTORIES(INCLUDES "include")
+target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDES} PRIVATE "src")
 
 # Sources
-file(GLOB SOURCES "include/*" "src/*")
+file(GLOB_RECURSE SOURCES "include/*" "src/*")
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
 
 # Link with libraries
