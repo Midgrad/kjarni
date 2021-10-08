@@ -12,6 +12,8 @@ class RouteType
 public:
     RouteType(const QString& name, const QVector<WaypointType>& waypointTypes);
 
+    WaypointType waypointType(const QString& name) const;
+
     const QString name;
     const QVector<WaypointType> waypointTypes;
 };

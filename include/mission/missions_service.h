@@ -24,7 +24,7 @@ public:
 
 public slots:
     void readAllMissions() override;
-    void createMission(const QString& type) override;
+    void createMission(const QString& typeName) override;
     void removeMission(Mission* mission) override;
     void restoreMission(Mission* mission) override;
     void saveMission(Mission* mission) override;
@@ -32,7 +32,7 @@ public slots:
 
 private:
     data_source::IJsonGateway* const m_repository;
-    QList<const MissionType*> m_missionTypes;
+    QMap<QString, const MissionType*> m_missionTypes;
     QMap<QVariant, Mission*> m_missions;
     QMap<QVariant, MissionStatus> m_statuses;
 };

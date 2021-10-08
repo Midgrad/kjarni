@@ -12,6 +12,8 @@ class MissionType
 public:
     MissionType(const QString& name, const RouteType& routeType);
 
+    bool isNull() const;
+
     const QString name;
     const RouteType routeType;
 };

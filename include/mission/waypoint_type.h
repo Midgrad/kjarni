@@ -4,7 +4,7 @@
 #include <QVariant>
 #include <QVector>
 
-#include "vegur_traits.h"
+#include "mission_traits.h"
 
 namespace md::domain
 {
@@ -19,6 +19,7 @@ public:
         Int,
         Real
     };
+
     Parameter(const QString& name, Type type = Real, const QVariant& defaultValue = 0,
               const QVariant& minValue = QVariant(), const QVariant& maxValue = QVariant(),
               const QVariant& step = 1);
@@ -47,6 +48,7 @@ class WaypointType
 public:
     WaypointType(const QString& name, const QVector<Parameter>& parameters);
 
+    bool isNull() const;
     Parameter parameter(const QString& name) const;
 
     void syncParameters(Waypoint* waypoint) const;

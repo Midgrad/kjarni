@@ -1,19 +1,36 @@
 #include "route.h"
 
+#include <QDebug>
 #include <QJsonArray>
 
 using namespace md::domain;
 
-Route::Route(QObject* parent) : Entity(QString(), parent)
+Route::Route(const RouteType* routeType, QObject* parent) :
+    Entity(QString(), parent),
+    m_routeType(routeType)
 {
+    Q_ASSERT(routeType);
 }
 
-Route::Route(const QJsonObject& json, QObject* parent) : Entity(json, parent)
+Route::Route(const QJsonObject& json, const RouteType* routeType, QObject* parent) :
+    Entity(json, parent),
+    m_routeType(routeType)
 {
+    Q_ASSERT(routeType);
+
     QJsonArray waypoints = json.value(params::waypoints).toArray();
     for (const QJsonValue& value : waypoints)
     {
-        m_waypoins.append(new Waypoint(value.toObject(), this));
+        QJsonObject json = value.toObject();
+        QString typeName = json.value(params::name).toString();
+        WaypointType type = routeType->waypointType(typeName);
+        if (type.isNull())
+        {
+            qWarning() << "No waypoint type" << typeName;
+            continue;
+        }
+
+        m_waypoins.append(new Waypoint(json, &type, this));
     }
 }
 
@@ -43,13 +60,22 @@ void Route::fromJson(const QJsonObject& json)
         int counter = 0;
         for (const QJsonValue& value : waypoints)
         {
+            QJsonObject json = value.toObject();
+            QString typeName = json.value(params::name).toString();
+            auto type = m_routeType->waypointType(typeName);
+            if (type.isNull())
+            {
+                qWarning() << "No waypoint type" << typeName;
+                continue;
+            }
+
             if (counter > m_waypoins.count())
             {
-                m_waypoins.append(new Waypoint(value.toObject(), this));
+                m_waypoins.append(new Waypoint(json, &type, this));
             }
             else
             {
-                m_waypoins[counter]->fromJson(value.toObject());
+                m_waypoins[counter]->fromJson(json);
             }
             counter++;
         }

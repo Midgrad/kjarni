@@ -2,18 +2,18 @@
 
 using namespace md::domain;
 
-Mission::Mission(const QString& type, const QVariant& id, const QString& name, QObject* parent) :
+Mission::Mission(const MissionType& type, const QVariant& id, const QString& name, QObject* parent) :
     Entity(id, name, parent),
     m_type(type),
-    m_route(new Route(this))
+    m_route(new Route(&type.routeType, this))
 {
 }
 
-Mission::Mission(const QJsonObject& json, QObject* parent) :
+Mission::Mission(const QJsonObject& json, const MissionType& type, QObject* parent) :
     Entity(json, parent),
-    m_type(json.value(params::type).toString()),
+    m_type(type),
     m_vehicle(json.value(params::vehicle).toString()),
-    m_route(new Route(json.value(params::route).toObject(), this))
+    m_route(new Route(json.value(params::route).toObject(), &type.routeType, this))
 {
 }
 
@@ -21,7 +21,7 @@ QJsonObject Mission::toJson(bool recursive) const
 {
     QJsonObject json = Entity::toJson();
 
-    json.insert(params::type, m_type);
+    json.insert(params::type, m_type.name);
     json.insert(params::vehicle, m_vehicle);
     if (recursive)
         json.insert(params::route, m_route->toJson(recursive));
@@ -40,7 +40,7 @@ void Mission::fromJson(const QJsonObject& json)
     Entity::fromJson(json);
 }
 
-QString Mission::type() const
+const MissionType& Mission::type() const
 {
     return m_type;
 }

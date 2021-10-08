@@ -35,24 +35,24 @@ QList<Mission*> MissionsService::missions() const
 
 QList<const MissionType*> MissionsService::missionTypes() const
 {
-    return m_missionTypes;
+    return m_missionTypes.values();
 }
 
 void MissionsService::registerMissionType(const MissionType* type)
 {
-    if (m_missionTypes.contains(type))
+    if (m_missionTypes.contains(type->name))
         return;
 
-    m_missionTypes.append(type);
+    m_missionTypes.insert(type->name, type);
     emit missionTypesChanged();
 }
 
 void MissionsService::unregisterMissionType(const MissionType* type)
 {
-    if (!m_missionTypes.contains(type))
+    if (!m_missionTypes.contains(type->name))
         return;
 
-    m_missionTypes.removeOne(type);
+    m_missionTypes.remove(type->name);
     emit missionTypesChanged();
 }
 
@@ -61,7 +61,7 @@ void MissionsService::readAllMissions()
     for (const QVariant& id : m_repository->selectIds())
     {
         QJsonObject json = m_repository->read(id);
-        // Verify id, remove when repository
+        // Verify id, TODO: remove when repository
         json[params::id] = id.toString();
 
         if (m_missions.contains(id))
@@ -70,23 +70,33 @@ void MissionsService::readAllMissions()
         }
         else
         {
-            Mission* mission = new Mission(json, this);
+            QString typeName = json.value(params::type).toString();
+            auto type = m_missionTypes.value(typeName);
+            if (type->isNull())
+            {
+                qWarning() << "Unknown mission type" << typeName;
+                continue;
+            }
+
+            Mission* mission = new Mission(json, *type, this);
             m_missions.insert(id, mission);
             emit missionAdded(mission);
         }
     }
 }
 
-void MissionsService::createMission(const QString& type)
+void MissionsService::createMission(const QString& typeName)
 {
+    auto type = m_missionTypes.value(typeName);
+
     QStringList names;
     for (Mission* mission : qAsConst(m_missions))
     {
         names += mission->name();
     }
-    QString name = utils::nameFromType(type, names);
+    QString name = utils::nameFromType(typeName, names);
 
-    Mission* mission = new Mission(type, utils::nameToId(name), name, this);
+    Mission* mission = new Mission(*type, utils::nameToId(name), name, this);
     this->saveMission(mission);
 }
 

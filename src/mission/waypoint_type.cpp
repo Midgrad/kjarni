@@ -43,8 +43,14 @@ WaypointType::WaypointType(const QString& name, const QVector<Parameter>& parame
 {
 }
 
+bool WaypointType::isNull() const
+{
+    return name.isNull();
+}
+
 Parameter WaypointType::parameter(const QString& name) const
 {
+    // TODO: change to map
     auto result = std::find_if(parameters.begin(), parameters.end(),
                                [name](const Parameter& parameter) {
                                    return parameter.name == name;

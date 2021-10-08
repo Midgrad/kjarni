@@ -7,3 +7,8 @@ MissionType::MissionType(const QString& name, const RouteType& routeType) :
     routeType(routeType)
 {
 }
+
+bool MissionType::isNull() const
+{
+    return name.isEmpty();
+}

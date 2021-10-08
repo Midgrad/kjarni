@@ -11,13 +11,14 @@ class Mission : public Entity
     Q_OBJECT
 
 public:
-    Mission(const QString& type, const QVariant& id, const QString& name, QObject* parent = nullptr);
-    Mission(const QJsonObject& json, QObject* parent = nullptr);
+    Mission(const MissionType& type, const QVariant& id, const QString& name,
+            QObject* parent = nullptr);
+    Mission(const QJsonObject& json, const MissionType& type, QObject* parent = nullptr);
 
     QJsonObject toJson(bool recursive) const override;
     void fromJson(const QJsonObject& json) override;
 
-    QString type() const;
+    const MissionType& type() const;
     QString vehicle() const;
     Route* route() const;
 
@@ -29,7 +30,7 @@ signals:
     void routeChanged(Route* route);
 
 private:
-    const QString m_type;
+    const MissionType m_type;
     QString m_vehicle;
     Route* const m_route;
 };

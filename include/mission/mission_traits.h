@@ -1,5 +1,5 @@
-#ifndef VEGUR_TRAITS_H
-#define VEGUR_TRAITS_H
+#ifndef MISSION_TRAITS_H
+#define MISSION_TRAITS_H
 
 #include "kjarni_traits.h"
 
@@ -17,4 +17,4 @@ constexpr char waypoints[] = "waypoints";
 } // namespace params
 } // namespace md::domain
 
-#endif // VEGUR_TRAITS_H
+#endif // MISSION_TRAITS_H

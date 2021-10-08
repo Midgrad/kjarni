@@ -29,7 +29,7 @@ public:
 
 public slots:
     virtual void readAllMissions() = 0;
-    virtual void createMission(const QString& type) = 0;
+    virtual void createMission(const QString& typeName) = 0;
     virtual void removeMission(Mission* mission) = 0;
     virtual void restoreMission(Mission* mission) = 0;
     virtual void saveMission(Mission* mission) = 0;

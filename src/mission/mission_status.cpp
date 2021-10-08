@@ -1,6 +1,6 @@
 #include "mission_status.h"
 
-#include "vegur_traits.h"
+#include "mission_traits.h"
 
 using namespace md::domain;
 
