@@ -17,14 +17,18 @@ public:
     {
     }
 
-    virtual void done()
+    virtual void start()
     {
     }
 
-    virtual void visit(QJsonObject& features)
+    virtual void visit(QJsonObject& features) // TODO: moe to qmlFeatures
     {
         Q_UNUSED(features);
     };
+
+    virtual void done()
+    {
+    }
 };
 } // namespace md::app
 

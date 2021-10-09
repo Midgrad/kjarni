@@ -75,10 +75,14 @@ void ModuleLoader::loadModules(const QStringList& moduleIds)
         this->loadModule(moduleId);
     }
 
-    for (const QString& moduleId : moduleIds)
+    for (const QString& moduleId : m_loadedModules.keys())
     {
-        if (m_loadedModules.contains(moduleId))
-            m_loadedModules[moduleId]->init();
+        m_loadedModules[moduleId]->init();
+    }
+
+    for (const QString& moduleId : m_loadedModules.keys())
+    {
+        m_loadedModules[moduleId]->start();
     }
 }
 
