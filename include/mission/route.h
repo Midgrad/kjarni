@@ -30,6 +30,8 @@ signals:
     void waypointRemoved(Waypoint* waypoint);
 
 private:
+    void fromJsonImpl(const QJsonObject& json);
+
     const RouteType* const m_routeType;
     QList<Waypoint*> m_waypoins;
 };

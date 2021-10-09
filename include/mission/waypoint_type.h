@@ -48,7 +48,6 @@ class WaypointType
 public:
     WaypointType(const QString& name, const QVector<Parameter>& parameters);
 
-    bool isNull() const;
     Parameter parameter(const QString& name) const;
 
     void syncParameters(Waypoint* waypoint) const;

@@ -18,20 +18,7 @@ Route::Route(const QJsonObject& json, const RouteType* routeType, QObject* paren
 {
     Q_ASSERT(routeType);
 
-    QJsonArray waypoints = json.value(params::waypoints).toArray();
-    for (const QJsonValue& value : waypoints)
-    {
-        QJsonObject json = value.toObject();
-        QString typeName = json.value(params::name).toString();
-        WaypointType type = routeType->waypointType(typeName);
-        if (type.isNull())
-        {
-            qWarning() << "No waypoint type" << typeName;
-            continue;
-        }
-
-        m_waypoins.append(new Waypoint(json, &type, this));
-    }
+    this->fromJsonImpl(json);
 }
 
 QJsonObject Route::toJson(bool recursive) const
@@ -54,38 +41,7 @@ QJsonObject Route::toJson(bool recursive) const
 
 void Route::fromJson(const QJsonObject& json)
 {
-    if (json.contains(params::waypoints))
-    {
-        QJsonArray waypoints = json.value(params::waypoints).toArray();
-        int counter = 0;
-        for (const QJsonValue& value : waypoints)
-        {
-            QJsonObject json = value.toObject();
-            QString typeName = json.value(params::name).toString();
-            auto type = m_routeType->waypointType(typeName);
-            if (type.isNull())
-            {
-                qWarning() << "No waypoint type" << typeName;
-                continue;
-            }
-
-            if (counter > m_waypoins.count())
-            {
-                m_waypoins.append(new Waypoint(json, &type, this));
-            }
-            else
-            {
-                m_waypoins[counter]->fromJson(json);
-            }
-            counter++;
-        }
-
-        // Remove tail from old route
-        while (m_waypoins.count() > waypoints.count())
-        {
-            this->removeWaypoint(m_waypoins.last());
-        }
-    }
+    this->fromJsonImpl(json);
 
     Entity::fromJson(json);
 }
@@ -130,4 +86,40 @@ void Route::removeWaypoint(Waypoint* waypoint)
 
     m_waypoins.removeOne(waypoint);
     emit waypointRemoved(waypoint);
+}
+
+void Route::fromJsonImpl(const QJsonObject& json)
+{
+    if (json.contains(params::waypoints))
+    {
+        QJsonArray waypoints = json.value(params::waypoints).toArray();
+        int counter = 0;
+        for (const QJsonValue& value : waypoints)
+        {
+            QJsonObject json = value.toObject();
+            QString typeName = json.value(params::type).toString();
+            auto type = m_routeType->waypointType(typeName);
+            if (!type)
+            {
+                qWarning() << "No waypoint type" << typeName;
+                continue;
+            }
+
+            if (counter >= m_waypoins.count())
+            {
+                m_waypoins.append(new Waypoint(json, type, this));
+            }
+            else
+            {
+                m_waypoins[counter]->fromJson(json);
+            }
+            counter++;
+        }
+
+        // Remove tail from old route
+        while (m_waypoins.count() > waypoints.count())
+        {
+            this->removeWaypoint(m_waypoins.last());
+        }
+    }
 }

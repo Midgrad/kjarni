@@ -43,11 +43,6 @@ WaypointType::WaypointType(const QString& name, const QVector<Parameter>& parame
 {
 }
 
-bool WaypointType::isNull() const
-{
-    return name.isNull();
-}
-
 Parameter WaypointType::parameter(const QString& name) const
 {
     // TODO: change to map

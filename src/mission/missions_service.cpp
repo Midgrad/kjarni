@@ -72,7 +72,7 @@ void MissionsService::readAllMissions()
         {
             QString typeName = json.value(params::type).toString();
             auto type = m_missionTypes.value(typeName);
-            if (type->isNull())
+            if (!type)
             {
                 qWarning() << "Unknown mission type" << typeName;
                 continue;

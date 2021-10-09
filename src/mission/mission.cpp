@@ -5,7 +5,7 @@ using namespace md::domain;
 Mission::Mission(const MissionType& type, const QVariant& id, const QString& name, QObject* parent) :
     Entity(id, name, parent),
     m_type(type),
-    m_route(new Route(&type.routeType, this))
+    m_route(new Route(type.routeType, this))
 {
 }
 
@@ -13,7 +13,7 @@ Mission::Mission(const QJsonObject& json, const MissionType& type, QObject* pare
     Entity(json, parent),
     m_type(type),
     m_vehicle(json.value(params::vehicle).toString()),
-    m_route(new Route(json.value(params::route).toObject(), &type.routeType, this))
+    m_route(new Route(json.value(params::route).toObject(), type.routeType, this))
 {
 }
 

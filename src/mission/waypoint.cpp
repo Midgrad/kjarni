@@ -2,16 +2,18 @@
 
 using namespace md::domain;
 
-Waypoint::Waypoint(const QString& name, WaypointType* type, QObject* parent) :
+Waypoint::Waypoint(const QString& name, const WaypointType* type, QObject* parent) :
     Entity(name, parent),
     m_type(type)
 {
+    Q_ASSERT(type);
 }
 
-Waypoint::Waypoint(const QJsonObject& json, WaypointType* type, QObject* parent) :
+Waypoint::Waypoint(const QJsonObject& json, const WaypointType* type, QObject* parent) :
     Entity(json, parent),
     m_type(type)
 {
+    Q_ASSERT(type);
 }
 
 QJsonObject Waypoint::toJson(bool recursive) const
@@ -25,13 +27,15 @@ QJsonObject Waypoint::toJson(bool recursive) const
     return json;
 }
 
-WaypointType* Waypoint::type() const
+const WaypointType* Waypoint::type() const
 {
     return m_type;
 }
 
-void Waypoint::setType(WaypointType* type)
+void Waypoint::setType(const WaypointType* type)
 {
+    Q_ASSERT(type);
+
     if (m_type == type)
         return;
 
