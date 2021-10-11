@@ -32,10 +32,24 @@ const WaypointType* Waypoint::type() const
     return m_type;
 }
 
-void Waypoint::setAndCheckParameter(const QString& parameter, const QVariant& value)
+void Waypoint::setAndCheckParameter(const QString& key, const QVariant& value)
 {
-    // TODO: check parameter.guard(m_waypointFillers[parameter.name](item));
-    this->setParameter(parameter, value);
+    QVariant guarded = value;
+    auto parameter = m_type->parameter(key);
+    if (parameter)
+    {
+        guarded = parameter->guard(value);
+    }
+    this->setParameter(key, guarded);
+}
+
+void Waypoint::resetParameter(const QString& key)
+{
+    auto parameter = m_type->parameter(key);
+    if (!parameter)
+        return;
+
+    this->setParameter(key, parameter->defaultValue);
 }
 
 void Waypoint::setType(const WaypointType* type)
@@ -47,4 +61,21 @@ void Waypoint::setType(const WaypointType* type)
 
     m_type = type;
     emit typeChanged();
+
+    this->syncParameters();
+}
+
+void Waypoint::syncParameters()
+{
+    QStringList unneededParameters = this->parameters().keys();
+    for (const Parameter* parameter : m_type->parameters)
+    {
+        // If parameter exist - remove it from unneededParameters
+        if (!unneededParameters.removeOne(parameter->name))
+        {
+            // Or add it with default value
+            this->setParameter(parameter->name, parameter->defaultValue);
+        }
+    }
+    this->removeParameters(unneededParameters);
 }

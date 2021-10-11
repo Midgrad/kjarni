@@ -25,7 +25,6 @@ public:
               const QVariant& step = 1);
     Parameter(const Parameter& other);
 
-    bool isNull() const;
     QVariant guard(const QVariant& value) const;
 
     const QString name;
@@ -38,24 +37,18 @@ public:
     Q_ENUM(Type)
 };
 
-bool operator==(const Parameter& left, const Parameter& right);
-
 class Waypoint;
 class WaypointType
 {
     Q_GADGET
 
 public:
-    WaypointType(const QString& name, const QVector<Parameter>& parameters);
+    WaypointType(const QString& name, const QVector<const Parameter*>& parameters);
 
-    Parameter parameter(const QString& name) const;
-
-    // TODO: to waypoint
-    void syncParameters(Waypoint* waypoint) const;
-    void resetParameter(Waypoint* waypoint, const QString& key) const;
+    const Parameter* parameter(const QString& name) const;
 
     const QString name;
-    const QVector<Parameter> parameters;
+    QMap<QString, const Parameter*> parameters;
 };
 } // namespace md::domain
 

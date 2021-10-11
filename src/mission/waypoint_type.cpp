@@ -20,11 +20,6 @@ Parameter::Parameter(const Parameter& other) :
 {
 }
 
-bool Parameter::isNull() const
-{
-    return name.isNull(); // This is enough
-}
-
 QVariant Parameter::guard(const QVariant& value) const
 {
     QVariant result = value;
@@ -37,53 +32,16 @@ QVariant Parameter::guard(const QVariant& value) const
     return value;
 }
 
-WaypointType::WaypointType(const QString& name, const QVector<Parameter>& parameters) :
-    name(name),
-    parameters(parameters)
+WaypointType::WaypointType(const QString& name, const QVector<const Parameter*>& parameters) :
+    name(name)
 {
-}
-
-Parameter WaypointType::parameter(const QString& name) const
-{
-    // TODO: change to map
-    auto result = std::find_if(parameters.begin(), parameters.end(),
-                               [name](const Parameter& parameter) {
-                                   return parameter.name == name;
-                               });
-    if (result != std::end(parameters))
-        return *result;
-
-    return Parameter(QString());
-}
-
-void WaypointType::syncParameters(Waypoint* waypoint) const
-{
-    QStringList unneededParameters = waypoint->parameters().keys();
-    for (const Parameter& parameter : this->parameters)
+    for (const Parameter* parameter : parameters)
     {
-        // If parameter exist - remove it from unneededParameters
-        if (!unneededParameters.removeOne(parameter.name))
-        {
-            // Or add it with default value
-            waypoint->setParameter(parameter.name, parameter.defaultValue);
-        }
+        this->parameters[parameter->name] = parameter;
     }
-    waypoint->removeParameters(unneededParameters);
 }
 
-void WaypointType::resetParameter(Waypoint* waypoint, const QString& key) const
+const Parameter* WaypointType::parameter(const QString& name) const
 {
-    Parameter parameter = this->parameter(key);
-    if (parameter.isNull())
-        return;
-
-    waypoint->setParameter(key, parameter.defaultValue);
+    return this->parameters.value(name, nullptr);
 }
-
-namespace md::domain
-{
-bool operator==(const Parameter& left, const Parameter& right)
-{
-    return left.name == right.name;
-}
-} // namespace md::domain

@@ -18,8 +18,10 @@ public:
     const WaypointType* type() const;
 
 public slots:
-    void setAndCheckParameter(const QString& parameter, const QVariant& value);
+    void setAndCheckParameter(const QString& key, const QVariant& value);
+    void resetParameter(const QString& key);
     void setType(const WaypointType* type);
+    void syncParameters();
 
 signals:
     void typeChanged();
