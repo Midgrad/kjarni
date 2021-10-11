@@ -21,11 +21,6 @@ public:
     {
     }
 
-    virtual void visit(QJsonObject& features) // TODO: moe to qmlFeatures
-    {
-        Q_UNUSED(features);
-    };
-
     virtual void done()
     {
     }
