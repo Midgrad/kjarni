@@ -32,6 +32,12 @@ const WaypointType* Waypoint::type() const
     return m_type;
 }
 
+void Waypoint::setAndCheckParameter(const QString& parameter, const QVariant& value)
+{
+    // TODO: check parameter.guard(m_waypointFillers[parameter.name](item));
+    this->setParameter(parameter, value);
+}
+
 void Waypoint::setType(const WaypointType* type)
 {
     Q_ASSERT(type);

@@ -50,6 +50,7 @@ public:
 
     Parameter parameter(const QString& name) const;
 
+    // TODO: to waypoint
     void syncParameters(Waypoint* waypoint) const;
     void resetParameter(Waypoint* waypoint, const QString& key) const;
 
