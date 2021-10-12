@@ -1,5 +1,5 @@
-#ifndef COMMON_TMI_H
-#define COMMON_TMI_H
+#ifndef VEHICLE_TMI_H
+#define VEHICLE_TMI_H
 
 namespace md::tmi
 {
@@ -8,7 +8,6 @@ constexpr char name[] = "name";
 
 // System
 constexpr char state[] = "state";
-constexpr char type[] = "type";
 constexpr char online[] = "online";
 
 // Arming
@@ -70,4 +69,4 @@ constexpr char targetBearing[] = "targetBearing";
 
 } // namespace md::tmi
 
-#endif // COMMON_TMI_H
+#endif // VEHICLE_TMI_H
