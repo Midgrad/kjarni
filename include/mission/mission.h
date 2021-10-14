@@ -1,6 +1,7 @@
 #ifndef MISSION_H
 #define MISSION_H
 
+#include "mission_status.h"
 #include "mission_type.h"
 #include "route.h"
 
@@ -21,18 +22,33 @@ public:
     const MissionType& type() const;
     QString vehicle() const;
     Route* route() const;
+    const MissionStatus& status() const;
+    int currentWaypoint() const;
 
 public slots:
-    void setVehicle(const QString& vehicle);
+    void setVehicle(const QString& vehicle); // TODO: const vehicle
+    void updateStatus(MissionStatus::Type type = MissionStatus::NotActual, int progress = -1,
+                      int total = -1);
+    void updateStatusProgress(int progress);
+    void setCurrentWaypoint(int currentWaypoint);
 
 signals:
     void vehicleChanged(QString vehicle);
     void routeChanged(Route* route);
+    void statusChanged(MissionStatus status);
+    void currentWaypointChanged(int currentWaypoint);
+
+    void upload();   // To the vehicle
+    void download(); // From the vehicle
+    void cancel();   // Downloading or uploading
+    void switchWaypoint(int waypoint);
 
 private:
     const MissionType m_type;
     QString m_vehicle;
     Route* const m_route;
+    MissionStatus m_status;
+    int m_currentWaypoint = -1;
 };
 } // namespace md::domain
 

@@ -11,8 +11,17 @@ class MissionStatus
     Q_GADGET
 
 public:
-    MissionStatus(int progress = 0, int total = 0);
+    enum Type
+    {
+        NotActual,
+        Downloading,
+        Uploading,
+        Actual
+    };
 
+    MissionStatus(Type type = NotActual, int progress = 0, int total = 0);
+
+    Type type() const;
     int progress() const;
     int total() const;
 
@@ -22,6 +31,7 @@ public:
     friend bool operator==(const MissionStatus& left, const MissionStatus& right);
 
 private:
+    Type m_type;
     int m_progress;
     int m_total;
 };

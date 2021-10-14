@@ -18,11 +18,6 @@ Mission* MissionsService::mission(const QVariant& id) const
     return m_missions.value(id, nullptr);
 }
 
-MissionStatus MissionsService::status(const QVariant& id) const
-{
-    return m_statuses.value(id);
-}
-
 QVariantList MissionsService::missionIds() const
 {
     return m_missions.keys();
@@ -106,7 +101,6 @@ void MissionsService::removeMission(Mission* mission)
         m_repository->remove(mission->id());
 
     m_missions.remove(mission->id());
-    m_statuses.remove(mission->id());
 
     emit missionRemoved(mission);
     mission->deleteLater();
@@ -142,13 +136,4 @@ void MissionsService::saveMission(Mission* mission)
         mission->setParent(this);
         emit missionAdded(mission);
     }
-}
-
-void MissionsService::updateStatus(const QVariant& missionId, const MissionStatus& status)
-{
-    if (m_statuses.value(missionId) == status)
-        return;
-
-    m_statuses[missionId] = status;
-    emit statusUpdated(missionId, status);
 }

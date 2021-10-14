@@ -1,5 +1,7 @@
 #include "mission.h"
 
+#include <QDebug>
+
 using namespace md::domain;
 
 Mission::Mission(const MissionType& type, const QVariant& id, const QString& name, QObject* parent) :
@@ -55,6 +57,16 @@ Route* Mission::route() const
     return m_route;
 }
 
+const MissionStatus& Mission::status() const
+{
+    return m_status;
+}
+
+int Mission::currentWaypoint() const
+{
+    return m_currentWaypoint;
+}
+
 void Mission::setVehicle(const QString& vehicle)
 {
     if (m_vehicle == vehicle)
@@ -62,4 +74,38 @@ void Mission::setVehicle(const QString& vehicle)
 
     m_vehicle = vehicle;
     emit vehicleChanged(vehicle);
+}
+
+void Mission::updateStatus(MissionStatus::Type type, int progress, int total)
+{
+    progress = progress == -1 ? m_status.progress() : progress;
+    total = total == -1 ? m_status.total() : total;
+
+    MissionStatus status(type, progress, total);
+    if (m_status == status)
+        return;
+
+    m_status = status;
+    emit statusChanged(status);
+}
+
+void Mission::updateStatusProgress(int progress)
+{
+    if (progress >= m_status.total())
+    {
+        this->updateStatus(MissionStatus::Actual);
+    }
+    else
+    {
+        this->updateStatus(m_status.type(), progress);
+    }
+}
+
+void Mission::setCurrentWaypoint(int currentWaypoint)
+{
+    if (m_currentWaypoint == currentWaypoint)
+        return;
+
+    m_currentWaypoint = currentWaypoint;
+    emit currentWaypointChanged(currentWaypoint);
 }

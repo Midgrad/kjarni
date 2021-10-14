@@ -19,7 +19,6 @@ public:
     }
 
     virtual Mission* mission(const QVariant& id) const = 0;
-    virtual MissionStatus status(const QVariant& id) const = 0;
     virtual QVariantList missionIds() const = 0;
     virtual QList<Mission*> missions() const = 0;
     virtual QList<const MissionType*> missionTypes() const = 0;
@@ -33,7 +32,6 @@ public slots:
     virtual void removeMission(Mission* mission) = 0;
     virtual void restoreMission(Mission* mission) = 0;
     virtual void saveMission(Mission* mission) = 0;
-    virtual void updateStatus(const QVariant& missionId, const MissionStatus& status) = 0;
 
 signals:
     void missionTypesChanged();
@@ -41,11 +39,6 @@ signals:
     void missionAdded(Mission* mission);
     void missionChanged(Mission* mission);
     void missionRemoved(Mission* mission);
-    void statusUpdated(QVariant missionId, MissionStatus status);
-
-    void upload(Mission* mission);   // To the vehicle
-    void download(Mission* mission); // From the vehicle
-    void cancel(Mission* mission);   // Downloading or uploading
 };
 } // namespace md::domain
 
