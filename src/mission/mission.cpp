@@ -4,10 +4,12 @@
 
 using namespace md::domain;
 
-Mission::Mission(const MissionType& type, const QVariant& id, const QString& name, QObject* parent) :
+Mission::Mission(const MissionType& type, const QVariant& id, const QString& name,
+                 const QString& vehicle, QObject* parent) :
     Entity(id, name, parent),
     m_type(type),
-    m_route(new Route(type.routeType, this))
+    m_route(new Route(type.routeType, this)),
+    m_vehicle(vehicle)
 {
 }
 
@@ -33,9 +35,6 @@ QJsonObject Mission::toJson(bool recursive) const
 
 void Mission::fromJson(const QJsonObject& json)
 {
-    if (json.contains(params::vehicle))
-        this->setVehicle(json.value(params::vehicle).toString());
-
     if (json.contains(params::route))
         m_route->fromJson(json.value(params::route).toObject());
 
@@ -65,15 +64,6 @@ const MissionStatus& Mission::status() const
 int Mission::currentWaypoint() const
 {
     return m_currentWaypoint;
-}
-
-void Mission::setVehicle(const QString& vehicle)
-{
-    if (m_vehicle == vehicle)
-        return;
-
-    m_vehicle = vehicle;
-    emit vehicleChanged(vehicle);
 }
 
 void Mission::updateStatus(MissionStatus::Type type, int progress, int total)

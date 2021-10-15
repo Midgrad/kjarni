@@ -24,7 +24,6 @@ public:
 
 public slots:
     void readAllMissions() override;
-    void createMission(const QString& typeName) override;
     void removeMission(Mission* mission) override;
     void restoreMission(Mission* mission) override;
     void saveMission(Mission* mission) override;

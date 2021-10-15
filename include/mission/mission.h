@@ -13,7 +13,7 @@ class Mission : public Entity
 
 public:
     Mission(const MissionType& type, const QVariant& id, const QString& name,
-            QObject* parent = nullptr);
+            const QString& vehicle, QObject* parent = nullptr);
     Mission(const QJsonObject& json, const MissionType& type, QObject* parent = nullptr);
 
     QJsonObject toJson(bool recursive) const override;
@@ -26,7 +26,6 @@ public:
     int currentWaypoint() const;
 
 public slots:
-    void setVehicle(const QString& vehicle); // TODO: const vehicle
     void updateStatus(MissionStatus::Type type = MissionStatus::NotActual, int progress = -1,
                       int total = -1);
     void updateStatusProgress(int progress);
@@ -46,7 +45,7 @@ signals:
 
 private:
     const MissionType m_type;
-    QString m_vehicle;
+    const QString m_vehicle;
     Route* const m_route;
     MissionStatus m_status;
     int m_currentWaypoint = -1;

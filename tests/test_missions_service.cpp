@@ -29,20 +29,20 @@ public:
     MissionsService service;
 };
 
-TEST_F(MissionServiceTest, testCreateMission)
-{
-    QSignalSpy addSpy(&service, &MissionsService::missionAdded);
-    QSignalSpy removeSpy(&service, &MissionsService::missionRemoved);
+//TEST_F(MissionServiceTest, testCreateMission)
+//{
+//    QSignalSpy addSpy(&service, &MissionsService::missionAdded);
+//    QSignalSpy removeSpy(&service, &MissionsService::missionRemoved);
 
-    service.createMission("test type");
+//    service.createMission("test type");
 
-    EXPECT_EQ(service.missions().count(), 1);
-    EXPECT_EQ(addSpy.count(), 1);
-    Mission* mission = service.missions().first();
+//    EXPECT_EQ(service.missions().count(), 1);
+//    EXPECT_EQ(addSpy.count(), 1);
+//    Mission* mission = service.missions().first();
 
-    service.removeMission(mission);
+//    service.removeMission(mission);
 
-    EXPECT_EQ(service.missions().count(), 0);
-    EXPECT_FALSE(service.missions().contains(mission));
-    EXPECT_EQ(removeSpy.count(), 1);
-}
+//    EXPECT_EQ(service.missions().count(), 0);
+//    EXPECT_FALSE(service.missions().contains(mission));
+//    EXPECT_EQ(removeSpy.count(), 1);
+//}

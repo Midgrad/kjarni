@@ -91,21 +91,6 @@ void MissionsService::readAllMissions()
     }
 }
 
-void MissionsService::createMission(const QString& typeName)
-{
-    auto type = m_missionTypes.value(typeName);
-
-    QStringList names;
-    for (Mission* mission : qAsConst(m_missions))
-    {
-        names += mission->name();
-    }
-    QString name = utils::nameFromType(typeName, names);
-
-    Mission* mission = new Mission(*type, utils::nameToId(name), name, this);
-    this->saveMission(mission);
-}
-
 void MissionsService::removeMission(Mission* mission)
 {
     if (!mission->id().isNull())
@@ -144,6 +129,7 @@ void MissionsService::saveMission(Mission* mission)
     else
     {
         m_missions[mission->id()] = mission;
+        mission->moveToThread(this->thread());
         mission->setParent(this);
         emit missionAdded(mission);
     }
