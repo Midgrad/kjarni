@@ -14,6 +14,7 @@ public:
     explicit MissionsService(data_source::IJsonGateway* repository, QObject* parent = nullptr);
 
     Mission* mission(const QVariant& id) const override;
+    Mission* missionForVehicle(const QString& vehicleId) const override;
     QVariantList missionIds() const override;
     QList<Mission*> missions() const override;
     QList<const MissionType*> missionTypes() const override;

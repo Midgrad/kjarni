@@ -18,6 +18,17 @@ Mission* MissionsService::mission(const QVariant& id) const
     return m_missions.value(id, nullptr);
 }
 
+Mission* MissionsService::missionForVehicle(const QString& vehicleId) const
+{
+    auto result = std::find_if(m_missions.begin(), m_missions.end(), [vehicleId](Mission* mision) {
+        return mision->vehicle() == vehicleId;
+    });
+    if (result == m_missions.end())
+        return nullptr;
+
+    return result.value();
+}
+
 QVariantList MissionsService::missionIds() const
 {
     return m_missions.keys();

@@ -30,7 +30,6 @@ int MissionStatus::total() const
 
 bool MissionStatus::isComplete() const
 {
-    qDebug() << "MissionStatus" << m_progress << m_total;
     return m_progress + 1 >= m_total;
 }
 

@@ -41,6 +41,7 @@ signals:
     void upload();   // To the vehicle
     void download(); // From the vehicle
     void cancel();   // Downloading or uploading
+    void clear();    // Clear mission onborad and in storage
     void switchWaypoint(int waypoint);
 
 private:
