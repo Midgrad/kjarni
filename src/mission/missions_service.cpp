@@ -10,16 +10,22 @@ MissionsService::MissionsService(data_source::IJsonGateway* repository, QObject*
     IMissionsService(parent),
     m_repository(repository)
 {
+    qRegisterMetaType<MissionStatus>("MissionStatus");
+
     m_repository->setParent(this);
 }
 
 Mission* MissionsService::mission(const QVariant& id) const
 {
+    QMutexLocker locker(&m_mutex);
+    qDebug() << id;
     return m_missions.value(id, nullptr);
 }
 
 Mission* MissionsService::missionForVehicle(const QString& vehicleId) const
 {
+    QMutexLocker locker(&m_mutex);
+
     auto result = std::find_if(m_missions.begin(), m_missions.end(), [vehicleId](Mission* mision) {
         return mision->vehicle() == vehicleId;
     });
@@ -31,21 +37,26 @@ Mission* MissionsService::missionForVehicle(const QString& vehicleId) const
 
 QVariantList MissionsService::missionIds() const
 {
+    QMutexLocker locker(&m_mutex);
     return m_missions.keys();
 }
 
 QList<Mission*> MissionsService::missions() const
 {
+    QMutexLocker locker(&m_mutex);
     return m_missions.values();
 }
 
 QList<const MissionType*> MissionsService::missionTypes() const
 {
+    QMutexLocker locker(&m_mutex);
     return m_missionTypes.values();
 }
 
 void MissionsService::registerMissionType(const MissionType* type)
 {
+    QMutexLocker locker(&m_mutex);
+
     if (m_missionTypes.contains(type->name))
         return;
 
@@ -55,6 +66,8 @@ void MissionsService::registerMissionType(const MissionType* type)
 
 void MissionsService::unregisterMissionType(const MissionType* type)
 {
+    QMutexLocker locker(&m_mutex);
+
     if (!m_missionTypes.contains(type->name))
         return;
 
@@ -64,6 +77,8 @@ void MissionsService::unregisterMissionType(const MissionType* type)
 
 void MissionsService::readAllMissions()
 {
+    QMutexLocker locker(&m_mutex);
+
     for (const QVariant& id : m_repository->selectIds())
     {
         QJsonObject json = m_repository->read(id);
@@ -93,6 +108,8 @@ void MissionsService::readAllMissions()
 
 void MissionsService::removeMission(Mission* mission)
 {
+    QMutexLocker locker(&m_mutex);
+
     if (!mission->id().isNull())
         m_repository->remove(mission->id());
 
@@ -104,6 +121,8 @@ void MissionsService::removeMission(Mission* mission)
 
 void MissionsService::restoreMission(Mission* mission)
 {
+    QMutexLocker locker(&m_mutex);
+
     if (mission->id().isNull())
         return;
 
@@ -114,6 +133,8 @@ void MissionsService::restoreMission(Mission* mission)
 
 void MissionsService::saveMission(Mission* mission)
 {
+    QMutexLocker locker(&m_mutex);
+
     if (mission->id().isNull())
     {
         qWarning() << "Can't save mission with no id" << mission;

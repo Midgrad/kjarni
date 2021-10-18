@@ -4,6 +4,8 @@
 #include "i_json_gateway.h"
 #include "i_missions_service.h"
 
+#include <QMutex>
+
 namespace md::domain
 {
 class MissionsService : public IMissionsService
@@ -32,6 +34,8 @@ private:
     data_source::IJsonGateway* const m_repository;
     QMap<QString, const MissionType*> m_missionTypes;
     QMap<QVariant, Mission*> m_missions;
+
+    mutable QMutex m_mutex;
 };
 } // namespace md::domain
 
