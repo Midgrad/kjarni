@@ -5,7 +5,7 @@ project(kjarni)
 include(cmake/RecurseSubdirs.cmake)
 
 # Find Qt libraries
-find_package(Qt5 ${QT_REQUIRED_VERSION} COMPONENTS Core REQUIRED)
+find_package(Qt5 ${QT_REQUIRED_VERSION} COMPONENTS Core Sql REQUIRED)
 
 # Target
 add_library(${PROJECT_NAME} SHARED "")
@@ -19,7 +19,7 @@ file(GLOB_RECURSE SOURCES "include/*" "src/*")
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
 
 # Link with libraries
-target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core Qt5::Sql)
 
 # Tests
 if(TESTS_ENABLED)
