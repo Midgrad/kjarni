@@ -19,7 +19,7 @@ public:
         IdRole,
         NameRole,
         ParametersRole,
-        JsonRole
+        VariantRole
     };
 
     explicit EntityModel(QObject* parent = nullptr);

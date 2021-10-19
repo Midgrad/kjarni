@@ -8,26 +8,26 @@
 using namespace ::testing;
 using namespace md::domain;
 
-class JsonGatewayMock : public md::data_source::IJsonGateway
-{
-public:
-    MOCK_METHOD(QVariantList, selectIds, (), (const, override));
-    MOCK_METHOD(QList<QJsonObject>, readAll, (), (const, override));
-    MOCK_METHOD(QJsonObject, read, (const QVariant&), (const, override));
+//class JsonGatewayMock : public md::data_source::IJsonGateway
+//{
+//public:
+//    MOCK_METHOD(QVariantList, selectIds, (), (const, override));
+//    MOCK_METHOD(QList<QJsonObject>, readAll, (), (const, override));
+//    MOCK_METHOD(QJsonObject, read, (const QVariant&), (const, override));
 
-    MOCK_METHOD(void, save, (const QVariant&, const QJsonObject&), (override));
-    MOCK_METHOD(void, remove, (const QVariant&), (override));
-};
+//    MOCK_METHOD(void, save, (const QVariant&, const QJsonObject&), (override));
+//    MOCK_METHOD(void, remove, (const QVariant&), (override));
+//};
 
-class MissionServiceTest : public Test
-{
-public:
-    MissionServiceTest() : service(new JsonGatewayMock())
-    {
-    }
+//class MissionServiceTest : public Test
+//{
+//public:
+//    MissionServiceTest() : service(new JsonGatewayMock())
+//    {
+//    }
 
-    MissionsService service;
-};
+//    MissionsService service;
+//};
 
 //TEST_F(MissionServiceTest, testCreateMission)
 //{

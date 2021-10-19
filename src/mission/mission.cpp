@@ -4,51 +4,51 @@
 
 using namespace md::domain;
 
-Mission::Mission(const MissionType& type, const QVariant& id, const QString& name,
-                 const QString& vehicle, QObject* parent) :
+Mission::Mission(const MissionType* type, const QVariant& id, const QString& name,
+                 const QString& vehicleId, QObject* parent) :
     Entity(id, name, parent),
     m_type(type),
-    m_route(new Route(type.routeType, this)),
-    m_vehicle(vehicle)
+    m_route(new Route(type->routeType, this)),
+    m_vehicleId(vehicleId)
 {
 }
 
-Mission::Mission(const QJsonObject& json, const MissionType& type, QObject* parent) :
-    Entity(json, parent),
+Mission::Mission(const QVariantMap& map, const MissionType* type, QObject* parent) :
+    Entity(map, parent),
     m_type(type),
-    m_vehicle(json.value(params::vehicle).toString()),
-    m_route(new Route(json.value(params::route).toObject(), type.routeType, this))
+    m_vehicleId(map.value(params::vehicle).toString()),
+    m_route(new Route(map.value(params::route).toMap(), type->routeType, this))
 {
 }
 
-QJsonObject Mission::toJson(bool recursive) const
+QVariantMap Mission::toVariantMap(bool recursive) const
 {
-    QJsonObject json = Entity::toJson();
+    QVariantMap map = Entity::toVariantMap();
 
-    json.insert(params::type, m_type.name);
-    json.insert(params::vehicle, m_vehicle);
+    map.insert(params::type, m_type->name);
+    map.insert(params::vehicle, m_vehicleId);
     if (recursive)
-        json.insert(params::route, m_route->toJson(recursive));
+        map.insert(params::route, m_route->toVariantMap(recursive));
 
-    return json;
+    return map;
 }
 
-void Mission::fromJson(const QJsonObject& json)
+void Mission::fromVariantMap(const QVariantMap& map)
 {
-    if (json.contains(params::route))
-        m_route->fromJson(json.value(params::route).toObject());
+    if (map.contains(params::route))
+        m_route->fromVariantMap(map.value(params::route).toMap());
 
-    Entity::fromJson(json);
+    Entity::fromVariantMap(map);
 }
 
-const MissionType& Mission::type() const
+const MissionType* Mission::type() const
 {
     return m_type;
 }
 
-QString Mission::vehicle() const
+QString Mission::vehicleId() const
 {
-    return m_vehicle;
+    return m_vehicleId;
 }
 
 Route* Mission::route() const

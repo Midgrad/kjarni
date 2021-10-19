@@ -12,15 +12,15 @@ class Mission : public Entity
     Q_OBJECT
 
 public:
-    Mission(const MissionType& type, const QVariant& id, const QString& name,
-            const QString& vehicle, QObject* parent = nullptr);
-    Mission(const QJsonObject& json, const MissionType& type, QObject* parent = nullptr);
+    Mission(const MissionType* type, const QVariant& id, const QString& name,
+            const QString& vehicleId, QObject* parent = nullptr);
+    Mission(const QVariantMap& map, const MissionType* type, QObject* parent = nullptr);
 
-    QJsonObject toJson(bool recursive) const override;
-    void fromJson(const QJsonObject& json) override;
+    QVariantMap toVariantMap(bool recursive) const override;
+    void fromVariantMap(const QVariantMap& map) override;
 
-    const MissionType& type() const;
-    QString vehicle() const;
+    const MissionType* type() const;
+    QString vehicleId() const;
     Route* route() const;
     const MissionStatus& status() const;
     int currentWaypoint() const;
@@ -44,8 +44,8 @@ signals:
     void switchWaypoint(int waypoint);
 
 private:
-    const MissionType m_type;
-    const QString m_vehicle;
+    const MissionType* m_type;
+    const QString m_vehicleId;
     Route* const m_route;
     MissionStatus m_status;
     int m_currentWaypoint = -1;

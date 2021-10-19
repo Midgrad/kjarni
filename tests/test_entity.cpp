@@ -64,35 +64,35 @@ TEST_P(EntityTest, testParameters)
     EXPECT_EQ(manySpy.count(), 3);
 }
 
-TEST_P(EntityTest, testFromJson)
+TEST_P(EntityTest, testFromVariant)
 {
     TestArgs args = GetParam();
 
-    QJsonObject json;
-    json.insert(params::id, args.id.toString());
-    json.insert(params::name, args.name);
-    json.insert(params::params, QJsonValue::fromVariant(args.params));
+    QVariantMap map;
+    map.insert(params::id, args.id.toString());
+    map.insert(params::name, args.name);
+    map.insert(params::params, QJsonValue::fromVariant(args.params));
 
-    Entity entity(json);
+    Entity entity(map);
 
     EXPECT_EQ(entity.id(), args.id);
     EXPECT_EQ(entity.name(), args.name);
     EXPECT_EQ(entity.parameters(), args.params);
 }
 
-TEST_P(EntityTest, testToJson)
+TEST_P(EntityTest, testToVariant)
 {
     TestArgs args = GetParam();
 
     Entity entity(GetParam().id, GetParam().name, GetParam().params);
 
-    QJsonObject json;
+    QVariantMap map;
     if (!args.id.isNull())
-        json.insert(params::id, args.id.toString());
+        map.insert(params::id, args.id.toString());
     if (!args.name.isNull())
-        json.insert(params::name, args.name);
+        map.insert(params::name, args.name);
     if (!args.params.isEmpty())
-        json.insert(params::params, QJsonValue::fromVariant(args.params));
+        map.insert(params::params, QJsonValue::fromVariant(args.params));
 
-    EXPECT_EQ(json, entity.toJson());
+    EXPECT_EQ(map, entity.toVariantMap());
 }

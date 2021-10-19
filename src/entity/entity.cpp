@@ -1,7 +1,5 @@
 #include "entity.h"
 
-#include "utils.h"
-
 using namespace md::domain;
 
 Entity::Entity(const QVariant& id, const QString& name, const QVariantMap& parameters,
@@ -13,9 +11,9 @@ Entity::Entity(const QVariant& id, const QString& name, const QVariantMap& param
 {
 }
 
-Entity::Entity(const QJsonObject& object, QObject* parent) :
-    Entity(object.value(params::id).toString(), object.value(params::name).toString(),
-           object.value(params::params).toVariant().toMap(), parent)
+Entity::Entity(const QVariantMap& map, QObject* parent) :
+    Entity(map.value(params::id).toString(), map.value(params::name).toString(),
+           map.value(params::params).toMap(), parent)
 {
 }
 
@@ -52,28 +50,28 @@ QVariant Entity::parameter(const QString& key) const
     return m_parameters.value(key);
 }
 
-QJsonObject Entity::toJson(bool recursive) const
+QVariantMap Entity::toVariantMap(bool recursive) const
 {
     Q_UNUSED(recursive)
 
-    QJsonObject json;
+    QVariantMap map;
 
     if (!m_id.isNull())
-        json.insert(params::id, m_id.toString());
+        map.insert(params::id, m_id.toString());
     if (!m_name.isNull())
-        json.insert(params::name, m_name);
+        map.insert(params::name, m_name);
     if (!m_parameters.isEmpty())
-        json.insert(params::params, QJsonValue::fromVariant(m_parameters));
+        map.insert(params::params, QJsonValue::fromVariant(m_parameters));
 
-    return json;
+    return map;
 }
 
-void Entity::fromJson(const QJsonObject& json)
+void Entity::fromVariantMap(const QVariantMap& map)
 {
-    if (json.contains(params::name))
-        this->setName(json.value(params::name).toString());
-    if (json.contains(params::params))
-        this->setParameters(json.value(params::params).toVariant().toMap());
+    if (map.contains(params::name))
+        this->setName(map.value(params::name).toString());
+    if (map.contains(params::params))
+        this->setParameters(map.value(params::params).toMap());
 }
 
 void Entity::setParameters(const QVariantMap& parameters)

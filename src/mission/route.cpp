@@ -5,45 +5,49 @@
 
 using namespace md::domain;
 
-Route::Route(const RouteType* routeType, QObject* parent) :
-    Entity(QString(), parent),
-    m_routeType(routeType)
+Route::Route(const RouteType* type, QObject* parent) : Entity(QString(), parent), m_type(type)
 {
-    Q_ASSERT(routeType);
+    Q_ASSERT(type);
 }
 
-Route::Route(const QJsonObject& json, const RouteType* routeType, QObject* parent) :
-    Entity(json, parent),
-    m_routeType(routeType)
+Route::Route(const QVariantMap& map, const RouteType* type, QObject* parent) :
+    Entity(map, parent),
+    m_type(type)
 {
-    Q_ASSERT(routeType);
+    Q_ASSERT(type);
 
-    this->fromJsonImpl(json);
+    this->fromVariantMapImpl(map);
 }
 
-QJsonObject Route::toJson(bool recursive) const
+QVariantMap Route::toVariantMap(bool recursive) const
 {
-    QJsonObject json = Entity::toJson();
+    QVariantMap map = Entity::toVariantMap();
+
+    map.insert(params::type, m_type->name);
 
     if (recursive)
     {
-        QJsonArray waypoints;
+        QVariantList waypoints;
         for (Waypoint* waypoint : m_waypoins)
         {
-            waypoints.append(waypoint->toJson(recursive));
+            waypoints.append(waypoint->toVariantMap(recursive));
         }
-
-        json.insert(params::waypoints, waypoints);
+        map.insert(params::waypoints, waypoints);
     }
 
-    return json;
+    return map;
 }
 
-void Route::fromJson(const QJsonObject& json)
+void Route::fromVariantMap(const QVariantMap& map)
 {
-    this->fromJsonImpl(json);
+    this->fromVariantMapImpl(map);
 
-    Entity::fromJson(json);
+    Entity::fromVariantMap(map);
+}
+
+const RouteType* Route::type() const
+{
+    return m_type;
 }
 
 int Route::count() const
@@ -88,17 +92,17 @@ void Route::removeWaypoint(Waypoint* waypoint)
     emit waypointRemoved(waypoint);
 }
 
-void Route::fromJsonImpl(const QJsonObject& json)
+void Route::fromVariantMapImpl(const QVariantMap& map)
 {
-    if (json.contains(params::waypoints))
+    if (map.contains(params::waypoints))
     {
-        QJsonArray waypoints = json.value(params::waypoints).toArray();
+        QVariantList waypoints = map.value(params::waypoints).toList();
         int counter = 0;
-        for (const QJsonValue& value : waypoints)
+        for (const QVariant& value : waypoints)
         {
-            QJsonObject json = value.toObject();
-            QString typeName = json.value(params::type).toString();
-            auto type = m_routeType->waypointType(typeName);
+            QVariantMap map = value.toMap();
+            QString typeName = map.value(params::type).toString();
+            auto type = m_type->waypointType(typeName);
             if (!type)
             {
                 qWarning() << "No waypoint type" << typeName;
@@ -107,11 +111,11 @@ void Route::fromJsonImpl(const QJsonObject& json)
 
             if (counter >= m_waypoins.count())
             {
-                m_waypoins.append(new Waypoint(json, type, this));
+                m_waypoins.append(new Waypoint(map, type, this));
             }
             else
             {
-                m_waypoins[counter]->fromJson(json);
+                m_waypoins[counter]->fromVariantMap(map);
             }
             counter++;
         }

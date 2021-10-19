@@ -12,9 +12,9 @@ class Waypoint : public Entity
 
 public:
     Waypoint(const QString& name, const WaypointType* type, QObject* parent = nullptr);
-    Waypoint(const QJsonObject& json, const WaypointType* type, QObject* parent = nullptr);
+    Waypoint(const QVariantMap& map, const WaypointType* type, QObject* parent = nullptr);
 
-    QJsonObject toJson(bool recursive) const override;
+    QVariantMap toVariantMap(bool recursive) const override;
     const WaypointType* type() const;
 
 public slots:

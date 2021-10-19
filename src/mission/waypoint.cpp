@@ -9,22 +9,20 @@ Waypoint::Waypoint(const QString& name, const WaypointType* type, QObject* paren
     Q_ASSERT(type);
 }
 
-Waypoint::Waypoint(const QJsonObject& json, const WaypointType* type, QObject* parent) :
-    Entity(json, parent),
+Waypoint::Waypoint(const QVariantMap& map, const WaypointType* type, QObject* parent) :
+    Entity(map, parent),
     m_type(type)
 {
     Q_ASSERT(type);
 }
 
-QJsonObject Waypoint::toJson(bool recursive) const
+QVariantMap Waypoint::toVariantMap(bool recursive) const
 {
     Q_UNUSED(recursive)
 
-    QJsonObject json = Entity::toJson();
-
-    json.insert(params::type, m_type->name);
-
-    return json;
+    QVariantMap map = Entity::toVariantMap();
+    map.insert(params::type, m_type->name);
+    return map;
 }
 
 const WaypointType* Waypoint::type() const
