@@ -1,31 +1,31 @@
 #ifndef ENTITY_REPOSITORY_SQL_H
 #define ENTITY_REPOSITORY_SQL_H
 
-#include "generic_dao.h"
 #include "i_entity_repository.h"
+#include "table_gateway.h"
 
 namespace md
 {
-namespace data_source
+namespace domain
 {
-template<class Entity>
-class EntityRepositorySql : public IEntityRepository<Entity>
+class EntityRepositorySql : public IEntityRepository
 {
 public:
     EntityRepositorySql(QSqlDatabase* database, const QString& tableName);
 
     QVariantList selectIds() const override;
+    QVariantMap select(const QVariant& id) const override;
 
-    void create(Entity* entity) override;
+    void insert(Entity* entity) override;
     void read(Entity* entity) override;
     void update(Entity* entity) override;
     void remove(Entity* entity) override;
 
 private:
-    GenericDao<Entity> m_dao;
+    data_source::TableGateway m_gateway;
 };
 
-} // namespace data_source
+} // namespace domain
 } // namespace md
 
 #endif // ENTITY_REPOSITORY_SQL_H

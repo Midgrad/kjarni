@@ -1,8 +1,8 @@
 #ifndef MISSIONS_SERVICE_H
 #define MISSIONS_SERVICE_H
 
-#include "i_json_gateway.h"
 #include "i_missions_service.h"
+#include "i_repository_factory.h"
 
 #include <QMutex>
 
@@ -13,7 +13,8 @@ class MissionsService : public IMissionsService
     Q_OBJECT
 
 public:
-    explicit MissionsService(data_source::IJsonGateway* repository, QObject* parent = nullptr);
+    explicit MissionsService(IRepositoryFactory* repoFactory, QObject* parent = nullptr);
+    ~MissionsService() override;
 
     Mission* mission(const QVariant& id) const override;
     Mission* missionForVehicle(const QString& vehicleId) const override;
@@ -25,15 +26,17 @@ public:
     void unregisterMissionType(const MissionType* type) override;
 
 public slots:
-    void readAllMissions() override;
+    void readAll() override;
     void removeMission(Mission* mission) override;
     void restoreMission(Mission* mission) override;
     void saveMission(Mission* mission) override;
 
 private:
-    data_source::IJsonGateway* const m_repository;
+    const QScopedPointer<IEntityRepository> m_missionRepo;
+    const QScopedPointer<IEntityRepository> m_routesRepo;
+    const QScopedPointer<IEntityRepository> m_waypointsRepo;
     QMap<QString, const MissionType*> m_missionTypes;
-    QMap<QVariant, Mission*> m_missions;
+    QMap<QVariant, Mission*> m_missions; // Move map to repos,
 
     mutable QMutex m_mutex;
 };

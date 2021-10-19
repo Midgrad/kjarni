@@ -28,7 +28,7 @@ public:
     virtual void unregisterMissionType(const MissionType* type) = 0;
 
 public slots:
-    virtual void readAllMissions() = 0;
+    virtual void readAll() = 0;
     virtual void removeMission(Mission* mission) = 0;
     virtual void restoreMission(Mission* mission) = 0;
     virtual void saveMission(Mission* mission) = 0;

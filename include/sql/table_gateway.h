@@ -18,22 +18,24 @@ const QString comma = ", ";
 using Condition = QPair<QString, QVariant>;
 using ConditionMap = QVariantMap;
 
-class GenericTable
+class TableGateway
 {
 public:
-    GenericTable(QSqlDatabase* database, const QString& tableName);
-    virtual ~GenericTable() = default;
+    TableGateway(QSqlDatabase* database, const QString& tableName);
+    virtual ~TableGateway() = default;
+
+    bool checkCreateTable();
 
     bool initColumnNames();
     void initColumnNames(const QStringList& columnNames);
 
-    QVariantList select(const ConditionMap& conditions,
-                        const QStringList& resultColumns = QStringList());
-    QVariantList selectAll(const QStringList& resultColumns = QStringList());
+    QString errorString() const;
 
-    QVariantList orderedSelect(const ConditionMap& conditions, const QStringList& resultColumns,
-                               const QStringList& orderByColumns,
-                               Qt::SortOrder sortOrder = Qt::AscendingOrder);
+    QList<QVariantMap> select(const ConditionMap& conditions = ConditionMap(),
+                              const QStringList& resultColumns = QStringList()) const;
+    QList<QVariantMap> select(const ConditionMap& conditions, const QStringList& resultColumns,
+                              const QStringList& orderByColumns,
+                              Qt::SortOrder sortOrder = Qt::AscendingOrder) const;
 
     bool insert(const QVariantMap& valueMap, QVariant* id = nullptr);
 
@@ -50,12 +52,14 @@ public:
 
 protected:
     QString prepareSelect(const QVariantMap& conditions, const QStringList& resultColumns = {},
-                          const QStringList& sortColumns = {}, Qt::SortOrder sortOrder = {});
+                          const QStringList& sortColumns = {}, Qt::SortOrder sortOrder = {}) const;
     QString where(const QVariantMap& conditions) const;
 
+private:
     QSqlDatabase* const m_database;
     const QString m_tableName;
     QStringList m_columnNames;
+    mutable QString m_errorString;
 };
 
 } // namespace data_source

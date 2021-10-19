@@ -1,4 +1,4 @@
-﻿#include "generic_table.h"
+﻿#include "table_gateway.h"
 
 #include <QDebug>
 #include <QSqlError>
@@ -7,17 +7,20 @@ namespace md
 {
 namespace data_source
 {
-GenericTable::GenericTable(QSqlDatabase* database, const QString& tableName) :
+TableGateway::TableGateway(QSqlDatabase* database, const QString& tableName) :
     m_database(database),
     m_tableName(tableName)
 {
 }
 
-bool GenericTable::initColumnNames()
+bool TableGateway::initColumnNames()
 {
     QSqlQuery query(*m_database);
 
-    if (!query.exec("PRAGMA table_info(" + m_tableName + ")"))
+    bool result = query.exec("PRAGMA table_info(" + m_tableName + ")");
+    m_errorString = query.lastError().text();
+
+    if (!result)
         return false;
 
     while (query.next())
@@ -28,51 +31,51 @@ bool GenericTable::initColumnNames()
     return true;
 }
 
-void GenericTable::initColumnNames(const QStringList& columnNames)
+void TableGateway::initColumnNames(const QStringList& columnNames)
 {
     m_columnNames = columnNames;
 }
 
-QVariantList GenericTable::select(const ConditionMap& conditions, const QStringList& resultColumns)
+QString TableGateway::errorString() const
 {
-    return this->orderedSelect(conditions, resultColumns, {}, {});
+    return m_errorString;
 }
 
-QVariantList GenericTable::selectAll(const QStringList& resultColumns)
+QList<QVariantMap> TableGateway::select(const ConditionMap& conditions,
+                                        const QStringList& resultColumns) const
 {
-    return this->select(ConditionMap(), resultColumns);
+    return this->select(conditions, resultColumns.isEmpty() ? this->columnNames() : resultColumns,
+                        {}, {});
 }
 
-QVariantList GenericTable::orderedSelect(const ConditionMap& conditions,
-                                         const QStringList& resultColumns,
-                                         const QStringList& orderByColumns, Qt::SortOrder sortOrder)
+QList<QVariantMap> TableGateway::select(const ConditionMap& conditions,
+                                        const QStringList& resultColumns,
+                                        const QStringList& orderByColumns,
+                                        Qt::SortOrder sortOrder) const
 {
     QSqlQuery query(*m_database);
 
-    if (!query.exec(this->prepareSelect(conditions, resultColumns, orderByColumns, sortOrder)))
-        return QVariantList();
+    bool result = query.exec(
+        this->prepareSelect(conditions, resultColumns, orderByColumns, sortOrder));
+    m_errorString = query.lastError().text();
 
-    QVariantList resultList;
+    if (!result)
+        return QList<QVariantMap>();
+
+    QList<QVariantMap> map;
     while (query.next())
     {
-        if (resultColumns.count() > 1)
+        QVariantMap values;
+        for (const QString& column : resultColumns)
         {
-            QVariantList valueList;
-            for (const QString& column : resultColumns)
-            {
-                valueList.append(query.value(column));
-            }
-            resultList.append(QVariant(valueList));
+            values.insert(column, query.value(column));
         }
-        else
-        {
-            resultList.append(query.value(resultColumns.first()));
-        }
+        map.append(values);
     }
-    return resultList;
+    return map;
 }
 
-bool GenericTable::insert(const QVariantMap& valueMap, QVariant* id)
+bool TableGateway::insert(const QVariantMap& valueMap, QVariant* id)
 {
     QSqlQuery query(*m_database);
 
@@ -91,7 +94,12 @@ bool GenericTable::insert(const QVariantMap& valueMap, QVariant* id)
         query.bindValue(sql::hold + name, valueMap.value(name));
     }
 
-    if (!query.exec())
+    bool result = query.exec();
+
+    qDebug() << query.lastQuery();
+    m_errorString = query.lastError().text();
+
+    if (!result)
         return false;
 
     if (id)
@@ -100,26 +108,28 @@ bool GenericTable::insert(const QVariantMap& valueMap, QVariant* id)
     return true;
 }
 
-bool GenericTable::removeByConditions(const ConditionMap& conditions)
+bool TableGateway::removeByConditions(const ConditionMap& conditions)
 {
     if (conditions.isEmpty())
         return false;
 
     QSqlQuery query(*m_database);
-    return query.exec("DELETE FROM " + m_tableName + this->where(conditions));
+    bool result = query.exec("DELETE FROM " + m_tableName + this->where(conditions));
+    m_errorString = query.lastError().text();
+    return result;
 }
 
-bool GenericTable::removeByCondition(const Condition& condition)
+bool TableGateway::removeByCondition(const Condition& condition)
 {
     return this->removeByConditions({ { condition.first, condition.second } });
 }
 
-bool GenericTable::removeById(const QVariant& id)
+bool TableGateway::removeById(const QVariant& id)
 {
     return this->removeByCondition({ sql::id, id });
 }
 
-bool GenericTable::updateByConditions(const QVariantMap& valueMap, const ConditionMap& conditions)
+bool TableGateway::updateByConditions(const QVariantMap& valueMap, const ConditionMap& conditions)
 {
     if (conditions.isEmpty())
         return false;
@@ -127,6 +137,7 @@ bool GenericTable::updateByConditions(const QVariantMap& valueMap, const Conditi
     QStringList pairs;
     for (const QString& name : valueMap.keys())
     {
+        // TODO: ignore names missmatching table columns
         pairs.append(name + " = " + sql::hold + name);
     }
 
@@ -138,34 +149,33 @@ bool GenericTable::updateByConditions(const QVariantMap& valueMap, const Conditi
         query.bindValue(sql::hold + name, valueMap.value(name));
     }
 
-    if (!query.exec())
-        return false;
-
-    return true;
+    bool result = query.exec();
+    m_errorString = query.lastError().text();
+    return result;
 }
 
-bool GenericTable::updateByCondition(const QVariantMap& valueMap, const Condition& condition)
+bool TableGateway::updateByCondition(const QVariantMap& valueMap, const Condition& condition)
 {
     return this->updateByConditions(valueMap, { { condition.first, condition.second } });
 }
 
-bool GenericTable::updateById(const QVariantMap& valueMap, const QVariant& id)
+bool TableGateway::updateById(const QVariantMap& valueMap, const QVariant& id)
 {
     return this->updateByCondition(valueMap, { sql::id, id });
 }
 
-QString GenericTable::tableName() const
+QString TableGateway::tableName() const
 {
     return m_tableName;
 }
 
-QStringList GenericTable::columnNames() const
+QStringList TableGateway::columnNames() const
 {
     return m_columnNames;
 }
 
-QString GenericTable::prepareSelect(const QVariantMap& conditions, const QStringList& resultColumns,
-                                    const QStringList& sortColumns, Qt::SortOrder sortOrder)
+QString TableGateway::prepareSelect(const QVariantMap& conditions, const QStringList& resultColumns,
+                                    const QStringList& sortColumns, Qt::SortOrder sortOrder) const
 {
     QString queryString = "SELECT " +
                           (resultColumns.isEmpty() ? "*" : resultColumns.join(sql::comma)) +
@@ -179,7 +189,7 @@ QString GenericTable::prepareSelect(const QVariantMap& conditions, const QString
     return queryString;
 }
 
-QString GenericTable::where(const QVariantMap& conditions) const
+QString TableGateway::where(const QVariantMap& conditions) const
 {
     QStringList conditionList;
     for (const QString& key : conditions.keys())
