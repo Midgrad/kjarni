@@ -22,7 +22,7 @@ public:
         Airship,
     };
 
-    Vehicle(Type type, const QVariant& id, const QString& name, QObject* parent = nullptr);
+    Vehicle(Type type, const QString& name, QObject* parent = nullptr);
 
     QString id() const;
     Type type() const;

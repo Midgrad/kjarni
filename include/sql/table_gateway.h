@@ -55,6 +55,8 @@ protected:
                           const QStringList& sortColumns = {}, Qt::SortOrder sortOrder = {}) const;
     QString where(const QVariantMap& conditions) const;
 
+    void bind(QSqlQuery& query, const QVariantMap& valueMap);
+
 private:
     QSqlDatabase* const m_database;
     const QString m_tableName;

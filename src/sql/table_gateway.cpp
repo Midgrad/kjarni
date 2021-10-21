@@ -1,6 +1,8 @@
 ﻿#include "table_gateway.h"
 
 #include <QDebug>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QSqlError>
 
 namespace md
@@ -68,6 +70,7 @@ QList<QVariantMap> TableGateway::select(const ConditionMap& conditions,
         QVariantMap values;
         for (const QString& column : resultColumns)
         {
+            // FIXME: if got json, parse it to variantmap
             values.insert(column, query.value(column));
         }
         map.append(values);
@@ -88,15 +91,9 @@ bool TableGateway::insert(const QVariantMap& valueMap, QVariant* id)
     QString namesJoin = valueMap.keys().join(sql::comma);
     QString valuesJoin = placeholders.join(sql::comma);
     query.prepare("INSERT INTO " + m_tableName + " (" + namesJoin + ") VALUES (" + valuesJoin + ")");
-
-    for (const QString& name : valueMap.keys())
-    {
-        query.bindValue(sql::hold + name, valueMap.value(name));
-    }
+    this->bind(query, valueMap);
 
     bool result = query.exec();
-
-    qDebug() << query.lastQuery();
     m_errorString = query.lastError().text();
 
     if (!result)
@@ -144,10 +141,7 @@ bool TableGateway::updateByConditions(const QVariantMap& valueMap, const Conditi
     QSqlQuery query(*m_database);
     query.prepare("UPDATE " + m_tableName + " SET " + pairs.join(sql::comma) +
                   this->where(conditions));
-    for (const QString& name : valueMap.keys())
-    {
-        query.bindValue(sql::hold + name, valueMap.value(name));
-    }
+    this->bind(query, valueMap);
 
     bool result = query.exec();
     m_errorString = query.lastError().text();
@@ -205,6 +199,23 @@ QString TableGateway::where(const QVariantMap& conditions) const
         }
     }
     return QString(" WHERE ") + conditionList.join(" AND ");
+}
+
+void TableGateway::bind(QSqlQuery& query, const QVariantMap& valueMap)
+{
+    for (const QString& name : valueMap.keys())
+    {
+        QVariant value = valueMap.value(name);
+        // Save maps as json
+        if (value.type() == QVariant::Map)
+        {
+            QJsonObject json = QJsonObject::fromVariantMap(value.toMap());
+            QJsonDocument doc(json);
+            value = doc.toJson();
+        }
+
+        query.bindValue(sql::hold + name, value);
+    }
 }
 
 } // namespace data_source

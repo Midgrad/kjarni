@@ -4,11 +4,11 @@
 
 using namespace md::domain;
 
-Mission::Mission(const MissionType* type, const QVariant& id, const QString& name,
-                 const QString& vehicleId, QObject* parent) :
-    Entity(id, name, parent),
+Mission::Mission(const MissionType* type, const QString& name, const QString& vehicleId,
+                 QObject* parent) :
+    Entity(name, parent),
     m_type(type),
-    m_route(new Route(type->routeType, this)),
+    m_route(new Route(name + " " + tr("Route"), type->routeType, this)),
     m_vehicleId(vehicleId)
 {
 }

@@ -2,8 +2,8 @@
 
 using namespace md::domain;
 
-Vehicle::Vehicle(Type type, const QVariant& id, const QString& name, QObject* parent) :
-    Entity(id, name, parent),
+Vehicle::Vehicle(Type type, const QString& name, QObject* parent) :
+    Entity(name, parent),
     m_type(type)
 {
 }

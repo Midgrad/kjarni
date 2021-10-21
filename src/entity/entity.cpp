@@ -2,7 +2,7 @@
 
 using namespace md::domain;
 
-Entity::Entity(const QVariant& id, const QString& name, const QVariantMap& parameters,
+Entity::Entity(const QUuid& id, const QString& name, const QVariantMap& parameters,
                QObject* parent) :
     QObject(parent),
     m_id(id),
@@ -17,12 +17,12 @@ Entity::Entity(const QVariantMap& map, QObject* parent) :
 {
 }
 
-Entity::Entity(const QVariant& id, const QString& name, QObject* parent) :
+Entity::Entity(const QUuid& id, const QString& name, QObject* parent) :
     Entity(id, name, QVariantMap(), parent)
 {
 }
 
-Entity::Entity(const QString& name, QObject* parent) : Entity(QVariant(), name, parent)
+Entity::Entity(const QString& name, QObject* parent) : Entity(QUuid::createUuid(), name, parent)
 {
 }
 
@@ -30,7 +30,7 @@ Entity::~Entity()
 {
 }
 
-QVariant Entity::id() const
+QUuid Entity::id() const
 {
     return m_id;
 }
@@ -61,7 +61,7 @@ QVariantMap Entity::toVariantMap(bool recursive) const
     if (!m_name.isNull())
         map.insert(params::name, m_name);
     if (!m_parameters.isEmpty())
-        map.insert(params::params, QJsonValue::fromVariant(m_parameters));
+        map.insert(params::params, m_parameters);
 
     return map;
 }
@@ -71,7 +71,9 @@ void Entity::fromVariantMap(const QVariantMap& map)
     if (map.contains(params::name))
         this->setName(map.value(params::name).toString());
     if (map.contains(params::params))
+    {
         this->setParameters(map.value(params::params).toMap());
+    }
 }
 
 void Entity::setParameters(const QVariantMap& parameters)

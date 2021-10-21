@@ -12,8 +12,8 @@ class Mission : public Entity
     Q_OBJECT
 
 public:
-    Mission(const MissionType* type, const QVariant& id, const QString& name,
-            const QString& vehicleId, QObject* parent = nullptr);
+    Mission(const MissionType* type, const QString& name, const QString& vehicleId,
+            QObject* parent = nullptr);
     Mission(const QVariantMap& map, const MissionType* type, QObject* parent = nullptr);
 
     QVariantMap toVariantMap(bool recursive) const override;

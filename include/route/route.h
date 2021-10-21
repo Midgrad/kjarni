@@ -11,7 +11,7 @@ class Route : public Entity
     Q_OBJECT
 
 public:
-    Route(const RouteType* type, QObject* parent = nullptr);
+    Route(const QString& name, const RouteType* type, QObject* parent = nullptr);
     Route(const QVariantMap& map, const RouteType* type, QObject* parent = nullptr);
 
     QVariantMap toVariantMap(bool recursive) const override;

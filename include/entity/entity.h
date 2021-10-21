@@ -2,6 +2,7 @@
 #define ENTITY_H
 
 #include <QObject>
+#include <QUuid>
 #include <QVariantMap>
 
 #include "kjarni_traits.h"
@@ -13,16 +14,15 @@ class Entity : public QObject
     Q_OBJECT
 
 public:
-    // TODO: uuid id
-    Entity(const QVariant& id, const QString& name, const QVariantMap& parameters,
+    Entity(const QUuid& id, const QString& name, const QVariantMap& parameters,
            QObject* parent = nullptr);
     Entity(const QVariantMap& map, QObject* parent = nullptr);
-    Entity(const QVariant& id, const QString& name, QObject* parent = nullptr);
+    Entity(const QUuid& id, const QString& name, QObject* parent = nullptr);
     Entity(const QString& name, QObject* parent = nullptr);
 
     virtual ~Entity();
 
-    QVariant id() const;
+    QUuid id() const;
     QString name() const;
     const QVariantMap& parameters() const;
     QVariant parameter(const QString& key) const;
@@ -43,7 +43,7 @@ signals:
     void parametersChanged();
 
 private:
-    const QVariant m_id;
+    const QUuid m_id;
     QString m_name;
     QVariantMap m_parameters;
 };

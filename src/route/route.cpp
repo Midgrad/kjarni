@@ -5,7 +5,9 @@
 
 using namespace md::domain;
 
-Route::Route(const RouteType* type, QObject* parent) : Entity(QString(), parent), m_type(type)
+Route::Route(const QString& name, const RouteType* type, QObject* parent) :
+    Entity(name, parent),
+    m_type(type)
 {
     Q_ASSERT(type);
 }
