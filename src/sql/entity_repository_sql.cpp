@@ -1,8 +1,8 @@
 #include "entity_repository_sql.h"
 
 #include <QDebug>
-#include <QSqlError>
-#include <QSqlQuery>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 using namespace md::domain;
 
@@ -32,19 +32,27 @@ QVariantList EntityRepositorySql::selectIds(const QVariantMap& conditions) const
 
 QVariantMap EntityRepositorySql::select(const QVariant& id) const
 {
-    QVariantMap result = m_gateway.select({ { data_source::sql::id, id } }, m_gateway.columnNames())
-                             .first();
+    auto select = m_gateway.select({ { data_source::sql::id, id } }, m_gateway.columnNames());
 
     if (m_gateway.errorString().length())
         qWarning() << m_gateway.errorString();
 
-    return result;
+    if (select.isEmpty())
+        return QVariantMap();
+
+    QVariantMap map = select.first();
+    if (map.contains(params::params))
+    {
+        QJsonDocument doc = QJsonDocument::fromJson(map.value(params::params).toByteArray());
+        QVariantMap params = doc.object().toVariantMap();
+        map[params::params] = params;
+    }
+    return map;
 }
 
 void EntityRepositorySql::insert(Entity* entity)
 {
-    qDebug() << entity->toVariantMap(false);
-    m_gateway.insert(entity->toVariantMap(false));
+    m_gateway.insert(this->entityToMap(entity));
 
     if (m_gateway.errorString().length())
         qWarning() << m_gateway.errorString();
@@ -72,4 +80,17 @@ void EntityRepositorySql::remove(Entity* entity)
 
     if (m_gateway.errorString().length())
         qWarning() << m_gateway.errorString();
+}
+
+QVariantMap EntityRepositorySql::entityToMap(Entity* entity)
+{
+    QVariantMap map = entity->toVariantMap(false);
+
+    if (map.contains(params::params))
+    {
+        QJsonObject json = QJsonObject::fromVariantMap(map.value(params::params).toMap());
+        QJsonDocument doc(json);
+        map[params::params] = doc.toJson();
+    }
+    return map;
 }

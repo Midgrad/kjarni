@@ -1,8 +1,6 @@
 ﻿#include "table_gateway.h"
 
 #include <QDebug>
-#include <QJsonDocument>
-#include <QJsonObject>
 #include <QSqlError>
 
 namespace md
@@ -70,7 +68,6 @@ QList<QVariantMap> TableGateway::select(const ConditionMap& conditions,
         QVariantMap values;
         for (const QString& column : resultColumns)
         {
-            // FIXME: if got json, parse it to variantmap
             values.insert(column, query.value(column));
         }
         map.append(values);
@@ -205,16 +202,7 @@ void TableGateway::bind(QSqlQuery& query, const QVariantMap& valueMap)
 {
     for (const QString& name : valueMap.keys())
     {
-        QVariant value = valueMap.value(name);
-        // Save maps as json
-        if (value.type() == QVariant::Map)
-        {
-            QJsonObject json = QJsonObject::fromVariantMap(value.toMap());
-            QJsonDocument doc(json);
-            value = doc.toJson();
-        }
-
-        query.bindValue(sql::hold + name, value);
+        query.bindValue(sql::hold + name, valueMap.value(name));
     }
 }
 

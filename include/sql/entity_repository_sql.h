@@ -21,6 +21,9 @@ public:
     void update(Entity* entity) override;
     void remove(Entity* entity) override;
 
+protected:
+    QVariantMap entityToMap(Entity* entity);
+
 private:
     data_source::TableGateway m_gateway;
 };
