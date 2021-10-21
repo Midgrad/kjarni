@@ -13,6 +13,7 @@ class Entity : public QObject
     Q_OBJECT
 
 public:
+    // TODO: uuid id
     Entity(const QVariant& id, const QString& name, const QVariantMap& parameters,
            QObject* parent = nullptr);
     Entity(const QVariantMap& map, QObject* parent = nullptr);

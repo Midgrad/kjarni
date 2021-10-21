@@ -3,6 +3,7 @@
 
 #include "i_missions_service.h"
 #include "i_repository_factory.h"
+#include "i_routes_service.h"
 
 #include <QMutex>
 
@@ -13,7 +14,8 @@ class MissionsService : public IMissionsService
     Q_OBJECT
 
 public:
-    explicit MissionsService(IRepositoryFactory* repoFactory, QObject* parent = nullptr);
+    explicit MissionsService(IRoutesService* routes, IRepositoryFactory* repoFactory,
+                             QObject* parent = nullptr);
     ~MissionsService() override;
 
     Mission* mission(const QVariant& id) const override;
@@ -32,11 +34,12 @@ public slots:
     void saveMission(Mission* mission) override;
 
 private:
+    Mission* readMission(const QVariant& id);
+
+    IRoutesService* const m_routes;
     const QScopedPointer<IEntityRepository> m_missionRepo;
-    const QScopedPointer<IEntityRepository> m_routesRepo;
-    const QScopedPointer<IEntityRepository> m_waypointsRepo;
     QMap<QString, const MissionType*> m_missionTypes;
-    QMap<QVariant, Mission*> m_missions; // Move map to repos,
+    QMap<QVariant, Mission*> m_missions;
 
     mutable QMutex m_mutex;
 };

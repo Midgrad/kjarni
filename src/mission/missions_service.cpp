@@ -7,17 +7,15 @@
 namespace
 {
 constexpr char missions[] = "missions";
-constexpr char routes[] = "routes";
-constexpr char waypoints[] = "waypoints";
 } // namespace
 
 using namespace md::domain;
 
-MissionsService::MissionsService(IRepositoryFactory* repoFactory, QObject* parent) :
+MissionsService::MissionsService(IRoutesService* routes, IRepositoryFactory* repoFactory,
+                                 QObject* parent) :
     IMissionsService(parent),
-    m_missionRepo(repoFactory->create(::missions)),
-    m_routesRepo(repoFactory->create(::routes)),
-    m_waypointsRepo(repoFactory->create(::waypoints))
+    m_routes(routes),
+    m_missionRepo(repoFactory->create(::missions))
 {
     qRegisterMetaType<MissionStatus>("MissionStatus");
 }
@@ -37,6 +35,7 @@ Mission* MissionsService::missionForVehicle(const QString& vehicleId) const
 {
     QMutexLocker locker(&m_mutex);
 
+    // TODO: remove all-caching and switch to querry
     auto result = std::find_if(m_missions.begin(), m_missions.end(), [vehicleId](Mission* mision) {
         return mision->vehicleId() == vehicleId;
     });
@@ -72,6 +71,8 @@ void MissionsService::registerMissionType(const MissionType* type)
         return;
 
     m_missionTypes.insert(type->name, type);
+    m_routes->registerRouteType(type->routeType);
+
     emit missionTypesChanged();
 }
 
@@ -82,7 +83,9 @@ void MissionsService::unregisterMissionType(const MissionType* type)
     if (!m_missionTypes.contains(type->name))
         return;
 
+    m_routes->unregisterRouteType(type->routeType);
     m_missionTypes.remove(type->name);
+
     emit missionTypesChanged();
 }
 
@@ -90,28 +93,13 @@ void MissionsService::readAll()
 {
     QMutexLocker locker(&m_mutex);
 
-    for (const QVariant& id : m_missionRepo->selectIds())
-    {
-        Mission* mission = nullptr;
-        if (m_missions.contains(id))
-        {
-            mission = m_missions.value(id);
-            m_missionRepo->read(m_missions.value(id));
-        }
-        else
-        {
-            QVariantMap map = m_missionRepo->select(id);
-            QString typeName = map.value(params::type).toString();
-            const MissionType* const type = m_missionTypes.value(typeName);
-            if (!type)
-            {
-                qWarning() << "Unknown mission type" << typeName;
-                continue;
-            }
+    m_routes->readAll();
 
-            mission = new Mission(map, type, this);
-            m_missions.insert(id, mission);
-            emit missionAdded(mission);
+    for (const QVariant& missionId : m_missionRepo->selectIds())
+    {
+        if (!m_missions.contains(missionId))
+        {
+            this->readMission(missionId);
         }
     }
 }
@@ -150,6 +138,9 @@ void MissionsService::saveMission(Mission* mission)
         return;
     }
 
+    if (mission->route())
+        m_routes->saveRoute(mission->route());
+
     if (m_missions.contains(mission->id()))
     {
         m_missionRepo->update(mission);
@@ -163,4 +154,25 @@ void MissionsService::saveMission(Mission* mission)
         mission->setParent(this);
         emit missionAdded(mission);
     }
+}
+
+Mission* MissionsService::readMission(const QVariant& id)
+{
+    QVariantMap map = m_missionRepo->select(id);
+    QString typeName = map.value(params::type).toString();
+
+    const MissionType* const type = m_missionTypes.value(typeName);
+    if (!type)
+    {
+        qWarning() << "Unknown mission type" << typeName;
+        return nullptr;
+    }
+
+    Mission* mission = new Mission(map, type, this);
+    m_missions.insert(id, mission);
+    emit missionAdded(mission);
+
+    QVariant routeId = map.value(params::route);
+
+    return mission;
 }

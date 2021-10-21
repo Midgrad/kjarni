@@ -24,6 +24,7 @@ public:
     Waypoint* waypoint(int index) const;
 
 public slots:
+    void setWaypoints(const QList<Waypoint*>& waypoins);
     void addWaypoint(Waypoint* waypoint);
     void removeWaypoint(Waypoint* waypoint);
 

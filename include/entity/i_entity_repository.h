@@ -13,7 +13,7 @@ public:
     IEntityRepository() = default;
     virtual ~IEntityRepository() = default;
 
-    virtual QVariantList selectIds() const = 0;
+    virtual QVariantList selectIds(const QVariantMap& conditions = QVariantMap()) const = 0;
     virtual QVariantMap select(const QVariant& id) const = 0;
 
     virtual void insert(Entity* entity) = 0; // Create in repository

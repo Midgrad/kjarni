@@ -13,7 +13,7 @@ class EntityRepositorySql : public IEntityRepository
 public:
     EntityRepositorySql(QSqlDatabase* database, const QString& tableName);
 
-    QVariantList selectIds() const override;
+    QVariantList selectIds(const QVariantMap& conditions) const override;
     QVariantMap select(const QVariant& id) const override;
 
     void insert(Entity* entity) override;

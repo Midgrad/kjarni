@@ -65,10 +65,30 @@ Waypoint* Route::waypoint(int index) const
     return m_waypoins.value(index, nullptr);
 }
 
+void Route::setWaypoints(const QList<Waypoint*>& waypoins)
+{
+    // Remove old waypoints (std::remove_if does not emit signals)
+    for (Waypoint* waypoint : qAsConst(m_waypoins))
+    {
+        if (waypoins.contains(waypoint))
+            continue;
+
+        this->removeWaypoint(waypoint);
+    }
+
+    // Add new one
+    for (Waypoint* waypoint : waypoins)
+    {
+        this->addWaypoint(waypoint);
+    }
+}
+
 void Route::addWaypoint(Waypoint* waypoint)
 {
     if (m_waypoins.contains(waypoint))
         return;
+
+    waypoint->setRoute(this);
 
     if (waypoint->thread() != this->thread())
         waypoint->moveToThread(this->thread());
@@ -82,8 +102,11 @@ void Route::addWaypoint(Waypoint* waypoint)
 
 void Route::removeWaypoint(Waypoint* waypoint)
 {
+    // Remove but don't delete waypoint
     if (!m_waypoins.contains(waypoint))
         return;
+
+    waypoint->setRoute(nullptr);
 
     if (waypoint->parent() == this)
         waypoint->setParent(nullptr);

@@ -16,11 +16,11 @@ EntityRepositorySql::EntityRepositorySql(QSqlDatabase* database, const QString& 
         qWarning() << m_gateway.errorString();
 }
 
-QVariantList EntityRepositorySql::selectIds() const
+QVariantList EntityRepositorySql::selectIds(const QVariantMap& conditions) const
 {
     QVariantList list;
-    for (const QVariantMap& map :
-         m_gateway.select(data_source::ConditionMap(), QStringList({ data_source::sql::id })))
+    for (const QVariantMap& map : m_gateway.select(data_source::ConditionMap(conditions),
+                                                   QStringList({ data_source::sql::id })))
     {
         list.append(map.value(data_source::sql::id));
     }
