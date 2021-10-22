@@ -2,6 +2,7 @@
 #define MISSION_H
 
 #include "mission_status.h"
+#include "mission_traits.h"
 #include "mission_type.h"
 #include "route.h"
 
@@ -12,7 +13,7 @@ class Mission : public Entity
     Q_OBJECT
 
 public:
-    Mission(const MissionType* type, const QString& name, const QString& vehicleId,
+    Mission(const MissionType* type, const QString& name, const QUuid& vehicleId,
             QObject* parent = nullptr);
     Mission(const QVariantMap& map, const MissionType* type, QObject* parent = nullptr);
 
@@ -20,7 +21,7 @@ public:
     void fromVariantMap(const QVariantMap& map) override;
 
     const MissionType* type() const;
-    QString vehicleId() const;
+    QUuid vehicleId() const;
     Route* route() const;
     const MissionStatus& status() const;
     int currentWaypoint() const;
@@ -32,7 +33,7 @@ public slots:
     void setCurrentWaypoint(int currentWaypoint);
 
 signals:
-    void vehicleChanged(QString vehicle);
+    void vehicleChanged(QUuid vehicle);
     void routeChanged(Route* route);
     void statusChanged(MissionStatus status);
     void currentWaypointChanged(int currentWaypoint);
@@ -45,7 +46,7 @@ signals:
 
 private:
     const MissionType* m_type;
-    const QString m_vehicleId;
+    const QUuid m_vehicleId;
     Route* const m_route;
     MissionStatus m_status;
     int m_currentWaypoint = -1;

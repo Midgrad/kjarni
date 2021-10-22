@@ -31,13 +31,13 @@ Mission* MissionsService::mission(const QVariant& id) const
     return m_missions.value(id, nullptr);
 }
 
-Mission* MissionsService::missionForVehicle(const QString& vehicleId) const
+Mission* MissionsService::missionForVehicle(const QVariant& vehicleId) const
 {
     QMutexLocker locker(&m_mutex);
 
     // TODO: remove all-caching and switch to querry
-    auto result = std::find_if(m_missions.begin(), m_missions.end(), [vehicleId](Mission* mision) {
-        return mision->vehicleId() == vehicleId;
+    auto result = std::find_if(m_missions.begin(), m_missions.end(), [vehicleId](Mission* mission) {
+        return mission->vehicleId() == vehicleId;
     });
     if (result == m_missions.end())
         return nullptr;

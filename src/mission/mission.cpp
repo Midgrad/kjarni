@@ -4,7 +4,7 @@
 
 using namespace md::domain;
 
-Mission::Mission(const MissionType* type, const QString& name, const QString& vehicleId,
+Mission::Mission(const MissionType* type, const QString& name, const QUuid& vehicleId,
                  QObject* parent) :
     Entity(name, parent),
     m_type(type),
@@ -49,7 +49,7 @@ const MissionType* Mission::type() const
     return m_type;
 }
 
-QString Mission::vehicleId() const
+QUuid Mission::vehicleId() const
 {
     return m_vehicleId;
 }

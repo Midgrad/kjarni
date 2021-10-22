@@ -7,8 +7,8 @@ namespace md::domain
 {
 namespace params
 {
-constexpr char type[] = "type";
 constexpr char waypoints[] = "waypoints";
+constexpr char route[] = "route";
 } // namespace params
 } // namespace md::domain
 

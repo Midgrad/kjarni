@@ -19,7 +19,7 @@ public:
     ~MissionsService() override;
 
     Mission* mission(const QVariant& id) const override;
-    Mission* missionForVehicle(const QString& vehicleId) const override;
+    Mission* missionForVehicle(const QVariant& vehicleId) const override;
     QVariantList missionIds() const override;
     QList<Mission*> missions() const override;
     QList<const MissionType*> missionTypes() const override;

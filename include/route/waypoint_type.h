@@ -4,7 +4,7 @@
 #include <QVariant>
 #include <QVector>
 
-#include "mission_traits.h"
+#include "route_traits.h"
 
 namespace md::domain
 {
