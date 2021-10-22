@@ -23,8 +23,11 @@ public:
     };
 
     Vehicle(Type type, const QString& name, QObject* parent = nullptr);
+    Vehicle(const QVariantMap& map, QObject* parent = nullptr);
 
-    QString id() const;
+    QVariantMap toVariantMap(bool recursive = true) const override;
+    void fromVariantMap(const QVariantMap& map) override;
+
     Type type() const;
 
 public slots:
@@ -35,6 +38,8 @@ signals:
 
 private:
     Type m_type;
+
+    Q_ENUM(Type)
 };
 } // namespace md::domain
 

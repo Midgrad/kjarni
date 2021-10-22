@@ -41,33 +41,35 @@ void SqliteSchema::setup()
 
     query.exec("CREATE TABLE schema_version (version STRING NOT NULL UNIQUE)");
 
+    query.exec("CREATE TABLE vehicles ("
+               "id UUID PRIMARY KEY NOT NULL, "
+               "name STRING, "
+               "params TEXT, "
+               "type STRING);");
+
     query.exec("CREATE TABLE routes ("
-               "id STRING PRIMARY KEY NOT NULL, "
+               "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
                "params TEXT, "
                "type STRING);");
 
     query.exec("CREATE TABLE waypoints ("
-               "id STRING PRIMARY KEY NOT NULL, "
+               "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
                "params TEXT, "
                "type STRING, "
-               "route STRING, "
+               "route UUID, "
                "FOREIGN KEY(route) REFERENCES routes(id));");
 
     query.exec("CREATE TABLE missions ("
-               "id STRING PRIMARY KEY NOT NULL, "
+               "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
                "params TEXT, "
                "type STRING, "
-               "route STRING, "
-               "vehicle STRING, "
-               "FOREIGN KEY(route) REFERENCES routes(id));");
+               "route UUID, "
+               "vehicle UUID, "
+               "FOREIGN KEY(route) REFERENCES routes(id), "
+               "FOREIGN KEY(vehicle) REFERENCES vehicles(id));");
 
     query.exec("INSERT INTO schema_version (version) VALUES (\'14.10.00_19.10.2021\')");
-
-    if (query.lastError().type() != QSqlError::NoError)
-    {
-        qCritical(query.lastError().text().toLocal8Bit());
-    }
 }

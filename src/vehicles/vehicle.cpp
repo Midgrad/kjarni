@@ -1,6 +1,18 @@
 #include "vehicle.h"
 
+#include <QDebug>
+#include <QMetaEnum>
+
 using namespace md::domain;
+
+namespace
+{
+Vehicle::Type typeFromVariant(const QVariant& value)
+{
+    auto&& metaEnum = QMetaEnum::fromType<Vehicle::Type>();
+    return static_cast<Vehicle::Type>(metaEnum.keyToValue(value.toString().toUtf8().constData()));
+}
+} // namespace
 
 Vehicle::Vehicle(Type type, const QString& name, QObject* parent) :
     Entity(name, parent),
@@ -8,9 +20,25 @@ Vehicle::Vehicle(Type type, const QString& name, QObject* parent) :
 {
 }
 
-QString Vehicle::id() const
+Vehicle::Vehicle(const QVariantMap& map, QObject* parent) :
+    Entity(map, parent),
+    m_type(::typeFromVariant(map.value(params::type)))
 {
-    return Entity::id().toString();
+}
+
+QVariantMap Vehicle::toVariantMap(bool recursive) const
+{
+    Q_UNUSED(recursive)
+
+    QVariantMap map = Entity::toVariantMap();
+    map.insert(params::type, QVariant::fromValue(m_type).toString());
+    return map;
+}
+
+void Vehicle::fromVariantMap(const QVariantMap& map)
+{
+    Entity::fromVariantMap(map);
+    this->setType(::typeFromVariant(map.value(params::type)));
 }
 
 Vehicle::Type Vehicle::type() const

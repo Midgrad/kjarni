@@ -15,7 +15,7 @@ MissionsService::MissionsService(IRoutesService* routes, IRepositoryFactory* rep
                                  QObject* parent) :
     IMissionsService(parent),
     m_routes(routes),
-    m_missionRepo(repoFactory->create(::missions))
+    m_missionsRepo(repoFactory->create(::missions))
 {
     qRegisterMetaType<MissionStatus>("MissionStatus");
 }
@@ -27,7 +27,6 @@ MissionsService::~MissionsService()
 Mission* MissionsService::mission(const QVariant& id) const
 {
     QMutexLocker locker(&m_mutex);
-
     return m_missions.value(id, nullptr);
 }
 
@@ -95,7 +94,7 @@ void MissionsService::readAll()
 
     m_routes->readAll();
 
-    for (const QVariant& missionId : m_missionRepo->selectIds())
+    for (const QVariant& missionId : m_missionsRepo->selectIds())
     {
         if (!m_missions.contains(missionId))
         {
@@ -109,7 +108,7 @@ void MissionsService::removeMission(Mission* mission)
     QMutexLocker locker(&m_mutex);
 
     if (!mission->id().isNull())
-        m_missionRepo->remove(mission);
+        m_missionsRepo->remove(mission);
 
     m_missions.remove(mission->id());
 
@@ -124,7 +123,7 @@ void MissionsService::restoreMission(Mission* mission)
     if (mission->id().isNull())
         return;
 
-    m_missionRepo->read(mission);
+    m_missionsRepo->read(mission);
     emit missionChanged(mission);
 }
 
@@ -143,12 +142,12 @@ void MissionsService::saveMission(Mission* mission)
 
     if (m_missions.contains(mission->id()))
     {
-        m_missionRepo->update(mission);
+        m_missionsRepo->update(mission);
         emit missionChanged(mission);
     }
     else
     {
-        m_missionRepo->insert(mission);
+        m_missionsRepo->insert(mission);
         m_missions.insert(mission->id(), mission);
         mission->moveToThread(this->thread());
         mission->setParent(this);
@@ -158,7 +157,7 @@ void MissionsService::saveMission(Mission* mission)
 
 Mission* MissionsService::readMission(const QVariant& id)
 {
-    QVariantMap map = m_missionRepo->select(id);
+    QVariantMap map = m_missionsRepo->select(id);
     QString typeName = map.value(params::type).toString();
 
     const MissionType* const type = m_missionTypes.value(typeName);

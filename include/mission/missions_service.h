@@ -37,7 +37,7 @@ private:
     Mission* readMission(const QVariant& id);
 
     IRoutesService* const m_routes;
-    const QScopedPointer<IEntityRepository> m_missionRepo;
+    const QScopedPointer<IEntityRepository> m_missionsRepo;
     QMap<QString, const MissionType*> m_missionTypes;
     QMap<QVariant, Mission*> m_missions;
 
