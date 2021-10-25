@@ -1,4 +1,4 @@
-﻿#include "table_gateway.h"
+﻿#include "sql_table.h"
 
 #include <QDebug>
 #include <QSqlError>
@@ -7,59 +7,48 @@ namespace md
 {
 namespace data_source
 {
-TableGateway::TableGateway(QSqlDatabase* database, const QString& tableName) :
+SqlTable::SqlTable(QSqlDatabase* database, const QString& tableName) :
     m_database(database),
     m_tableName(tableName)
 {
-}
-
-bool TableGateway::initColumnNames()
-{
     QSqlQuery query(*m_database);
 
-    bool result = query.exec("PRAGMA table_info(" + m_tableName + ")");
-    m_errorString = query.lastError().type() != QSqlError::NoError ? query.lastError().text()
-                                                                   : QString();
-
-    if (!result)
-        return false;
+    query.exec("PRAGMA table_info(" + m_tableName + ")");
+    if (query.lastError().type() != QSqlError::NoError)
+        qWarning() << query.lastQuery() << query.lastError();
 
     while (query.next())
     {
         m_columnNames.append(query.value(1).toString());
     }
-
-    return true;
 }
 
-void TableGateway::initColumnNames(const QStringList& columnNames)
+SqlTable::SqlTable(QSqlDatabase* database, const QString& tableName,
+                   const QStringList& columnNames) :
+    m_database(database),
+    m_tableName(tableName)
 {
     m_columnNames = columnNames;
 }
 
-QString TableGateway::errorString() const
-{
-    return m_errorString;
-}
-
-QList<QVariantMap> TableGateway::select(const ConditionMap& conditions,
-                                        const QStringList& resultColumns) const
+QList<QVariantMap> SqlTable::select(const ConditionMap& conditions,
+                                    const QStringList& resultColumns) const
 {
     return this->select(conditions, resultColumns.isEmpty() ? this->columnNames() : resultColumns,
                         {}, {});
 }
 
-QList<QVariantMap> TableGateway::select(const ConditionMap& conditions,
-                                        const QStringList& resultColumns,
-                                        const QStringList& orderByColumns,
-                                        Qt::SortOrder sortOrder) const
+QList<QVariantMap> SqlTable::select(const ConditionMap& conditions,
+                                    const QStringList& resultColumns,
+                                    const QStringList& orderByColumns,
+                                    Qt::SortOrder sortOrder) const
 {
     QSqlQuery query(*m_database);
 
     bool result = query.exec(
         this->prepareSelect(conditions, resultColumns, orderByColumns, sortOrder));
-    m_errorString = query.lastError().type() != QSqlError::NoError ? query.lastError().text()
-                                                                   : QString();
+    if (query.lastError().type() != QSqlError::NoError)
+        qWarning() << query.lastQuery() << query.lastError();
 
     if (!result)
         return QList<QVariantMap>();
@@ -77,7 +66,7 @@ QList<QVariantMap> TableGateway::select(const ConditionMap& conditions,
     return map;
 }
 
-bool TableGateway::insert(const QVariantMap& valueMap, QVariant* id)
+bool SqlTable::insert(const QVariantMap& valueMap, QVariant* id)
 {
     QSqlQuery query(*m_database);
 
@@ -93,8 +82,8 @@ bool TableGateway::insert(const QVariantMap& valueMap, QVariant* id)
     this->bind(query, valueMap);
 
     bool result = query.exec();
-    m_errorString = query.lastError().type() != QSqlError::NoError ? query.lastError().text()
-                                                                   : QString();
+    if (query.lastError().type() != QSqlError::NoError)
+        qWarning() << query.lastQuery() << query.lastError();
 
     if (!result)
         return false;
@@ -105,29 +94,24 @@ bool TableGateway::insert(const QVariantMap& valueMap, QVariant* id)
     return true;
 }
 
-bool TableGateway::removeByConditions(const ConditionMap& conditions)
+bool SqlTable::removeByConditions(const ConditionMap& conditions)
 {
     if (conditions.isEmpty())
         return false;
 
     QSqlQuery query(*m_database);
     bool result = query.exec("DELETE FROM " + m_tableName + this->where(conditions));
-    m_errorString = query.lastError().type() != QSqlError::NoError ? query.lastError().text()
-                                                                   : QString();
+    if (query.lastError().type() != QSqlError::NoError)
+        qWarning() << query.lastQuery() << query.lastError();
     return result;
 }
 
-bool TableGateway::removeByCondition(const Condition& condition)
+bool SqlTable::removeByCondition(const Condition& condition)
 {
     return this->removeByConditions({ { condition.first, condition.second } });
 }
 
-bool TableGateway::removeById(const QVariant& id)
-{
-    return this->removeByCondition({ sql::id, id });
-}
-
-bool TableGateway::updateByConditions(const QVariantMap& valueMap, const ConditionMap& conditions)
+bool SqlTable::updateByConditions(const QVariantMap& valueMap, const ConditionMap& conditions)
 {
     if (conditions.isEmpty())
         return false;
@@ -145,33 +129,28 @@ bool TableGateway::updateByConditions(const QVariantMap& valueMap, const Conditi
     this->bind(query, valueMap);
 
     bool result = query.exec();
-    m_errorString = query.lastError().type() != QSqlError::NoError ? query.lastError().text()
-                                                                   : QString();
+    if (query.lastError().type() != QSqlError::NoError)
+        qWarning() << query.lastQuery() << query.lastError();
     return result;
 }
 
-bool TableGateway::updateByCondition(const QVariantMap& valueMap, const Condition& condition)
+bool SqlTable::updateByCondition(const QVariantMap& valueMap, const Condition& condition)
 {
     return this->updateByConditions(valueMap, { { condition.first, condition.second } });
 }
 
-bool TableGateway::updateById(const QVariantMap& valueMap, const QVariant& id)
-{
-    return this->updateByCondition(valueMap, { sql::id, id });
-}
-
-QString TableGateway::tableName() const
+QString SqlTable::tableName() const
 {
     return m_tableName;
 }
 
-QStringList TableGateway::columnNames() const
+QStringList SqlTable::columnNames() const
 {
     return m_columnNames;
 }
 
-QString TableGateway::prepareSelect(const QVariantMap& conditions, const QStringList& resultColumns,
-                                    const QStringList& sortColumns, Qt::SortOrder sortOrder) const
+QString SqlTable::prepareSelect(const QVariantMap& conditions, const QStringList& resultColumns,
+                                const QStringList& sortColumns, Qt::SortOrder sortOrder) const
 {
     QString queryString = "SELECT " +
                           (resultColumns.isEmpty() ? "*" : resultColumns.join(sql::comma)) +
@@ -185,7 +164,7 @@ QString TableGateway::prepareSelect(const QVariantMap& conditions, const QString
     return queryString;
 }
 
-QString TableGateway::where(const QVariantMap& conditions) const
+QString SqlTable::where(const QVariantMap& conditions) const
 {
     QStringList conditionList;
     for (const QString& key : conditions.keys())
@@ -203,7 +182,7 @@ QString TableGateway::where(const QVariantMap& conditions) const
     return QString(" WHERE ") + conditionList.join(" AND ");
 }
 
-void TableGateway::bind(QSqlQuery& query, const QVariantMap& valueMap)
+void SqlTable::bind(QSqlQuery& query, const QVariantMap& valueMap)
 {
     for (const QString& name : valueMap.keys())
     {

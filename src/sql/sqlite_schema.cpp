@@ -57,8 +57,12 @@ void SqliteSchema::setup()
                "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
                "params TEXT, "
-               "type STRING, "
+               "type STRING);");
+
+    query.exec("CREATE TABLE route_waypoints ("
+               "waypoint UUID PRIMARY KEY NOT NULL, "
                "route UUID, "
+               "FOREIGN KEY(waypoint) REFERENCES waypoints(id), "
                "FOREIGN KEY(route) REFERENCES routes(id));");
 
     query.exec("CREATE TABLE missions ("

@@ -1,4 +1,4 @@
-#include "missions_service.h"
+#include "missions_repository_sql.h"
 
 #include <QDebug>
 
@@ -11,26 +11,26 @@ constexpr char missions[] = "missions";
 
 using namespace md::domain;
 
-MissionsService::MissionsService(IRoutesService* routes, IRepositoryFactory* repoFactory,
-                                 QObject* parent) :
-    IMissionsService(parent),
+MissionsRepositorySql::MissionsRepositorySql(IRoutesRepository* routes, QSqlDatabase* database,
+                                             QObject* parent) :
+    IMissionsRepository(parent),
     m_routes(routes),
-    m_missionsRepo(repoFactory->create(::missions))
+    m_missionsTable(database, ::missions)
 {
     qRegisterMetaType<MissionStatus>("MissionStatus");
 }
 
-MissionsService::~MissionsService()
+MissionsRepositorySql::~MissionsRepositorySql()
 {
 }
 
-Mission* MissionsService::mission(const QVariant& id) const
+Mission* MissionsRepositorySql::mission(const QVariant& id) const
 {
     QMutexLocker locker(&m_mutex);
     return m_missions.value(id, nullptr);
 }
 
-Mission* MissionsService::missionForVehicle(const QVariant& vehicleId) const
+Mission* MissionsRepositorySql::missionForVehicle(const QVariant& vehicleId) const
 {
     QMutexLocker locker(&m_mutex);
 
@@ -44,25 +44,25 @@ Mission* MissionsService::missionForVehicle(const QVariant& vehicleId) const
     return result.value();
 }
 
-QVariantList MissionsService::missionIds() const
+QVariantList MissionsRepositorySql::missionIds() const
 {
     QMutexLocker locker(&m_mutex);
     return m_missions.keys();
 }
 
-QList<Mission*> MissionsService::missions() const
+QList<Mission*> MissionsRepositorySql::missions() const
 {
     QMutexLocker locker(&m_mutex);
     return m_missions.values();
 }
 
-QList<const MissionType*> MissionsService::missionTypes() const
+QList<const MissionType*> MissionsRepositorySql::missionTypes() const
 {
     QMutexLocker locker(&m_mutex);
     return m_missionTypes.values();
 }
 
-void MissionsService::registerMissionType(const MissionType* type)
+void MissionsRepositorySql::registerMissionType(const MissionType* type)
 {
     QMutexLocker locker(&m_mutex);
 
@@ -75,7 +75,7 @@ void MissionsService::registerMissionType(const MissionType* type)
     emit missionTypesChanged();
 }
 
-void MissionsService::unregisterMissionType(const MissionType* type)
+void MissionsRepositorySql::unregisterMissionType(const MissionType* type)
 {
     QMutexLocker locker(&m_mutex);
 
@@ -88,13 +88,13 @@ void MissionsService::unregisterMissionType(const MissionType* type)
     emit missionTypesChanged();
 }
 
-void MissionsService::readAll()
+void MissionsRepositorySql::readAll()
 {
     QMutexLocker locker(&m_mutex);
 
     m_routes->readAll();
 
-    for (const QVariant& missionId : m_missionsRepo->selectIds())
+    for (const QVariant& missionId : m_missionsTable.selectIds())
     {
         if (!m_missions.contains(missionId))
         {
@@ -103,12 +103,12 @@ void MissionsService::readAll()
     }
 }
 
-void MissionsService::removeMission(Mission* mission)
+void MissionsRepositorySql::removeMission(Mission* mission)
 {
     QMutexLocker locker(&m_mutex);
 
     if (!mission->id().isNull())
-        m_missionsRepo->remove(mission);
+        m_missionsTable.removeEntity(mission);
 
     m_missions.remove(mission->id());
 
@@ -116,18 +116,18 @@ void MissionsService::removeMission(Mission* mission)
     mission->deleteLater();
 }
 
-void MissionsService::restoreMission(Mission* mission)
+void MissionsRepositorySql::restoreMission(Mission* mission)
 {
     QMutexLocker locker(&m_mutex);
 
     if (mission->id().isNull())
         return;
 
-    m_missionsRepo->read(mission);
+    m_missionsTable.readEntity(mission);
     emit missionChanged(mission);
 }
 
-void MissionsService::saveMission(Mission* mission)
+void MissionsRepositorySql::saveMission(Mission* mission)
 {
     QMutexLocker locker(&m_mutex);
 
@@ -142,12 +142,12 @@ void MissionsService::saveMission(Mission* mission)
 
     if (m_missions.contains(mission->id()))
     {
-        m_missionsRepo->update(mission);
+        m_missionsTable.updateEntity(mission);
         emit missionChanged(mission);
     }
     else
     {
-        m_missionsRepo->insert(mission);
+        m_missionsTable.insertEntity(mission);
         m_missions.insert(mission->id(), mission);
         mission->moveToThread(this->thread());
         mission->setParent(this);
@@ -155,9 +155,9 @@ void MissionsService::saveMission(Mission* mission)
     }
 }
 
-Mission* MissionsService::readMission(const QVariant& id)
+Mission* MissionsRepositorySql::readMission(const QVariant& id)
 {
-    QVariantMap map = m_missionsRepo->select(id);
+    QVariantMap map = m_missionsTable.selectById(id);
     QString typeName = map.value(params::type).toString();
 
     const MissionType* const type = m_missionTypes.value(typeName);

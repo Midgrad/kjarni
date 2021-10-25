@@ -1,5 +1,5 @@
-#ifndef GENERIC_TABLE_H
-#define GENERIC_TABLE_H
+#ifndef SQL_TABLE_H
+#define SQL_TABLE_H
 
 #include <QSqlQuery>
 #include <QVariant>
@@ -10,7 +10,6 @@ namespace data_source
 {
 namespace sql
 {
-const QString id = "id";
 const QString hold = ":";
 const QString comma = ", ";
 } // namespace sql
@@ -18,18 +17,12 @@ const QString comma = ", ";
 using Condition = QPair<QString, QVariant>;
 using ConditionMap = QVariantMap;
 
-class TableGateway
+class SqlTable
 {
 public:
-    TableGateway(QSqlDatabase* database, const QString& tableName);
-    virtual ~TableGateway() = default;
-
-    bool checkCreateTable();
-
-    bool initColumnNames();
-    void initColumnNames(const QStringList& columnNames);
-
-    QString errorString() const;
+    SqlTable(QSqlDatabase* database, const QString& tableName);
+    SqlTable(QSqlDatabase* database, const QString& tableName, const QStringList& columnNames);
+    virtual ~SqlTable() = default;
 
     QList<QVariantMap> select(const ConditionMap& conditions = ConditionMap(),
                               const QStringList& resultColumns = QStringList()) const;
@@ -41,11 +34,9 @@ public:
 
     bool removeByConditions(const ConditionMap& conditions);
     bool removeByCondition(const Condition& condition);
-    bool removeById(const QVariant& id);
 
     bool updateByConditions(const QVariantMap& valueMap, const ConditionMap& conditions);
     bool updateByCondition(const QVariantMap& valueMap, const Condition& condition);
-    bool updateById(const QVariantMap& valueMap, const QVariant& id);
 
     QString tableName() const;
     QStringList columnNames() const;
@@ -61,10 +52,9 @@ private:
     QSqlDatabase* const m_database;
     const QString m_tableName;
     QStringList m_columnNames;
-    mutable QString m_errorString;
 };
 
 } // namespace data_source
 } // namespace md
 
-#endif // GENERIC_TABLE_H
+#endif // SQL_TABLE_H

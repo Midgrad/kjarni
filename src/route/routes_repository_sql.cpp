@@ -1,4 +1,4 @@
-#include "routes_service.h"
+#include "routes_repository_sql.h"
 
 #include <QDebug>
 
@@ -8,47 +8,49 @@ namespace
 {
 constexpr char routes[] = "routes";
 constexpr char waypoints[] = "waypoints";
+constexpr char routeWaypoints[] = "route_waypoints";
 } // namespace
 
 using namespace md::domain;
 
-RoutesService::RoutesService(IRepositoryFactory* repoFactory, QObject* parent) :
-    IRoutesService(parent),
-    m_routesRepo(repoFactory->create(::routes)),
-    m_waypointsRepo(repoFactory->create(::waypoints))
+RoutesRepositorySql::RoutesRepositorySql(QSqlDatabase* database, QObject* parent) :
+    IRoutesRepository(parent),
+    m_routesTable(database, ::routes),
+    m_waypointsTable(database, ::waypoints),
+    m_routeWaypointsTable(database, ::routeWaypoints)
 {
 }
 
-RoutesService::~RoutesService()
+RoutesRepositorySql::~RoutesRepositorySql()
 {
 }
 
-Route* RoutesService::route(const QVariant& id) const
+Route* RoutesRepositorySql::route(const QVariant& id) const
 {
     QMutexLocker locker(&m_mutex);
 
     return m_routes.value(id, nullptr);
 }
 
-QVariantList RoutesService::routeIds() const
+QVariantList RoutesRepositorySql::routeIds() const
 {
     QMutexLocker locker(&m_mutex);
     return m_routes.keys();
 }
 
-QList<Route*> RoutesService::routes() const
+QList<Route*> RoutesRepositorySql::routes() const
 {
     QMutexLocker locker(&m_mutex);
     return m_routes.values();
 }
 
-QList<const RouteType*> RoutesService::routeTypes() const
+QList<const RouteType*> RoutesRepositorySql::routeTypes() const
 {
     QMutexLocker locker(&m_mutex);
     return m_routeTypes.values();
 }
 
-void RoutesService::registerRouteType(const RouteType* routeType)
+void RoutesRepositorySql::registerRouteType(const RouteType* routeType)
 {
     QMutexLocker locker(&m_mutex);
 
@@ -65,7 +67,7 @@ void RoutesService::registerRouteType(const RouteType* routeType)
     emit routeTypesChanged();
 }
 
-void RoutesService::unregisterRouteType(const RouteType* routeType)
+void RoutesRepositorySql::unregisterRouteType(const RouteType* routeType)
 {
     QMutexLocker locker(&m_mutex);
 
@@ -82,11 +84,11 @@ void RoutesService::unregisterRouteType(const RouteType* routeType)
     emit routeTypesChanged();
 }
 
-void RoutesService::readAll()
+void RoutesRepositorySql::readAll()
 {
     QMutexLocker locker(&m_mutex);
 
-    for (const QVariant& routeId : m_routesRepo->selectIds())
+    for (const QVariant& routeId : m_routesTable.selectIds())
     {
         if (!m_routes.contains(routeId))
         {
@@ -95,12 +97,15 @@ void RoutesService::readAll()
     }
 }
 
-void RoutesService::removeRoute(Route* route)
+void RoutesRepositorySql::removeRoute(Route* route)
 {
     QMutexLocker locker(&m_mutex);
 
     if (route->id().isNull())
         return;
+
+    // Remove all route waypoints for route
+    m_routeWaypointsTable.removeByCondition({ params::route, route->id() });
 
     // Remove stored waypoints for route, new points will be deleted by parent
     for (Waypoint* waypoint : m_routeWaypoints.values(route))
@@ -110,14 +115,14 @@ void RoutesService::removeRoute(Route* route)
     m_routeWaypoints.remove(route);
 
     // Remove route
-    m_routesRepo->remove(route);
+    m_routesTable.removeEntity(route);
     m_routes.remove(route->id());
 
     emit routeRemoved(route);
     route->deleteLater();
 }
 
-void RoutesService::restoreRoute(Route* route)
+void RoutesRepositorySql::restoreRoute(Route* route)
 {
     QMutexLocker locker(&m_mutex);
 
@@ -132,11 +137,16 @@ void RoutesService::restoreRoute(Route* route)
     route->setWaypoints(m_waypoints.values());
     disconnect(route, &Route::waypointRemoved, this, nullptr);
 
-    m_routesRepo->read(route);
+    for (Waypoint* waypoint : route->waypoints())
+    {
+        m_waypointsTable.readEntity(waypoint);
+    }
+
+    m_routesTable.readEntity(route);
     emit routeChanged(route);
 }
 
-void RoutesService::saveRoute(Route* route)
+void RoutesRepositorySql::saveRoute(Route* route)
 {
     QMutexLocker locker(&m_mutex);
 
@@ -149,12 +159,12 @@ void RoutesService::saveRoute(Route* route)
     // Update or insert route
     if (m_routes.contains(route->id()))
     {
-        m_routesRepo->update(route);
+        m_routesTable.updateEntity(route);
         emit routeChanged(route);
     }
     else
     {
-        m_routesRepo->insert(route);
+        m_routesTable.insertEntity(route);
         m_routes.insert(route->id(), route);
 
         if (!route->parent())
@@ -172,6 +182,8 @@ void RoutesService::saveRoute(Route* route)
         if (route->waypoints().contains(waypoint))
             continue;
 
+        m_routeWaypointsTable.removeByConditions(
+            { { params::route, route->id() }, { params::waypoint, waypoint->id() } });
         this->removeWaypoint(waypoint);
         m_routeWaypoints.remove(route, waypoint);
     }
@@ -179,26 +191,29 @@ void RoutesService::saveRoute(Route* route)
     //  Update or insert waypoints
     for (Waypoint* waypoint : route->waypoints())
     {
-        if (!m_routeWaypoints.contains(route, waypoint))
-        {
-            m_routeWaypoints.insert(route, waypoint);
-        }
-
         if (m_waypoints.contains(waypoint->id()))
         {
-            m_waypointsRepo->update(waypoint);
+            m_waypointsTable.updateEntity(waypoint);
         }
         else
         {
-            m_waypointsRepo->insert(waypoint);
+            m_waypointsTable.insertEntity(waypoint);
             m_waypoints.insert(waypoint->id(), waypoint);
+        }
+
+        if (!m_routeWaypoints.contains(route, waypoint))
+        {
+            m_routeWaypoints.insert(route, waypoint);
+
+            m_routeWaypointsTable.insert(
+                { { params::route, route->id() }, { params::waypoint, waypoint->id() } });
         }
     }
 }
 
-Route* RoutesService::readRoute(const QVariant& id)
+Route* RoutesRepositorySql::readRoute(const QVariant& id)
 {
-    QVariantMap map = m_routesRepo->select(id);
+    QVariantMap map = m_routesTable.selectById(id);
     QString typeName = map.value(params::type).toString();
 
     const RouteType* const type = m_routeTypes.value(typeName);
@@ -212,8 +227,13 @@ Route* RoutesService::readRoute(const QVariant& id)
     m_routes.insert(id, route);
 
     // Read waypoints for route
-    for (const QVariant& waypointId : m_waypointsRepo->selectIds({ { params::route, route->id() } }))
+    for (const QVariantMap& select :
+         m_routeWaypointsTable.select({ { params::route, route->id() } }, { params::waypoint }))
     {
+        if (select.isEmpty())
+            continue;
+
+        const QVariant& waypointId = select.first();
         Waypoint* waypoint = nullptr;
         if (m_waypoints.contains(waypointId))
         {
@@ -231,9 +251,9 @@ Route* RoutesService::readRoute(const QVariant& id)
     return route;
 }
 
-Waypoint* RoutesService::readWaypoint(const QVariant& id)
+Waypoint* RoutesRepositorySql::readWaypoint(const QVariant& id)
 {
-    QVariantMap map = m_waypointsRepo->select(id);
+    QVariantMap map = m_waypointsTable.selectById(id);
     QString typeName = map.value(params::type).toString();
 
     const WaypointType* const type = m_waypointTypes.value(typeName);
@@ -243,13 +263,13 @@ Waypoint* RoutesService::readWaypoint(const QVariant& id)
         return nullptr;
     }
 
-    Waypoint* waypoint = new Waypoint(map, type, this);
+    Waypoint* waypoint = new Waypoint(map, type);
     m_waypoints.insert(id, waypoint);
     return waypoint;
 }
 
-void RoutesService::removeWaypoint(Waypoint* waypoint)
+void RoutesRepositorySql::removeWaypoint(Waypoint* waypoint)
 {
-    m_waypointsRepo->remove(waypoint);
+    m_waypointsTable.removeEntity(waypoint);
     m_waypoints.remove(waypoint->id());
 }

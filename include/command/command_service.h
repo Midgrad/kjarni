@@ -7,6 +7,7 @@
 
 namespace md::domain
 {
+// TODO: rename to CommandPool
 class CommandsService : public ICommandsService
 {
     Q_OBJECT

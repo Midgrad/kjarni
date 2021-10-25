@@ -1,19 +1,19 @@
-#ifndef I_ROUTES_SERVICE_H
-#define I_ROUTES_SERVICE_H
+#ifndef I_ROUTES_REPOSITORY_H
+#define I_ROUTES_REPOSITORY_H
 
 #include "i_service.h"
 #include "route.h"
 
 namespace md::domain
 {
-class IRoutesService
+class IRoutesRepository
     : public QObject
     , public IService
 {
     Q_OBJECT
 
 public:
-    IRoutesService(QObject* parent) : QObject(parent), IService()
+    IRoutesRepository(QObject* parent) : QObject(parent), IService()
     {
     }
 
@@ -40,4 +40,4 @@ signals:
 };
 } // namespace md::domain
 
-#endif // I_ROUTES_SERVICE_H
+#endif // I_ROUTES_REPOSITORY_H

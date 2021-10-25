@@ -1,20 +1,20 @@
-#ifndef ROUTES_SERVICE_H
-#define ROUTES_SERVICE_H
+#ifndef ROUTES_REPOSITORY_SQL_H
+#define ROUTES_REPOSITORY_SQL_H
 
-#include "i_repository_factory.h"
-#include "i_routes_service.h"
+#include "entity_sql_table.h"
+#include "i_routes_repository.h"
 
 #include <QMutex>
 
 namespace md::domain
 {
-class RoutesService : public IRoutesService
+class RoutesRepositorySql : public IRoutesRepository
 {
     Q_OBJECT
 
 public:
-    explicit RoutesService(IRepositoryFactory* repoFactory, QObject* parent = nullptr);
-    ~RoutesService() override;
+    explicit RoutesRepositorySql(QSqlDatabase* database, QObject* parent = nullptr);
+    ~RoutesRepositorySql() override;
 
     virtual Route* route(const QVariant& id) const override;
     virtual QVariantList routeIds() const override;
@@ -35,8 +35,10 @@ private:
     Waypoint* readWaypoint(const QVariant& id);
     void removeWaypoint(Waypoint* waypoint);
 
-    const QScopedPointer<IEntityRepository> m_routesRepo;
-    const QScopedPointer<IEntityRepository> m_waypointsRepo;
+    data_source::EntitySqlTable m_routesTable;
+    data_source::EntitySqlTable m_waypointsTable;
+    data_source::SqlTable m_routeWaypointsTable;
+
     QMap<QString, const RouteType*> m_routeTypes;
     QMap<QString, const WaypointType*> m_waypointTypes;
     QMap<QVariant, Route*> m_routes;
@@ -47,4 +49,4 @@ private:
 };
 } // namespace md::domain
 
-#endif // ROUTES_SERVICE_H
+#endif // ROUTES_REPOSITORY_SQL_H

@@ -1,18 +1,16 @@
 #include "waypoint.h"
 
-#include "route.h"
-
 using namespace md::domain;
 
-Waypoint::Waypoint(const QString& name, const WaypointType* type, QObject* parent) :
-    Entity(name, parent),
+Waypoint::Waypoint(const QString& name, const WaypointType* type) :
+    Entity(name, nullptr),
     m_type(type)
 {
     Q_ASSERT(type);
 }
 
-Waypoint::Waypoint(const QVariantMap& map, const WaypointType* type, QObject* parent) :
-    Entity(map, parent),
+Waypoint::Waypoint(const QVariantMap& map, const WaypointType* type) :
+    Entity(map, nullptr),
     m_type(type)
 {
     Q_ASSERT(type);
@@ -25,20 +23,12 @@ QVariantMap Waypoint::toVariantMap(bool recursive) const
     QVariantMap map = Entity::toVariantMap();
     map.insert(params::type, m_type->name);
 
-    if (m_route)
-        map.insert(params::route, m_route->id());
-
     return map;
 }
 
 const WaypointType* Waypoint::type() const
 {
     return m_type;
-}
-
-Route* Waypoint::route() const
-{
-    return m_route;
 }
 
 void Waypoint::setAndCheckParameter(const QString& key, const QVariant& value)
@@ -72,15 +62,6 @@ void Waypoint::setType(const WaypointType* type)
     emit typeChanged();
 
     this->syncParameters();
-}
-
-void Waypoint::setRoute(Route* route)
-{
-    if (m_route == route)
-        return;
-
-    m_route = route;
-    emit routeChanged(route);
 }
 
 void Waypoint::syncParameters()

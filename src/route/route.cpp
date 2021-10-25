@@ -90,8 +90,6 @@ void Route::addWaypoint(Waypoint* waypoint)
     if (m_waypoins.contains(waypoint))
         return;
 
-    waypoint->setRoute(this);
-
     if (waypoint->thread() != this->thread())
         waypoint->moveToThread(this->thread());
 
@@ -107,8 +105,6 @@ void Route::removeWaypoint(Waypoint* waypoint)
     // Remove but don't delete waypoint
     if (!m_waypoins.contains(waypoint))
         return;
-
-    waypoint->setRoute(nullptr);
 
     if (waypoint->parent() == this)
         waypoint->setParent(nullptr);
@@ -136,7 +132,11 @@ void Route::fromVariantMapImpl(const QVariantMap& map)
 
             if (counter >= m_waypoins.count())
             {
-                m_waypoins.append(new Waypoint(map, type, this));
+                auto waypoint = new Waypoint(map, type);
+                waypoint->moveToThread(this->thread());
+                waypoint->setParent(this);
+
+                m_waypoins.append(waypoint);
             }
             else
             {

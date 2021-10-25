@@ -1,22 +1,22 @@
-#ifndef MISSIONS_SERVICE_H
-#define MISSIONS_SERVICE_H
+#ifndef MISSIONS_REPOSITORY_H
+#define MISSIONS_REPOSITORY_H
 
-#include "i_missions_service.h"
-#include "i_repository_factory.h"
-#include "i_routes_service.h"
+#include "entity_sql_table.h"
+#include "i_missions_repository.h"
+#include "i_routes_repository.h"
 
 #include <QMutex>
 
 namespace md::domain
 {
-class MissionsService : public IMissionsService
+class MissionsRepositorySql : public IMissionsRepository
 {
     Q_OBJECT
 
 public:
-    explicit MissionsService(IRoutesService* routes, IRepositoryFactory* repoFactory,
-                             QObject* parent = nullptr);
-    ~MissionsService() override;
+    explicit MissionsRepositorySql(IRoutesRepository* routes, QSqlDatabase* database,
+                                   QObject* parent = nullptr);
+    ~MissionsRepositorySql() override;
 
     Mission* mission(const QVariant& id) const override;
     Mission* missionForVehicle(const QVariant& vehicleId) const override;
@@ -36,8 +36,9 @@ public slots:
 private:
     Mission* readMission(const QVariant& id);
 
-    IRoutesService* const m_routes;
-    const QScopedPointer<IEntityRepository> m_missionsRepo;
+    IRoutesRepository* const m_routes;
+    data_source::EntitySqlTable m_missionsTable;
+
     QMap<QString, const MissionType*> m_missionTypes;
     QMap<QVariant, Mission*> m_missions;
 
@@ -45,4 +46,4 @@ private:
 };
 } // namespace md::domain
 
-#endif // MISSIONS_SERVICE_H
+#endif // MISSIONS_REPOSITORY_H
