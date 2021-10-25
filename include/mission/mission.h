@@ -13,7 +13,7 @@ class Mission : public Entity
     Q_OBJECT
 
 public:
-    Mission(const MissionType* type, const QString& name, const QUuid& vehicleId,
+    Mission(const MissionType* type, const QString& name, const QVariant& vehicleId,
             QObject* parent = nullptr);
     Mission(const QVariantMap& map, const MissionType* type, QObject* parent = nullptr);
 
@@ -21,7 +21,7 @@ public:
     void fromVariantMap(const QVariantMap& map) override;
 
     const MissionType* type() const;
-    QUuid vehicleId() const;
+    QVariant vehicleId() const;
     Route* route() const;
     const MissionStatus& status() const;
     int currentWaypoint() const;
@@ -33,7 +33,7 @@ public slots:
     void setCurrentWaypoint(int currentWaypoint);
 
 signals:
-    void vehicleChanged(QUuid vehicle);
+    void vehicleChanged(QVariant vehicle);
     void routeChanged(Route* route);
     void statusChanged(MissionStatus status);
     void currentWaypointChanged(int currentWaypoint);
@@ -46,7 +46,7 @@ signals:
 
 private:
     const MissionType* m_type;
-    const QUuid m_vehicleId;
+    const QVariant m_vehicleId;
     Route* const m_route;
     MissionStatus m_status;
     int m_currentWaypoint = -1;

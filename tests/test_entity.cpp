@@ -2,7 +2,6 @@
 
 #include <QDebug>
 #include <QSignalSpy>
-#include <QUuid>
 
 #include "entity.h"
 #include "kjarni_traits.h"

@@ -156,8 +156,13 @@ void RoutesService::saveRoute(Route* route)
     {
         m_routesRepo->insert(route);
         m_routes.insert(route->id(), route);
-        route->moveToThread(this->thread());
-        route->setParent(this);
+
+        if (!route->parent())
+        {
+            route->moveToThread(this->thread());
+            route->setParent(this);
+        }
+
         emit routeAdded(route);
     }
 

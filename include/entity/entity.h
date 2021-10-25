@@ -14,15 +14,15 @@ class Entity : public QObject
     Q_OBJECT
 
 public:
-    Entity(const QUuid& id, const QString& name, const QVariantMap& parameters,
+    Entity(const QVariant& id, const QString& name, const QVariantMap& parameters,
            QObject* parent = nullptr);
     Entity(const QVariantMap& map, QObject* parent = nullptr);
-    Entity(const QUuid& id, const QString& name, QObject* parent = nullptr);
+    Entity(const QVariant& id, const QString& name, QObject* parent = nullptr);
     Entity(const QString& name, QObject* parent = nullptr);
 
     virtual ~Entity();
 
-    QUuid id() const;
+    QVariant id() const;
     QString name() const;
     const QVariantMap& parameters() const;
     QVariant parameter(const QString& key) const;
@@ -43,7 +43,7 @@ signals:
     void parametersChanged();
 
 private:
-    const QUuid m_id;
+    const QVariant m_id;
     QString m_name;
     QVariantMap m_parameters;
 };

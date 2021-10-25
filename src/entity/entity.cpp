@@ -2,7 +2,7 @@
 
 using namespace md::domain;
 
-Entity::Entity(const QUuid& id, const QString& name, const QVariantMap& parameters,
+Entity::Entity(const QVariant& id, const QString& name, const QVariantMap& parameters,
                QObject* parent) :
     QObject(parent),
     m_id(id),
@@ -17,7 +17,7 @@ Entity::Entity(const QVariantMap& map, QObject* parent) :
 {
 }
 
-Entity::Entity(const QUuid& id, const QString& name, QObject* parent) :
+Entity::Entity(const QVariant& id, const QString& name, QObject* parent) :
     Entity(id, name, QVariantMap(), parent)
 {
 }
@@ -30,7 +30,7 @@ Entity::~Entity()
 {
 }
 
-QUuid Entity::id() const
+QVariant Entity::id() const
 {
     return m_id;
 }
