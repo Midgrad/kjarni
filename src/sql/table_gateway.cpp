@@ -18,7 +18,8 @@ bool TableGateway::initColumnNames()
     QSqlQuery query(*m_database);
 
     bool result = query.exec("PRAGMA table_info(" + m_tableName + ")");
-    m_errorString = query.lastError().text();
+    m_errorString = query.lastError().type() != QSqlError::NoError ? query.lastError().text()
+                                                                   : QString();
 
     if (!result)
         return false;
@@ -57,7 +58,8 @@ QList<QVariantMap> TableGateway::select(const ConditionMap& conditions,
 
     bool result = query.exec(
         this->prepareSelect(conditions, resultColumns, orderByColumns, sortOrder));
-    m_errorString = query.lastError().text();
+    m_errorString = query.lastError().type() != QSqlError::NoError ? query.lastError().text()
+                                                                   : QString();
 
     if (!result)
         return QList<QVariantMap>();
@@ -91,7 +93,8 @@ bool TableGateway::insert(const QVariantMap& valueMap, QVariant* id)
     this->bind(query, valueMap);
 
     bool result = query.exec();
-    m_errorString = query.lastError().text();
+    m_errorString = query.lastError().type() != QSqlError::NoError ? query.lastError().text()
+                                                                   : QString();
 
     if (!result)
         return false;
@@ -109,7 +112,8 @@ bool TableGateway::removeByConditions(const ConditionMap& conditions)
 
     QSqlQuery query(*m_database);
     bool result = query.exec("DELETE FROM " + m_tableName + this->where(conditions));
-    m_errorString = query.lastError().text();
+    m_errorString = query.lastError().type() != QSqlError::NoError ? query.lastError().text()
+                                                                   : QString();
     return result;
 }
 
@@ -141,7 +145,8 @@ bool TableGateway::updateByConditions(const QVariantMap& valueMap, const Conditi
     this->bind(query, valueMap);
 
     bool result = query.exec();
-    m_errorString = query.lastError().text();
+    m_errorString = query.lastError().type() != QSqlError::NoError ? query.lastError().text()
+                                                                   : QString();
     return result;
 }
 
