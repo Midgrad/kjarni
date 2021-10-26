@@ -30,6 +30,7 @@ public slots:
 
 signals:
     void waypointAdded(Waypoint* waypoint);
+    void waypointChanged(Waypoint* waypoint);
     void waypointRemoved(Waypoint* waypoint);
 
 private:

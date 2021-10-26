@@ -28,7 +28,6 @@ RoutesRepositorySql::~RoutesRepositorySql()
 Route* RoutesRepositorySql::route(const QVariant& id) const
 {
     QMutexLocker locker(&m_mutex);
-
     return m_routes.value(id, nullptr);
 }
 
@@ -167,11 +166,8 @@ void RoutesRepositorySql::saveRoute(Route* route)
         m_routesTable.insertEntity(route);
         m_routes.insert(route->id(), route);
 
-        if (!route->parent())
-        {
-            route->moveToThread(this->thread());
-            route->setParent(this);
-        }
+        route->moveToThread(this->thread());
+        route->setParent(this);
 
         emit routeAdded(route);
     }

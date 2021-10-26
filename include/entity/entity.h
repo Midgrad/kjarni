@@ -49,4 +49,6 @@ private:
 };
 } // namespace md::domain
 
+Q_DECLARE_METATYPE(QUuid)
+
 #endif // ENTITY_H

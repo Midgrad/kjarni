@@ -96,6 +96,10 @@ void Route::addWaypoint(Waypoint* waypoint)
     if (!waypoint->parent())
         waypoint->setParent(this);
 
+    connect(waypoint, &Waypoint::parametersChanged, this, [waypoint, this]() {
+        emit waypointChanged(waypoint);
+    });
+
     m_waypoins.append(waypoint);
     emit waypointAdded(waypoint);
 }
@@ -108,6 +112,8 @@ void Route::removeWaypoint(Waypoint* waypoint)
 
     if (waypoint->parent() == this)
         waypoint->setParent(nullptr);
+
+    disconnect(waypoint, nullptr, this, nullptr);
 
     m_waypoins.removeOne(waypoint);
     emit waypointRemoved(waypoint);

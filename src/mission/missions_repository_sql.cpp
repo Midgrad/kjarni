@@ -137,6 +137,9 @@ void MissionsRepositorySql::saveMission(Mission* mission)
         return;
     }
 
+    mission->moveToThread(this->thread());
+    mission->setParent(this);
+
     if (mission->route())
         m_routes->saveRoute(mission->route());
 
@@ -149,8 +152,6 @@ void MissionsRepositorySql::saveMission(Mission* mission)
     {
         m_missionsTable.insertEntity(mission);
         m_missions.insert(mission->id(), mission);
-        mission->moveToThread(this->thread());
-        mission->setParent(this);
         emit missionAdded(mission);
     }
 }
