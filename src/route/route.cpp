@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <QJsonArray>
 
+#include "route_traits.h"
+
 using namespace md::domain;
 
 Route::Route(const QString& name, const RouteType* type, QObject* parent) :

@@ -4,8 +4,6 @@
 #include <QVariant>
 #include <QVector>
 
-#include "route_traits.h"
-
 namespace md::domain
 {
 class Parameter

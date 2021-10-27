@@ -1,6 +1,7 @@
 #ifndef MISSION_TRAITS_H
 #define MISSION_TRAITS_H
 
+#include "mission_type.h"
 #include "route_traits.h"
 
 namespace md::domain

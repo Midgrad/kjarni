@@ -2,6 +2,7 @@
 
 #include <QDebug>
 
+#include "route_traits.h"
 #include "utils.h"
 
 namespace
