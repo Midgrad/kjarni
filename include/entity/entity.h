@@ -14,11 +14,9 @@ class Entity : public QObject
     Q_OBJECT
 
 public:
-    Entity(const QVariant& id, const QString& name, const QVariantMap& parameters,
+    Entity(const QVariant& id, const QString& name, const QVariantMap& parameters = QVariantMap(),
            QObject* parent = nullptr);
     Entity(const QVariantMap& map, QObject* parent = nullptr);
-    Entity(const QVariant& id, const QString& name, QObject* parent = nullptr);
-    Entity(const QString& name, QObject* parent = nullptr);
 
     virtual ~Entity();
 

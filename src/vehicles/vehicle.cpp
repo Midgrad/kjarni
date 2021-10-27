@@ -14,8 +14,8 @@ Vehicle::Type typeFromVariant(const QVariant& value)
 }
 } // namespace
 
-Vehicle::Vehicle(Type type, const QString& name, QObject* parent) :
-    Entity(name, parent),
+Vehicle::Vehicle(Type type, const QString& name, const QVariant& id, QObject* parent) :
+    Entity(id, name, QVariantMap(), parent),
     m_type(type)
 {
 }

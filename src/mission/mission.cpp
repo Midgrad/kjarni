@@ -5,19 +5,19 @@
 using namespace md::domain;
 
 Mission::Mission(const MissionType* type, const QString& name, const QVariant& vehicleId,
-                 QObject* parent) :
-    Entity(name, parent),
+                 const QVariant& id, QObject* parent) :
+    Entity(id, name, QVariantMap(), parent),
     m_type(type),
-    m_route(new Route(name + " " + tr("Route"), type->routeType, this)),
+    m_route(new Route(type->routeType, name + " " + tr("Route"))), // TODO: No route by default
     m_vehicleId(vehicleId)
 {
 }
 
-Mission::Mission(const QVariantMap& map, const MissionType* type, QObject* parent) :
+Mission::Mission(const MissionType* type, const QVariantMap& map, QObject* parent) :
     Entity(map, parent),
     m_type(type),
-    m_vehicleId(map.value(params::vehicle).toString()),
-    m_route(new Route(map.value(params::route).toMap(), type->routeType, this))
+    m_vehicleId(map.value(params::vehicle)),
+    m_route(new Route(type->routeType, map.value(params::route).toMap(), this))
 {
 }
 

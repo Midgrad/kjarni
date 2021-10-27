@@ -45,3 +45,13 @@ const Parameter* WaypointType::parameter(const QString& name) const
 {
     return this->parameters.value(name, nullptr);
 }
+
+QVariantMap WaypointType::defaultParameters() const
+{
+    QVariantMap map;
+    for (const Parameter* parameter : parameters)
+    {
+        map.insert(parameter->name, parameter->defaultValue);
+    }
+    return map;
+}

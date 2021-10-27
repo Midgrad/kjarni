@@ -44,6 +44,7 @@ public:
     WaypointType(const QString& name, const QVector<const Parameter*>& parameters);
 
     const Parameter* parameter(const QString& name) const;
+    QVariantMap defaultParameters() const;
 
     const QString name;
     QMap<QString, const Parameter*> parameters;

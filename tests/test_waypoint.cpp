@@ -2,74 +2,139 @@
 
 #include <QSignalSpy>
 
+#include "test_mission_traits.h"
 #include "waypoint.h"
 
 using namespace md::domain;
 
-class WaypointTest : public ::testing::Test
+struct WaypointTestArgs
 {
+    QUuid id;
+    QString name;
+    QVariantMap params;
+    const WaypointType* type;
 };
 
-//TEST_F(WaypointTest, testResetParameter)
-//{
-//    const Parameter param("Param", Parameter::Real, 17.03);
-//    const WaypointType type("Type", { param });
+class WaypointTest : public ::testing::TestWithParam<WaypointTestArgs>
+{
+public:
+    WaypointTest() = default;
+};
 
-//    Waypoint wpt("WPT", *type);
+INSTANTIATE_TEST_SUITE_P(
+    instantiation, WaypointTest,
+    ::testing::Values(WaypointTestArgs({ QUuid::createUuid(),
+                                         "WPT 1",
+                                         { { mission::latitude.name, 54.196783 },
+                                           { mission::longitude.name, 41.397421 },
+                                           { mission::altitude.name, 850 },
+                                           { mission::relative.name, true } },
+                                         &test_mission::waypoint }),
+                      WaypointTestArgs({ QUuid::createUuid(),
+                                         "WPT 2",
+                                         { { mission::latitude.name, 54.196783 },
+                                           { mission::longitude.name, 41.397421 },
+                                           { mission::altitude.name, 850 },
+                                           { mission::relative.name, true } },
+                                         &test_mission::waypoint }),
+                      WaypointTestArgs({ QUuid::createUuid(),
+                                         "CRL 2",
+                                         { { mission::latitude.name, 54.196783 },
+                                           { mission::longitude.name, 41.397421 },
+                                           { mission::altitude.name, 850 },
+                                           { mission::relative.name, true } },
+                                         &test_mission::circle })));
 
-//    wpt.setParameter("Param", 621.67);
-//    EXPECT_EQ(wpt.parameter("Param"), 621.67);
+TEST_P(WaypointTest, testConstructFromMap)
+{
+    WaypointTestArgs args = GetParam();
 
-//    type.resetParameter(&wpt, "Param");
-//    EXPECT_EQ(wpt.parameter("Param"), 17.03);
+    QVariantMap map;
+    map.insert(params::id, args.id.toString());
+    map.insert(params::name, args.name);
+    map.insert(params::params, QJsonValue::fromVariant(args.params));
 
-//    type.resetParameter(&wpt, "Param 2");
-//    // Nothing to check, just don't fail
-//}
+    Waypoint waypoint(args.type, map);
 
-//TEST_F(WaypointTest, testSyncParameters)
-//{
-//    const Parameter param1("Param 1", Parameter::Real, 17.03);
-//    const Parameter param2("Param 2", Parameter::Int, 42);
-//    const Parameter param3("Param 3", Parameter::Bool, true);
+    EXPECT_EQ(waypoint.id(), args.id);
+    EXPECT_EQ(waypoint.name(), args.name);
+    EXPECT_EQ(waypoint.parameters(), args.params);
+    EXPECT_EQ(waypoint.type(), args.type);
+}
 
-//    const WaypointType type1("Type 1", { param1, param2 });
-//    const WaypointType type2("Type 2", { param2, param3 });
+TEST_P(WaypointTest, testFromVariant)
+{
+    WaypointTestArgs args = GetParam();
+    Waypoint waypoint(args.type, QString(), args.id);
 
-//    Waypoint wpt("WPT", QString());
-//    type1.syncParameters(&wpt);
+    QVariantMap map;
+    map.insert(params::name, args.name);
+    map.insert(params::params, QJsonValue::fromVariant(args.params));
 
-//    EXPECT_EQ(wpt.parameter("Param 1"), 17.03);
-//    EXPECT_EQ(wpt.parameter("Param 2"), 42);
-//    EXPECT_FALSE(wpt.parameters().contains("Param 3"));
+    waypoint.fromVariantMap(map);
+    EXPECT_EQ(waypoint.name(), args.name);
+    EXPECT_EQ(waypoint.parameters(), args.params);
+}
 
-//    wpt.setParameter("Param 2", 33);
-//    type2.syncParameters(&wpt);
+TEST_P(WaypointTest, testToVariant)
+{
+    WaypointTestArgs args = GetParam();
+    Waypoint waypoint(args.type, GetParam().name, GetParam().id, GetParam().params);
 
-//    EXPECT_FALSE(wpt.parameters().contains("Param 1"));
-//    EXPECT_EQ(wpt.parameter("Param 2"), 33);
-//    EXPECT_EQ(wpt.parameter("Param 3"), true);
-//}
+    QVariantMap map;
+    map.insert(params::id, args.id);
+    map.insert(params::name, args.name);
+    if (!args.params.isEmpty())
+        map.insert(params::params, args.params);
+    map.insert(params::type, args.type->name);
 
-//TEST_F(WaypointTest, testFromJson)
-//{
-//    QJsonObject json;
-//    json.insert(params::name, "WPT");
+    EXPECT_EQ(map, waypoint.toVariantMap(true));
+}
 
-//    const Parameter param("Param", Parameter::Real);
-//    const WaypointType type("Type", { param });
+TEST_P(WaypointTest, testConstructDefaultParamsByType)
+{
+    WaypointTestArgs args = GetParam();
+    Waypoint waypoint(args.type, GetParam().name, GetParam().id);
 
-//    //Waypoint wpt(&type, json.value(params::id).toVariant());
-//}
+    EXPECT_EQ(waypoint.parameters(), args.type->defaultParameters());
+}
 
-//TEST_F(WaypointTest, testToJson)
-//{
-//    Waypoint wpt;
+TEST_P(WaypointTest, testResetParamToTypeDeafult)
+{
+    WaypointTestArgs args = GetParam();
+    Waypoint waypoint(args.type, GetParam().name, GetParam().id);
 
-//    QJsonObject json;
-//    json.insert(md::params::id, QJsonValue::fromVariant(args.id));
-//    json.insert(md::params::name, args.name);
-//    json.insert(md::params::params, QJsonValue::fromVariant(args.params));
+    if (args.params.isEmpty())
+        return;
 
-//    EXPECT_EQ(json, wpt.toJson());
-//}
+    waypoint.setParameter(args.params.firstKey(), args.params.first());
+
+    if (waypoint.parameters() == args.type->defaultParameters())
+        return;
+
+    waypoint.resetParameter(args.params.firstKey());
+
+    EXPECT_EQ(waypoint.parameters(), args.type->defaultParameters());
+}
+
+TEST_P(WaypointTest, testResetParamsToTypeDeafults)
+{
+    WaypointTestArgs args = GetParam();
+    Waypoint waypoint(args.type, GetParam().name, GetParam().id, GetParam().params);
+
+    EXPECT_NE(waypoint.parameters(), args.type->defaultParameters());
+
+    waypoint.resetParameters();
+
+    EXPECT_EQ(waypoint.parameters(), args.type->defaultParameters());
+}
+
+TEST_P(WaypointTest, testSyncParams)
+{
+    WaypointTestArgs args = GetParam();
+    Waypoint waypoint(args.type, GetParam().name, GetParam().id, GetParam().params);
+
+    waypoint.syncParameters();
+
+    EXPECT_EQ(waypoint.parameters().keys(), args.type->defaultParameters().keys());
+}

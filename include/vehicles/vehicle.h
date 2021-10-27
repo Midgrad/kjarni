@@ -22,7 +22,8 @@ public:
         Airship,
     };
 
-    Vehicle(Type type, const QString& name, QObject* parent = nullptr);
+    Vehicle(Type type, const QString& name, const QVariant& id = QUuid::createUuid(),
+            QObject* parent = nullptr);
     Vehicle(const QVariantMap& map, QObject* parent = nullptr);
 
     QVariantMap toVariantMap(bool recursive = true) const override;

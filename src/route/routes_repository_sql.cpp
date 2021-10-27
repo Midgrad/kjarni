@@ -220,7 +220,7 @@ Route* RoutesRepositorySql::readRoute(const QVariant& id)
         return nullptr;
     }
 
-    Route* route = new Route(map, type, this);
+    Route* route = new Route(type, map, this);
     m_routes.insert(id, route);
 
     // Read waypoints for route
@@ -260,7 +260,7 @@ Waypoint* RoutesRepositorySql::readWaypoint(const QVariant& id)
         return nullptr;
     }
 
-    Waypoint* waypoint = new Waypoint(map, type);
+    Waypoint* waypoint = new Waypoint(type, map);
     m_waypoints.insert(id, waypoint);
     return waypoint;
 }

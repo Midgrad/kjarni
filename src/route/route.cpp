@@ -7,14 +7,14 @@
 
 using namespace md::domain;
 
-Route::Route(const QString& name, const RouteType* type, QObject* parent) :
-    Entity(name, parent),
+Route::Route(const RouteType* type, const QString& name, const QVariant& id, QObject* parent) :
+    Entity(id, name, QVariantMap(), parent),
     m_type(type)
 {
     Q_ASSERT(type);
 }
 
-Route::Route(const QVariantMap& map, const RouteType* type, QObject* parent) :
+Route::Route(const RouteType* type, const QVariantMap& map, QObject* parent) :
     Entity(map, parent),
     m_type(type)
 {
@@ -74,13 +74,14 @@ void Route::setWaypoints(const QList<Waypoint*>& waypoins)
     // Remove old waypoints (std::remove_if does not emit signals)
     for (Waypoint* waypoint : qAsConst(m_waypoins))
     {
+        // Skip waypoint if we have it in new list
         if (waypoins.contains(waypoint))
             continue;
 
         this->removeWaypoint(waypoint);
     }
 
-    // Add new one
+    // Add new waypoints to the end
     for (Waypoint* waypoint : waypoins)
     {
         this->addWaypoint(waypoint);
@@ -130,7 +131,7 @@ void Route::fromVariantMapImpl(const QVariantMap& map)
         for (const QVariant& value : waypoints)
         {
             QVariantMap map = value.toMap();
-            QString typeName = map.value(params::type).toString();
+            QString typeName = map.value(params::type, tr("empty")).toString();
             auto type = m_type->waypointType(typeName);
             if (!type)
             {
@@ -140,7 +141,7 @@ void Route::fromVariantMapImpl(const QVariantMap& map)
 
             if (counter >= m_waypoins.count())
             {
-                auto waypoint = new Waypoint(map, type);
+                auto waypoint = new Waypoint(type, map);
                 waypoint->moveToThread(this->thread());
                 waypoint->setParent(this);
 

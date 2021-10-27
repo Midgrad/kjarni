@@ -25,8 +25,7 @@ INSTANTIATE_TEST_SUITE_P(
     instantiation, EntityTest,
     ::testing::Values(
         EntityTestArgs({ QUuid::createUuid(), "Name 665", {} }),
-        EntityTestArgs({ QUuid::createUuid(), "some_name",
-                         QVariantMap({ { "bool_propery", false } }) }),
+        EntityTestArgs({ QUuid::createUuid(), "some_name", { { "bool_propery", false } } }),
         EntityTestArgs(
             { QUuid::createUuid(), "entity", { { "int_propery", 34 }, { "float_propery", 34 } } }),
         EntityTestArgs({ QUuid::createUuid(), "", { { "string_propery", "str123" } } })));
@@ -34,8 +33,8 @@ INSTANTIATE_TEST_SUITE_P(
 TEST_P(EntityTest, testParameters)
 {
     EntityTestArgs args = GetParam();
-
     Entity entity(GetParam().id, GetParam().name, GetParam().params);
+
     QSignalSpy oneSpy(&entity, &Entity::parameterChanged);
     QSignalSpy manySpy(&entity, &Entity::parametersChanged);
 
@@ -85,7 +84,6 @@ TEST_P(EntityTest, testConstructFromMap)
 TEST_P(EntityTest, testFromVariant)
 {
     EntityTestArgs args = GetParam();
-
     Entity entity(args.id, QString());
 
     QVariantMap map;
@@ -101,12 +99,10 @@ TEST_P(EntityTest, testFromVariant)
 TEST_P(EntityTest, testToVariant)
 {
     EntityTestArgs args = GetParam();
-
     Entity entity(GetParam().id, GetParam().name, GetParam().params);
 
     QVariantMap map;
-    if (!args.id.isNull())
-        map.insert(params::id, args.id);
+    map.insert(params::id, args.id);
     if (!args.name.isNull())
         map.insert(params::name, args.name);
     if (!args.params.isEmpty())

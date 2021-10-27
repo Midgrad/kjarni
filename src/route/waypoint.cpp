@@ -2,15 +2,22 @@
 
 using namespace md::domain;
 
-Waypoint::Waypoint(const QString& name, const WaypointType* type) :
-    Entity(name, nullptr),
+Waypoint::Waypoint(const WaypointType* type, const QString& name, const QVariant& id,
+                   const QVariantMap& parameters, QObject* parent) :
+    Entity(id, name, parameters, parent),
     m_type(type)
 {
     Q_ASSERT(type);
 }
 
-Waypoint::Waypoint(const QVariantMap& map, const WaypointType* type) :
-    Entity(map, nullptr),
+Waypoint::Waypoint(const WaypointType* type, const QString& name, const QVariant& id,
+                   QObject* parent) :
+    Waypoint(type, name, id, type->defaultParameters(), parent)
+{
+}
+
+Waypoint::Waypoint(const WaypointType* type, const QVariantMap& map, QObject* parent) :
+    Entity(map, parent),
     m_type(type)
 {
     Q_ASSERT(type);
@@ -29,6 +36,19 @@ QVariantMap Waypoint::toVariantMap(bool recursive) const
 const WaypointType* Waypoint::type() const
 {
     return m_type;
+}
+
+void Waypoint::setType(const WaypointType* type)
+{
+    Q_ASSERT(type);
+
+    if (m_type == type)
+        return;
+
+    m_type = type;
+    emit typeChanged();
+
+    this->syncParameters();
 }
 
 void Waypoint::setAndCheckParameter(const QString& key, const QVariant& value)
@@ -51,17 +71,9 @@ void Waypoint::resetParameter(const QString& key)
     this->setParameter(key, parameter->defaultValue);
 }
 
-void Waypoint::setType(const WaypointType* type)
+void Waypoint::resetParameters()
 {
-    Q_ASSERT(type);
-
-    if (m_type == type)
-        return;
-
-    m_type = type;
-    emit typeChanged();
-
-    this->syncParameters();
+    this->setParameters(m_type->defaultParameters());
 }
 
 void Waypoint::syncParameters()

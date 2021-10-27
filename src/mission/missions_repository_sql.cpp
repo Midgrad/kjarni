@@ -168,7 +168,7 @@ Mission* MissionsRepositorySql::readMission(const QVariant& id)
         return nullptr;
     }
 
-    Mission* mission = new Mission(map, type, this);
+    Mission* mission = new Mission(type, map);
     m_missions.insert(id, mission);
     emit missionAdded(mission);
 

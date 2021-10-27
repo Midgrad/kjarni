@@ -12,17 +12,8 @@ Entity::Entity(const QVariant& id, const QString& name, const QVariantMap& param
 }
 
 Entity::Entity(const QVariantMap& map, QObject* parent) :
-    Entity(map.value(params::id).toString(), map.value(params::name).toString(),
-           map.value(params::params).toMap(), parent)
-{
-}
-
-Entity::Entity(const QVariant& id, const QString& name, QObject* parent) :
-    Entity(id, name, QVariantMap(), parent)
-{
-}
-
-Entity::Entity(const QString& name, QObject* parent) : Entity(QUuid::createUuid(), name, parent)
+    Entity(map.value(params::id, QUuid::createUuid()).toString(),
+           map.value(params::name).toString(), map.value(params::params).toMap(), parent)
 {
 }
 
@@ -130,6 +121,7 @@ void Entity::setName(const QString& name)
 {
     if (m_name == name)
         return;
+
     m_name = name;
     emit nameChanged();
 }
