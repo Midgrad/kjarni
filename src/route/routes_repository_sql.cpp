@@ -176,13 +176,14 @@ void RoutesRepositorySql::saveRoute(Route* route)
     // Remove deleted waypoints
     for (Waypoint* waypoint : m_routeWaypoints.values(route))
     {
-        if (route->waypoints().contains(waypoint))
+        if (route->index(waypoint) > -1)
             continue;
 
         m_routeWaypointsTable.removeByConditions(
             { { params::route, route->id() }, { params::waypoint, waypoint->id() } });
         this->removeWaypoint(waypoint);
         m_routeWaypoints.remove(route, waypoint);
+        waypoint->deleteLater();
     }
 
     //  Update or insert waypoints
@@ -224,22 +225,11 @@ Route* RoutesRepositorySql::readRoute(const QVariant& id)
     m_routes.insert(id, route);
 
     // Read waypoints for route
-    for (const QVariantMap& select :
-         m_routeWaypointsTable.select({ { params::route, route->id() } }, { params::waypoint }))
+    for (const QVariant& waypointId :
+         m_routeWaypointsTable.selectOne({ { params::route, route->id() } }, params::waypoint))
     {
-        if (select.isEmpty())
-            continue;
-
-        const QVariant& waypointId = select.first();
-        Waypoint* waypoint = nullptr;
-        if (m_waypoints.contains(waypointId))
-        {
-            waypoint = m_waypoints.value(waypointId);
-        }
-        {
-            waypoint = this->readWaypoint(waypointId);
-        }
-
+        Waypoint* waypoint = m_waypoints.contains(waypointId) ? m_waypoints.value(waypointId)
+                                                              : this->readWaypoint(waypointId);
         route->addWaypoint(waypoint);
         m_routeWaypoints.insert(route, waypoint);
     }

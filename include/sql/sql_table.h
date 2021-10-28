@@ -29,6 +29,7 @@ public:
     QList<QVariantMap> select(const ConditionMap& conditions, const QStringList& resultColumns,
                               const QStringList& orderByColumns,
                               Qt::SortOrder sortOrder = Qt::AscendingOrder) const;
+    QVariantList selectOne(const ConditionMap& conditions, const QString& resultColumn) const;
 
     bool insert(const QVariantMap& valueMap, QVariant* id = nullptr);
 

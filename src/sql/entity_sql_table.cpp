@@ -13,13 +13,7 @@ EntitySqlTable::EntitySqlTable(QSqlDatabase* database, const QString& tableName)
 
 QVariantList EntitySqlTable::selectIds(const ConditionMap& conditions, const QString& column)
 {
-    QVariantList list;
-    for (const QVariantMap& map : this->select(ConditionMap(conditions), QStringList({ column })))
-    {
-        list.append(map.value(column));
-    }
-
-    return list;
+    return this->selectOne(ConditionMap(conditions), column);
 }
 
 QVariantMap EntitySqlTable::selectById(const QVariant& id, const QString& column)

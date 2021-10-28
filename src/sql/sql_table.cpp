@@ -66,6 +66,25 @@ QList<QVariantMap> SqlTable::select(const ConditionMap& conditions,
     return map;
 }
 
+QVariantList SqlTable::selectOne(const ConditionMap& conditions, const QString& resultColumn) const
+{
+    QSqlQuery query(*m_database);
+
+    bool result = query.exec(this->prepareSelect(conditions, { resultColumn }));
+    if (query.lastError().type() != QSqlError::NoError)
+        qWarning() << query.lastQuery() << query.lastError();
+
+    if (!result)
+        return QVariantList();
+
+    QVariantList list;
+    while (query.next())
+    {
+        list.append(query.value(0));
+    }
+    return list;
+}
+
 bool SqlTable::insert(const QVariantMap& valueMap, QVariant* id)
 {
     QSqlQuery query(*m_database);
