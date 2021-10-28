@@ -13,13 +13,13 @@ class RouteTest : public ::testing::Test
 public:
     RouteTest()
     {
-        waypoints.append(QVariantMap({ { params::id, QUuid::createUuid() },
+        waypoints.append(QVariantMap({ { params::id, md::utils::generateId() },
                                        { params::name, "WPT 1" },
                                        { params::type, test_mission::waypoint.name } }));
-        waypoints.append(QVariantMap({ { params::id, QUuid::createUuid() },
+        waypoints.append(QVariantMap({ { params::id, md::utils::generateId() },
                                        { params::name, "WPT 2" },
                                        { params::type, test_mission::waypoint.name } }));
-        waypoints.append(QVariantMap({ { params::id, QUuid::createUuid() },
+        waypoints.append(QVariantMap({ { params::id, md::utils::generateId() },
                                        { params::name, "CRL 3" },
                                        { params::type, test_mission::circle.name } }));
     }
@@ -30,7 +30,7 @@ public:
 TEST_F(RouteTest, testConstructFromMap)
 {
     QVariantMap map;
-    map.insert(params::id, QUuid::createUuid());
+    map.insert(params::id, md::utils::generateId());
     map.insert(params::name, "Test route");
     map.insert(params::waypoints, waypoints);
 
@@ -38,7 +38,7 @@ TEST_F(RouteTest, testConstructFromMap)
 
     EXPECT_EQ(route.id(), map.value(params::id));
     EXPECT_EQ(route.name(), map.value(params::name));
-    EXPECT_EQ(route.waypoints().count(), waypoints.count());
+    EXPECT_EQ(route.count(), waypoints.count());
 
     int index = 0;
     for (const QVariant& value : qAsConst(waypoints))
@@ -81,7 +81,7 @@ TEST_F(RouteTest, testAddWaypoint)
 {
     Route route(&test_mission::routeType, "Route");
 
-    EXPECT_TRUE(route.waypoints().isEmpty());
+    EXPECT_TRUE(route.count() == 0);
 
     auto wpt = new Waypoint(&test_mission::waypoint, "WPT");
     route.addWaypoint(wpt);
@@ -106,7 +106,7 @@ TEST_F(RouteTest, testRemoveWaypoint)
 
     EXPECT_EQ(route.count(), 2);
     EXPECT_EQ(wpt->parent(), nullptr);
-    EXPECT_FALSE(route.waypoints().contains(wpt));
+    EXPECT_FALSE(route.index(wpt) > -1);
     delete wpt;
 }
 

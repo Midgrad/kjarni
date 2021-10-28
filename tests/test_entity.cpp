@@ -10,7 +10,7 @@ using namespace md::domain;
 
 struct EntityTestArgs
 {
-    QUuid id;
+    QVariant id;
     QString name;
     QVariantMap params;
 };
@@ -24,11 +24,12 @@ public:
 INSTANTIATE_TEST_SUITE_P(
     instantiation, EntityTest,
     ::testing::Values(
-        EntityTestArgs({ QUuid::createUuid(), "Name 665", {} }),
-        EntityTestArgs({ QUuid::createUuid(), "some_name", { { "bool_propery", false } } }),
-        EntityTestArgs(
-            { QUuid::createUuid(), "entity", { { "int_propery", 34 }, { "float_propery", 34 } } }),
-        EntityTestArgs({ QUuid::createUuid(), "", { { "string_propery", "str123" } } })));
+        EntityTestArgs({ md::utils::generateId(), "Name 665", {} }),
+        EntityTestArgs({ md::utils::generateId(), "some_name", { { "bool_propery", false } } }),
+        EntityTestArgs({ md::utils::generateId(),
+                         "entity",
+                         { { "int_propery", 34 }, { "float_propery", 34 } } }),
+        EntityTestArgs({ md::utils::generateId(), "", { { "string_propery", "str123" } } })));
 
 TEST_P(EntityTest, testParameters)
 {

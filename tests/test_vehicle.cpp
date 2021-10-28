@@ -9,7 +9,7 @@ using namespace md::domain;
 
 struct VehicleTestArgs
 {
-    QUuid id;
+    QVariant id;
     QString name;
     Vehicle::Type type;
     QVariantMap params;
@@ -23,8 +23,8 @@ public:
 
 INSTANTIATE_TEST_SUITE_P(
     instantiation, VehicleTest,
-    ::testing::Values(VehicleTestArgs({ QUuid::createUuid(), "Vehicle 1", Vehicle::Generic, {} }),
-                      VehicleTestArgs({ QUuid::createUuid(), "MAV 23", Vehicle::FixedWing,
+    ::testing::Values(VehicleTestArgs({ md::utils::generateId(), "Vehicle 1", Vehicle::Generic, {} }),
+                      VehicleTestArgs({ md::utils::generateId(), "MAV 23", Vehicle::FixedWing,
                                         QVariantMap({ { "mav_id", 23 } }) })));
 
 TEST_P(VehicleTest, testConstructFromMap)

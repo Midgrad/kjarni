@@ -2,9 +2,16 @@
 
 #include <QJsonArray>
 #include <QStringList>
+#include <QUuid>
 
 namespace md::utils
 {
+QVariant generateId()
+{
+    // NOTE: .toString() is a workaround, cause QVariant loses {} cases SOMETIMES
+    return QUuid::createUuid().toString();
+}
+
 QJsonObject mergeJson(QJsonObject& src, const QJsonObject& other)
 {
     for (auto it = other.constBegin(); it != other.constEnd(); ++it)

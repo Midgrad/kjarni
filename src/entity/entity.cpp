@@ -12,8 +12,8 @@ Entity::Entity(const QVariant& id, const QString& name, const QVariantMap& param
 }
 
 Entity::Entity(const QVariantMap& map, QObject* parent) :
-    Entity(map.value(params::id, QUuid::createUuid()).toString(),
-           map.value(params::name).toString(), map.value(params::params).toMap(), parent)
+    Entity(map.value(params::id, utils::generateId()), map.value(params::name).toString(),
+           map.value(params::params).toMap(), parent)
 {
 }
 

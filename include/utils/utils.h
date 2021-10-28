@@ -2,9 +2,13 @@
 #define UTILS_H
 
 #include <QJsonObject>
+#include <QVariant>
 
 namespace md::utils
 {
+// Generate entity id
+QVariant generateId();
+
 // Merge two JSON in one
 QJsonObject mergeJson(QJsonObject& src, const QJsonObject& other);
 

@@ -2,10 +2,10 @@
 #define ENTITY_H
 
 #include <QObject>
-#include <QUuid>
 #include <QVariantMap>
 
 #include "kjarni_traits.h"
+#include "utils.h"
 
 namespace md::domain
 {
@@ -14,8 +14,8 @@ class Entity : public QObject
     Q_OBJECT
 
 public:
-    Entity(const QVariant& id, const QString& name, const QVariantMap& parameters = QVariantMap(),
-           QObject* parent = nullptr);
+    Entity(const QVariant& id = utils::generateId(), const QString& name = QString(),
+           const QVariantMap& parameters = QVariantMap(), QObject* parent = nullptr);
     Entity(const QVariantMap& map, QObject* parent = nullptr);
 
     virtual ~Entity();
@@ -46,7 +46,5 @@ private:
     QVariantMap m_parameters;
 };
 } // namespace md::domain
-
-Q_DECLARE_METATYPE(QUuid)
 
 #endif // ENTITY_H

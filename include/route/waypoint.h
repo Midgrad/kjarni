@@ -14,7 +14,7 @@ public:
     Waypoint(const WaypointType* type, const QString& name, const QVariant& id,
              const QVariantMap& parameters, QObject* parent = nullptr);
     Waypoint(const WaypointType* type, const QString& name,
-             const QVariant& id = QUuid::createUuid(), QObject* parent = nullptr);
+             const QVariant& id = utils::generateId(), QObject* parent = nullptr);
     Waypoint(const WaypointType* type, const QVariantMap& map, QObject* parent = nullptr);
 
     QVariantMap toVariantMap(bool recursive) const override;

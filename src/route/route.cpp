@@ -59,6 +59,11 @@ int Route::count() const
     return m_waypoins.count();
 }
 
+int Route::index(Waypoint* waypoint) const
+{
+    return m_waypoins.indexOf(waypoint);
+}
+
 const QList<Waypoint*>& Route::waypoints() const
 {
     return m_waypoins;

@@ -9,7 +9,7 @@ using namespace md::domain;
 
 struct WaypointTestArgs
 {
-    QUuid id;
+    QVariant id;
     QString name;
     QVariantMap params;
     const WaypointType* type;
@@ -23,21 +23,21 @@ public:
 
 INSTANTIATE_TEST_SUITE_P(
     instantiation, WaypointTest,
-    ::testing::Values(WaypointTestArgs({ QUuid::createUuid(),
+    ::testing::Values(WaypointTestArgs({ md::utils::generateId(),
                                          "WPT 1",
                                          { { mission::latitude.name, 54.196783 },
                                            { mission::longitude.name, 41.397421 },
                                            { mission::altitude.name, 850 },
                                            { mission::relative.name, true } },
                                          &test_mission::waypoint }),
-                      WaypointTestArgs({ QUuid::createUuid(),
+                      WaypointTestArgs({ md::utils::generateId(),
                                          "WPT 2",
                                          { { mission::latitude.name, 54.196783 },
                                            { mission::longitude.name, 41.397421 },
                                            { mission::altitude.name, 850 },
                                            { mission::relative.name, true } },
                                          &test_mission::waypoint }),
-                      WaypointTestArgs({ QUuid::createUuid(),
+                      WaypointTestArgs({ md::utils::generateId(),
                                          "CRL 2",
                                          { { mission::latitude.name, 54.196783 },
                                            { mission::longitude.name, 41.397421 },
