@@ -8,8 +8,9 @@ Mission::Mission(const MissionType* type, const QString& name, const QVariant& v
                  const QVariant& id, QObject* parent) :
     Entity(id, name, QVariantMap(), parent),
     m_type(type),
+    m_vehicleId(vehicleId),
     m_route(new Route(type->routeType, name + " " + tr("Route"))), // TODO: No route by default
-    m_vehicleId(vehicleId)
+    m_routeStatus(new RouteStatus(this))
 {
 }
 
@@ -17,7 +18,8 @@ Mission::Mission(const MissionType* type, const QVariantMap& map, QObject* paren
     Entity(map, parent),
     m_type(type),
     m_vehicleId(map.value(params::vehicle)),
-    m_route(new Route(type->routeType, map.value(params::route).toMap(), this))
+    m_route(new Route(type->routeType, map.value(params::route).toMap(), this)),
+    m_routeStatus(new RouteStatus(this))
 {
 }
 
@@ -59,14 +61,9 @@ Route* Mission::route() const
     return m_route;
 }
 
-const MissionStatus& Mission::status() const
+const MissionStatus& Mission::missionStatus() const
 {
     return m_status;
-}
-
-int Mission::currentWaypoint() const
-{
-    return m_currentWaypoint;
 }
 
 void Mission::updateStatus(MissionStatus::Type type, int progress, int total)

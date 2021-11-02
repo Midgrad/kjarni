@@ -5,6 +5,7 @@
 #include "mission_traits.h"
 #include "mission_type.h"
 #include "route.h"
+#include "route_status.h"
 
 namespace md::domain
 {
@@ -23,8 +24,7 @@ public:
     const MissionType* type() const;
     QVariant vehicleId() const;
     Route* route() const;
-    const MissionStatus& status() const;
-    int currentWaypoint() const;
+    const MissionStatus& missionStatus() const;
 
 public slots:
     void updateStatus(MissionStatus::Type type = MissionStatus::NotActual, int progress = -1,
@@ -38,16 +38,17 @@ signals:
     void statusChanged(MissionStatus status);
     void currentWaypointChanged(int currentWaypoint);
 
-    void upload();   // To the vehicle
-    void download(); // From the vehicle
-    void cancel();   // Downloading or uploading
-    void clear();    // Clear mission onborad and in storage
-    void switchWaypoint(int waypoint);
+    void upload();                     // To the vehicle
+    void download();                   // From the vehicle
+    void cancel();                     // Downloading or uploading
+    void clear();                      // Clear mission onborad and in storage
+    void switchWaypoint(int waypoint); // Goto waypoint
 
 private:
     const MissionType* m_type;
     const QVariant m_vehicleId;
-    Route* const m_route;
+    Route* const m_route;             // TODO: no const
+    RouteStatus* const m_routeStatus; // TODO: no const
     MissionStatus m_status;
     int m_currentWaypoint = -1;
 };

@@ -1,6 +1,7 @@
 #include "mission_status.h"
 
 #include <QDebug>
+#include <QMetaEnum>
 
 #include "mission_traits.h"
 
@@ -33,14 +34,14 @@ bool MissionStatus::isComplete() const
     return m_progress + 1 >= m_total;
 }
 
-QJsonObject MissionStatus::toJson() const
+QVariantMap MissionStatus::toVariantMap() const
 {
-    QJsonObject json;
-    json[params::progress] = m_progress;
-    json[params::total] = m_total;
-    json[params::complete] = this->isComplete();
-    json[params::type] = this->type();
-    return json;
+    QVariantMap map;
+    map[params::progress] = m_progress;
+    map[params::total] = m_total;
+    map[params::complete] = this->isComplete();
+    map[params::type] = QVariant::fromValue(m_type).toString();
+    return map;
 }
 
 namespace md::domain

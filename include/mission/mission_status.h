@@ -1,12 +1,12 @@
 #ifndef MISSION_STATUS_H
 #define MISSION_STATUS_H
 
-#include <QJsonObject>
 #include <QObject>
+#include <QVariantMap>
 
 namespace md::domain
 {
-class MissionStatus
+class MissionStatus // TODO: To MissionActualization
 {
     Q_GADGET
 
@@ -26,7 +26,7 @@ public:
     int total() const;
 
     bool isComplete() const;
-    QJsonObject toJson() const;
+    QVariantMap toVariantMap() const;
 
     friend bool operator==(const MissionStatus& left, const MissionStatus& right);
 
@@ -34,6 +34,8 @@ private:
     Type m_type;
     int m_progress;
     int m_total;
+
+    Q_ENUM(Type);
 };
 
 bool operator==(const MissionStatus& left, const MissionStatus& right);
