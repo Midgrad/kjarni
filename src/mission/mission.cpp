@@ -63,6 +63,11 @@ Route* Mission::route() const
     return m_route;
 }
 
+RouteStatus* Mission::routeStatus() const
+{
+    return m_routeStatus;
+}
+
 const MissionStatus& Mission::missionStatus() const
 {
     return m_status;
@@ -105,13 +110,4 @@ void Mission::updateStatusProgress(int progress)
     {
         this->updateStatus(m_status.type(), progress);
     }
-}
-
-void Mission::setCurrentWaypoint(int currentWaypoint)
-{
-    if (m_currentWaypoint == currentWaypoint)
-        return;
-
-    m_currentWaypoint = currentWaypoint;
-    emit currentWaypointChanged(currentWaypoint);
 }

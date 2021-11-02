@@ -24,6 +24,7 @@ public:
     const MissionType* type() const;
     QVariant vehicleId() const;
     Route* route() const;
+    RouteStatus* routeStatus() const;
     const MissionStatus& missionStatus() const;
 
 public slots:
@@ -31,19 +32,16 @@ public slots:
     void updateStatus(MissionStatus::Type type = MissionStatus::NotActual, int progress = -1,
                       int total = -1);
     void updateStatusProgress(int progress);
-    void setCurrentWaypoint(int currentWaypoint);
 
 signals:
     void vehicleChanged(QVariant vehicle);
     void routeChanged(Route* route, RouteStatus* routeStatus);
     void statusChanged(MissionStatus status);
-    void currentWaypointChanged(int currentWaypoint);
 
-    void upload();                     // To the vehicle
-    void download();                   // From the vehicle
-    void cancel();                     // Downloading or uploading
-    void clear();                      // Clear mission onborad and in storage
-    void switchWaypoint(int waypoint); // Goto waypoint
+    void upload();   // To the vehicle
+    void download(); // From the vehicle
+    void cancel();   // Downloading or uploading
+    void clear();    // Clear mission onborad and in storage
 
 private:
     const MissionType* m_type;
@@ -51,7 +49,6 @@ private:
     Route* m_route = nullptr;
     RouteStatus* m_routeStatus = nullptr;
     MissionStatus m_status;
-    int m_currentWaypoint = -1;
 };
 } // namespace md::domain
 

@@ -6,7 +6,7 @@
 
 namespace md::domain
 {
-class WaypointStatus
+class WaypointStatus // TODO: MissionWaypoint
 {
     Q_GADGET
 
@@ -16,7 +16,7 @@ public:
         Unknown,
         Current,
         Normal,
-        Passed,
+        Reached,
         Unconfirmed
     };
 

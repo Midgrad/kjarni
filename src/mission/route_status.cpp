@@ -20,6 +20,11 @@ WaypointStatus RouteStatus::waypointStatus(int index) const
     return m_waypointStatuses.value(index, WaypointStatus());
 }
 
+int RouteStatus::currentWaypoint() const
+{
+    return m_currentWaypoint;
+}
+
 QVariantList RouteStatus::toVariantList() const
 {
     QVariantList list;
@@ -37,4 +42,23 @@ void RouteStatus::setWaypointStatus(int index, WaypointStatus status)
 
     m_waypointStatuses[index] = status;
     emit waypointStatusChanged(index, status);
+}
+
+void RouteStatus::setCurrentWaypoint(int index)
+{
+    if (m_currentWaypoint == index)
+        return;
+
+    if (m_currentWaypoint > -1)
+    {
+        this->setWaypointStatus(index, WaypointStatus::Normal);
+    }
+
+    m_currentWaypoint = index;
+
+    if (m_currentWaypoint > -1)
+    {
+        this->setWaypointStatus(index, WaypointStatus::Current);
+    }
+    emit currentWaypointChanged(index);
 }
