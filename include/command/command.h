@@ -12,11 +12,11 @@ class Command : public QObject
 public:
     Command(QObject* parent = nullptr);
 
-    void subscribe(std::function<void(const QString& target, const QVariantList& args)> func,
+    void subscribe(std::function<void(const QVariant&, const QVariantList&)> func,
                    QObject* owner = nullptr);
 
 signals:
-    void exec(const QString& target, const QVariantList& args);
+    void exec(const QVariant& target, const QVariantList& args);
 };
 } // namespace md::domain
 

@@ -6,7 +6,7 @@ Command::Command(QObject* parent) : QObject(parent)
 {
 }
 
-void Command::subscribe(std::function<void(const QString&, const QVariantList&)> func,
+void Command::subscribe(std::function<void(const QVariant&, const QVariantList&)> func,
                         QObject* owner)
 {
     connect(this, &Command::exec, owner, func);
