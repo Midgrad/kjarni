@@ -2,22 +2,25 @@
 
 #include <QDebug>
 
+#include "mission_traits.h"
+
 using namespace md::domain;
 
 Mission::Mission(const MissionType* type, const QString& name, const QVariant& vehicleId,
                  const QVariant& id, QObject* parent) :
     Entity(id, name, QVariantMap(), parent),
     m_type(type),
-    m_vehicleId(vehicleId)
+    m_vehicleId(vehicleId),
+    m_operation(new MissionOperation(this))
 {
 }
 
 Mission::Mission(const MissionType* type, const QVariantMap& map, QObject* parent) :
     Entity(map, parent),
     m_type(type),
-    m_vehicleId(map.value(params::vehicle))
+    m_vehicleId(map.value(params::vehicle)),
+    m_operation(new MissionOperation(this))
 {
-    this->fromVariantMap(map);
 }
 
 QVariantMap Mission::toVariantMap(bool recursive) const
@@ -30,22 +33,12 @@ QVariantMap Mission::toVariantMap(bool recursive) const
     if (m_route)
     {
         if (recursive)
-            map.insert(params::route, m_route->toVariantMap(recursive));
+            map.insert(params::route, m_route->route()->toVariantMap(recursive));
         else
-            map.insert(params::route, m_route->id());
+            map.insert(params::route, m_route->route()->id());
     }
 
     return map;
-}
-
-void Mission::fromVariantMap(const QVariantMap& map)
-{
-    if (map.contains(params::route) && m_route)
-    {
-        m_route->fromVariantMap(map.value(params::route).toMap());
-    }
-
-    Entity::fromVariantMap(map);
 }
 
 const MissionType* Mission::type() const
@@ -58,56 +51,24 @@ QVariant Mission::vehicleId() const
     return m_vehicleId;
 }
 
-Route* Mission::route() const
+MissionRoute* Mission::route() const
 {
     return m_route;
 }
 
-RouteStatus* Mission::routeStatus() const
+MissionOperation* Mission::operation() const
 {
-    return m_routeStatus;
+    return m_operation;
 }
 
-const MissionStatus& Mission::missionStatus() const
+void Mission::assignRoute(Route* route)
 {
-    return m_status;
-}
-
-void Mission::setRoute(Route* route)
-{
-    if (m_route == route)
+    if (m_route && m_route->route() == route)
         return;
 
-    if (m_routeStatus)
-        m_routeStatus->deleteLater();
+    if (m_route)
+        m_route->deleteLater();
 
-    m_route = route;
-    m_routeStatus = m_route ? new RouteStatus(m_route, this) : nullptr;
-
-    emit routeChanged(m_route, m_routeStatus);
-}
-
-void Mission::updateStatus(MissionStatus::Type type, int progress, int total)
-{
-    progress = progress == -1 ? m_status.progress() : progress;
-    total = total == -1 ? m_status.total() : total;
-
-    MissionStatus status(type, progress, total);
-    if (m_status == status)
-        return;
-
-    m_status = status;
-    emit statusChanged(status);
-}
-
-void Mission::updateStatusProgress(int progress)
-{
-    if (progress >= m_status.total())
-    {
-        this->updateStatus(MissionStatus::Actual);
-    }
-    else
-    {
-        this->updateStatus(m_status.type(), progress);
-    }
+    m_route = route ? new MissionRoute(route, this) : nullptr;
+    emit routeChanged(m_route);
 }

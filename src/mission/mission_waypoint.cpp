@@ -1,4 +1,4 @@
-#include "waypoint_status.h"
+#include "mission_waypoint.h"
 
 #include <QDebug>
 #include <QMetaEnum>
@@ -7,16 +7,16 @@
 
 using namespace md::domain;
 
-WaypointStatus::WaypointStatus(State state) : m_state(state)
+MissionWaypoint::MissionWaypoint(State state) : m_state(state)
 {
 }
 
-WaypointStatus::State WaypointStatus::state() const
+MissionWaypoint::State MissionWaypoint::state() const
 {
     return m_state;
 }
 
-QVariantMap WaypointStatus::toVariantMap() const
+QVariantMap MissionWaypoint::toVariantMap() const
 {
     QVariantMap map;
     map[params::state] = QVariant::fromValue(m_state).toString();
@@ -25,7 +25,7 @@ QVariantMap WaypointStatus::toVariantMap() const
 
 namespace md::domain
 {
-bool operator==(const WaypointStatus& left, const WaypointStatus& right)
+bool operator==(const MissionWaypoint& left, const MissionWaypoint& right)
 {
     return left.m_state == right.m_state;
 }

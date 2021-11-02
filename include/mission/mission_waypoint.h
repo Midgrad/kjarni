@@ -1,12 +1,12 @@
-#ifndef WAYPOINT_STATUS_H
-#define WAYPOINT_STATUS_H
+#ifndef MISSION_WAYPOINT_H
+#define MISSION_WAYPOINT_H
 
 #include <QObject>
 #include <QVariantMap>
 
 namespace md::domain
 {
-class WaypointStatus // TODO: MissionWaypoint
+class MissionWaypoint
 {
     Q_GADGET
 
@@ -20,13 +20,13 @@ public:
         Unconfirmed
     };
 
-    WaypointStatus(State state = Unconfirmed);
+    MissionWaypoint(State state = Unconfirmed);
 
     State state() const;
 
     QVariantMap toVariantMap() const;
 
-    friend bool operator==(const WaypointStatus& left, const WaypointStatus& right);
+    friend bool operator==(const MissionWaypoint& left, const MissionWaypoint& right);
 
 private:
     State m_state;
@@ -34,8 +34,8 @@ private:
     Q_ENUM(State);
 };
 
-bool operator==(const WaypointStatus& left, const WaypointStatus& right);
+bool operator==(const MissionWaypoint& left, const MissionWaypoint& right);
 
 } // namespace md::domain
 
-#endif // WAYPOINT_STATUS_H
+#endif // MISSION_WAYPOINT_H

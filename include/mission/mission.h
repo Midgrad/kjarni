@@ -1,11 +1,9 @@
 #ifndef MISSION_H
 #define MISSION_H
 
-#include "mission_status.h"
-#include "mission_traits.h"
+#include "mission_operation.h"
+#include "mission_route.h"
 #include "mission_type.h"
-#include "route.h"
-#include "route_status.h"
 
 namespace md::domain
 {
@@ -19,36 +17,23 @@ public:
     Mission(const MissionType* type, const QVariantMap& map, QObject* parent = nullptr);
 
     QVariantMap toVariantMap(bool recursive) const override;
-    void fromVariantMap(const QVariantMap& map) override;
 
     const MissionType* type() const;
     QVariant vehicleId() const;
-    Route* route() const;
-    RouteStatus* routeStatus() const;
-    const MissionStatus& missionStatus() const;
+    MissionOperation* operation() const;
+    MissionRoute* route() const;
 
 public slots:
-    void setRoute(Route* route);
-    void updateStatus(MissionStatus::Type type = MissionStatus::NotActual, int progress = -1,
-                      int total = -1);
-    void updateStatusProgress(int progress);
+    void assignRoute(Route* route);
 
 signals:
-    void vehicleChanged(QVariant vehicle);
-    void routeChanged(Route* route, RouteStatus* routeStatus);
-    void statusChanged(MissionStatus status);
-
-    void upload();   // To the vehicle
-    void download(); // From the vehicle
-    void cancel();   // Downloading or uploading
-    void clear();    // Clear mission onborad and in storage
+    void routeChanged(MissionRoute* route);
 
 private:
     const MissionType* m_type;
     const QVariant m_vehicleId;
-    Route* m_route = nullptr;
-    RouteStatus* m_routeStatus = nullptr;
-    MissionStatus m_status;
+    MissionOperation* const m_operation;
+    MissionRoute* m_route = nullptr;
 };
 } // namespace md::domain
 

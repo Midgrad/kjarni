@@ -2,6 +2,7 @@
 
 #include <QDebug>
 
+#include "mission_traits.h"
 #include "utils.h"
 
 namespace
@@ -17,7 +18,6 @@ MissionsRepositorySql::MissionsRepositorySql(IRoutesRepository* routes, QSqlData
     m_routes(routes),
     m_missionsTable(database, ::missions)
 {
-    qRegisterMetaType<MissionStatus>("MissionStatus");
 }
 
 MissionsRepositorySql::~MissionsRepositorySql()
@@ -138,7 +138,7 @@ void MissionsRepositorySql::saveMission(Mission* mission)
     }
 
     if (mission->route())
-        m_routes->saveRoute(mission->route());
+        m_routes->saveRoute(mission->route()->route());
 
     mission->moveToThread(this->thread());
     mission->setParent(this);
@@ -173,7 +173,7 @@ Mission* MissionsRepositorySql::readMission(const QVariant& id)
     emit missionAdded(mission);
 
     Route* route = m_routes->route(map.value(params::route));
-    mission->setRoute(route);
+    mission->assignRoute(route);
 
     return mission;
 }
