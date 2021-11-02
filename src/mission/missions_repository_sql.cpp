@@ -137,11 +137,11 @@ void MissionsRepositorySql::saveMission(Mission* mission)
         return;
     }
 
-    mission->moveToThread(this->thread());
-    mission->setParent(this);
-
     if (mission->route())
         m_routes->saveRoute(mission->route());
+
+    mission->moveToThread(this->thread());
+    mission->setParent(this);
 
     if (m_missions.contains(mission->id()))
     {
@@ -172,7 +172,8 @@ Mission* MissionsRepositorySql::readMission(const QVariant& id)
     m_missions.insert(id, mission);
     emit missionAdded(mission);
 
-    QVariant routeId = map.value(params::route);
+    Route* route = m_routes->route(map.value(params::route));
+    mission->setRoute(route);
 
     return mission;
 }

@@ -27,6 +27,7 @@ public:
     const MissionStatus& missionStatus() const;
 
 public slots:
+    void setRoute(Route* route);
     void updateStatus(MissionStatus::Type type = MissionStatus::NotActual, int progress = -1,
                       int total = -1);
     void updateStatusProgress(int progress);
@@ -34,7 +35,7 @@ public slots:
 
 signals:
     void vehicleChanged(QVariant vehicle);
-    void routeChanged(Route* route);
+    void routeChanged(Route* route, RouteStatus* routeStatus);
     void statusChanged(MissionStatus status);
     void currentWaypointChanged(int currentWaypoint);
 
@@ -47,8 +48,8 @@ signals:
 private:
     const MissionType* m_type;
     const QVariant m_vehicleId;
-    Route* const m_route;             // TODO: no const
-    RouteStatus* const m_routeStatus; // TODO: no const
+    Route* m_route = nullptr;
+    RouteStatus* m_routeStatus = nullptr;
     MissionStatus m_status;
     int m_currentWaypoint = -1;
 };

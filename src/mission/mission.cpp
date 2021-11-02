@@ -8,19 +8,16 @@ Mission::Mission(const MissionType* type, const QString& name, const QVariant& v
                  const QVariant& id, QObject* parent) :
     Entity(id, name, QVariantMap(), parent),
     m_type(type),
-    m_vehicleId(vehicleId),
-    m_route(new Route(type->routeType, name + " " + tr("Route"))), // TODO: No route by default
-    m_routeStatus(new RouteStatus(this))
+    m_vehicleId(vehicleId)
 {
 }
 
 Mission::Mission(const MissionType* type, const QVariantMap& map, QObject* parent) :
     Entity(map, parent),
     m_type(type),
-    m_vehicleId(map.value(params::vehicle)),
-    m_route(new Route(type->routeType, map.value(params::route).toMap(), this)),
-    m_routeStatus(new RouteStatus(this))
+    m_vehicleId(map.value(params::vehicle))
 {
+    this->fromVariantMap(map);
 }
 
 QVariantMap Mission::toVariantMap(bool recursive) const
@@ -30,18 +27,23 @@ QVariantMap Mission::toVariantMap(bool recursive) const
     map.insert(params::type, m_type->name);
     map.insert(params::vehicle, m_vehicleId);
 
-    if (recursive)
-        map.insert(params::route, m_route->toVariantMap(recursive));
-    else
-        map.insert(params::route, m_route->id());
+    if (m_route)
+    {
+        if (recursive)
+            map.insert(params::route, m_route->toVariantMap(recursive));
+        else
+            map.insert(params::route, m_route->id());
+    }
 
     return map;
 }
 
 void Mission::fromVariantMap(const QVariantMap& map)
 {
-    if (map.contains(params::route))
+    if (map.contains(params::route) && m_route)
+    {
         m_route->fromVariantMap(map.value(params::route).toMap());
+    }
 
     Entity::fromVariantMap(map);
 }
@@ -64,6 +66,20 @@ Route* Mission::route() const
 const MissionStatus& Mission::missionStatus() const
 {
     return m_status;
+}
+
+void Mission::setRoute(Route* route)
+{
+    if (m_route == route)
+        return;
+
+    if (m_routeStatus)
+        m_routeStatus->deleteLater();
+
+    m_route = route;
+    m_routeStatus = m_route ? new RouteStatus(m_route, this) : nullptr;
+
+    emit routeChanged(m_route, m_routeStatus);
 }
 
 void Mission::updateStatus(MissionStatus::Type type, int progress, int total)

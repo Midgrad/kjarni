@@ -7,8 +7,12 @@
 
 using namespace md::domain;
 
-RouteStatus::RouteStatus(QObject* parent) : QObject(parent)
+RouteStatus::RouteStatus(Route* route, QObject* parent) : QObject(parent), m_route(route)
 {
+    for (int index = 0; index < route->count(); ++index)
+    {
+        m_waypointStatuses[index] = WaypointStatus();
+    }
 }
 
 WaypointStatus RouteStatus::waypointStatus(int index) const
