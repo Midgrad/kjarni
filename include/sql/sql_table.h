@@ -46,6 +46,7 @@ protected:
     QString prepareSelect(const QVariantMap& conditions, const QStringList& resultColumns = {},
                           const QStringList& sortColumns = {}, Qt::SortOrder sortOrder = {}) const;
     QString where(const QVariantMap& conditions) const;
+    QVariantMap filterByColumns(const QVariantMap& valueMap);
 
     void bind(QSqlQuery& query, const QVariantMap& valueMap);
 

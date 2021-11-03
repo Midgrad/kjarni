@@ -87,18 +87,20 @@ QVariantList SqlTable::selectOne(const ConditionMap& conditions, const QString& 
 
 bool SqlTable::insert(const QVariantMap& valueMap, QVariant* id)
 {
+    QVariantMap filtered = this->filterByColumns(valueMap);
+
     QSqlQuery query(*m_database);
 
     QStringList placeholders;
-    for (const QString& name : valueMap.keys())
+    for (const QString& name : filtered.keys())
     {
         placeholders.append(sql::hold + name);
     }
 
-    QString namesJoin = valueMap.keys().join(sql::comma);
+    QString namesJoin = filtered.keys().join(sql::comma);
     QString valuesJoin = placeholders.join(sql::comma);
     query.prepare("INSERT INTO " + m_tableName + " (" + namesJoin + ") VALUES (" + valuesJoin + ")");
-    this->bind(query, valueMap);
+    this->bind(query, filtered);
 
     bool result = query.exec();
     if (query.lastError().type() != QSqlError::NoError)
@@ -135,8 +137,10 @@ bool SqlTable::updateByConditions(const QVariantMap& valueMap, const ConditionMa
     if (conditions.isEmpty())
         return false;
 
+    QVariantMap filtered = this->filterByColumns(valueMap);
+
     QStringList pairs;
-    for (const QString& name : valueMap.keys())
+    for (const QString& name : filtered.keys())
     {
         // TODO: ignore names missmatching table columns
         pairs.append(name + " = " + sql::hold + name);
@@ -145,7 +149,7 @@ bool SqlTable::updateByConditions(const QVariantMap& valueMap, const ConditionMa
     QSqlQuery query(*m_database);
     query.prepare("UPDATE " + m_tableName + " SET " + pairs.join(sql::comma) +
                   this->where(conditions));
-    this->bind(query, valueMap);
+    this->bind(query, filtered);
 
     bool result = query.exec();
     if (query.lastError().type() != QSqlError::NoError)
@@ -199,6 +203,17 @@ QString SqlTable::where(const QVariantMap& conditions) const
         }
     }
     return QString(" WHERE ") + conditionList.join(" AND ");
+}
+
+QVariantMap SqlTable::filterByColumns(const QVariantMap& valueMap)
+{
+    QVariantMap result;
+    for (const QString& key : valueMap.keys())
+    {
+        if (m_columnNames.contains(key))
+            result.insert(key, valueMap.value(key));
+    }
+    return result;
 }
 
 void SqlTable::bind(QSqlQuery& query, const QVariantMap& valueMap)
