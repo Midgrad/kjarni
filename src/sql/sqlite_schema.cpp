@@ -57,6 +57,7 @@ void SqliteSchema::setup()
                "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
                "params TEXT, "
+               "confirmed INTEGER, "
                "type STRING);");
 
     query.exec("CREATE TABLE route_waypoints ("
