@@ -138,7 +138,7 @@ void MissionsRepositorySql::saveMission(Mission* mission)
     }
 
     if (mission->route())
-        m_routes->saveRoute(mission->route()->route());
+        m_routes->saveRoute(mission->route());
 
     mission->moveToThread(this->thread());
     mission->setParent(this);

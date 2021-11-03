@@ -2,8 +2,8 @@
 #define MISSION_H
 
 #include "mission_operation.h"
-#include "mission_route.h"
 #include "mission_type.h"
+#include "route.h"
 
 namespace md::domain
 {
@@ -21,19 +21,19 @@ public:
     const MissionType* type() const;
     QVariant vehicleId() const;
     MissionOperation* operation() const;
-    MissionRoute* route() const;
+    Route* route() const;
 
 public slots:
     void assignRoute(Route* route);
 
 signals:
-    void routeChanged(MissionRoute* route);
+    void routeChanged(Route* route);
 
 private:
     const MissionType* m_type;
     const QVariant m_vehicleId;
     MissionOperation* const m_operation;
-    MissionRoute* m_route = nullptr;
+    Route* m_route = nullptr;
 };
 } // namespace md::domain
 

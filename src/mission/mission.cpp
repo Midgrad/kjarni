@@ -33,9 +33,9 @@ QVariantMap Mission::toVariantMap(bool recursive) const
     if (m_route)
     {
         if (recursive)
-            map.insert(params::route, m_route->route()->toVariantMap(recursive));
+            map.insert(params::route, m_route->toVariantMap(recursive));
         else
-            map.insert(params::route, m_route->route()->id());
+            map.insert(params::route, m_route->id());
     }
 
     return map;
@@ -51,7 +51,7 @@ QVariant Mission::vehicleId() const
     return m_vehicleId;
 }
 
-MissionRoute* Mission::route() const
+Route* Mission::route() const
 {
     return m_route;
 }
@@ -63,12 +63,9 @@ MissionOperation* Mission::operation() const
 
 void Mission::assignRoute(Route* route)
 {
-    if (m_route && m_route->route() == route)
+    if (m_route == route)
         return;
 
-    if (m_route)
-        m_route->deleteLater();
-
-    m_route = route ? new MissionRoute(route, this) : nullptr;
+    m_route = route;
     emit routeChanged(m_route);
 }

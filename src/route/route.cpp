@@ -74,6 +74,16 @@ Waypoint* Route::waypoint(int index) const
     return m_waypoins.value(index, nullptr);
 }
 
+Waypoint* Route::currentWaypoint() const
+{
+    return m_currentWaypoint;
+}
+
+int Route::currentWaypointIndex() const
+{
+    return m_waypoins.indexOf(m_currentWaypoint);
+}
+
 void Route::setWaypoints(const QList<Waypoint*>& waypoins)
 {
     // Remove old waypoints (std::remove_if does not emit signals)
@@ -104,7 +114,11 @@ void Route::addWaypoint(Waypoint* waypoint)
     if (!waypoint->parent())
         waypoint->setParent(this);
 
+    // TODO: changed & selfChanged
     connect(waypoint, &Waypoint::parametersChanged, this, [waypoint, this]() {
+        emit waypointChanged(waypoint);
+    });
+    connect(waypoint, &Waypoint::stateChanged, this, [waypoint, this]() {
         emit waypointChanged(waypoint);
     });
 
@@ -125,6 +139,24 @@ void Route::removeWaypoint(Waypoint* waypoint)
 
     m_waypoins.removeOne(waypoint);
     emit waypointRemoved(waypoint);
+}
+
+void Route::setCurrentWaypointIndex(int currentWaypointIndex)
+{
+    Waypoint* currentWaypoint = this->waypoint(currentWaypointIndex);
+
+    if (m_currentWaypoint == currentWaypoint)
+        return;
+
+    if (m_currentWaypoint)
+        m_currentWaypoint->setState(Waypoint::Normal);
+
+    m_currentWaypoint = currentWaypoint;
+
+    if (m_currentWaypoint)
+        m_currentWaypoint->setState(Waypoint::Current);
+
+    emit currentWaypointChanged(currentWaypointIndex);
 }
 
 void Route::fromVariantMapImpl(const QVariantMap& map)

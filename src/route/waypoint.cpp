@@ -1,6 +1,18 @@
 #include "waypoint.h"
 
+#include <QDebug>
+#include <QMetaEnum>
+
 using namespace md::domain;
+
+namespace
+{
+Waypoint::State stateFromVariant(const QVariant& value)
+{
+    auto&& metaEnum = QMetaEnum::fromType<Waypoint::State>();
+    return static_cast<Waypoint::State>(metaEnum.keyToValue(value.toString().toUtf8().constData()));
+}
+} // namespace
 
 Waypoint::Waypoint(const WaypointType* type, const QString& name, const QVariant& id,
                    const QVariantMap& parameters, QObject* parent) :
@@ -18,7 +30,8 @@ Waypoint::Waypoint(const WaypointType* type, const QString& name, const QVariant
 
 Waypoint::Waypoint(const WaypointType* type, const QVariantMap& map, QObject* parent) :
     Entity(map, parent),
-    m_type(type)
+    m_type(type),
+    m_state(::stateFromVariant(map.value(params::state)))
 {
     Q_ASSERT(type);
 }
@@ -29,13 +42,27 @@ QVariantMap Waypoint::toVariantMap(bool recursive) const
 
     QVariantMap map = Entity::toVariantMap();
     map.insert(params::type, m_type->name);
+    map.insert(params::state, QVariant::fromValue(m_state).toString());
 
     return map;
+}
+
+void Waypoint::fromVariantMap(const QVariantMap& map)
+{
+    if (map.contains(params::state))
+        this->setState(::stateFromVariant(map.value(params::state)));
+
+    Entity::fromVariantMap(map);
 }
 
 const WaypointType* Waypoint::type() const
 {
     return m_type;
+}
+
+Waypoint::State Waypoint::state() const
+{
+    return m_state;
 }
 
 void Waypoint::setType(const WaypointType* type)
@@ -49,6 +76,15 @@ void Waypoint::setType(const WaypointType* type)
     emit typeChanged();
 
     this->syncParameters();
+}
+
+void Waypoint::setState(State state)
+{
+    if (m_state == state)
+        return;
+
+    m_state = state;
+    emit stateChanged();
 }
 
 void Waypoint::setAndCheckParameter(const QString& key, const QVariant& value)
