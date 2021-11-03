@@ -29,6 +29,7 @@ public slots:
     virtual void removeRoute(Route* route) override;
     virtual void restoreRoute(Route* route) override;
     virtual void saveRoute(Route* route) override;
+    virtual void saveWaypoint(Route* route, Waypoint* waypoint) override;
 
 private:
     Route* readRoute(const QVariant& id);

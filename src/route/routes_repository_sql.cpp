@@ -186,26 +186,31 @@ void RoutesRepositorySql::saveRoute(Route* route)
         waypoint->deleteLater();
     }
 
-    //  Update or insert waypoints
+    // Update or insert waypoints
     for (Waypoint* waypoint : route->waypoints())
     {
-        if (m_waypoints.contains(waypoint->id()))
-        {
-            m_waypointsTable.updateEntity(waypoint);
-        }
-        else
-        {
-            m_waypointsTable.insertEntity(waypoint);
-            m_waypoints.insert(waypoint->id(), waypoint);
-        }
+        this->saveWaypoint(route, waypoint);
+    }
+}
 
-        if (!m_routeWaypoints.contains(route, waypoint))
-        {
-            m_routeWaypoints.insert(route, waypoint);
+void RoutesRepositorySql::saveWaypoint(Route* route, Waypoint* waypoint)
+{
+    if (m_waypoints.contains(waypoint->id()))
+    {
+        m_waypointsTable.updateEntity(waypoint);
+    }
+    else
+    {
+        m_waypointsTable.insertEntity(waypoint);
+        m_waypoints.insert(waypoint->id(), waypoint);
+    }
 
-            m_routeWaypointsTable.insert(
-                { { params::route, route->id() }, { params::waypoint, waypoint->id() } });
-        }
+    if (!m_routeWaypoints.contains(route, waypoint))
+    {
+        m_routeWaypoints.insert(route, waypoint);
+
+        m_routeWaypointsTable.insert(
+            { { params::route, route->id() }, { params::waypoint, waypoint->id() } });
     }
 }
 

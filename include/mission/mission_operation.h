@@ -34,10 +34,11 @@ public slots:
     void setProgress(int progress);
 
 signals:
-    void upload();   // To the vehicle
-    void download(); // From the vehicle
-    void cancel();   // Downloading or uploading
-    void clear();    // Clear mission onborad and in storage
+    void uploadItem(int index); // Waypoint to the vehicle
+    void upload();              // Full mission to the vehicle
+    void download();            // Full mission from the vehicle
+    void cancel();              // Downloading or uploading process
+    void clear();               // Clear mission onborad and in storage
 
     void changed();
 
