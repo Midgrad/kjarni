@@ -11,6 +11,10 @@ namespace params
 constexpr char waypoints[] = "waypoints";
 constexpr char waypoint[] = "waypoint";
 constexpr char route[] = "route";
+
+constexpr char current[] = "current";
+constexpr char reached[] = "reached";
+constexpr char confirmed[] = "confirmed";
 } // namespace params
 
 namespace mission

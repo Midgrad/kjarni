@@ -55,7 +55,7 @@ void EntitySqlTable::readEntity(domain::Entity* entity)
 
 void EntitySqlTable::updateEntity(domain::Entity* entity)
 {
-    this->updateById(entity->toVariantMap(false), entity->id());
+    this->updateById(this->entityToMap(entity), entity->id());
 }
 
 void EntitySqlTable::removeEntity(domain::Entity* entity)

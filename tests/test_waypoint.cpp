@@ -11,6 +11,9 @@ struct WaypointTestArgs
 {
     QVariant id;
     QString name;
+    bool current;
+    bool reached;
+    bool confirmed;
     QVariantMap params;
     const WaypointType* type;
 };
@@ -25,6 +28,9 @@ INSTANTIATE_TEST_SUITE_P(
     instantiation, WaypointTest,
     ::testing::Values(WaypointTestArgs({ md::utils::generateId(),
                                          "WPT 1",
+                                         true,
+                                         false,
+                                         false,
                                          { { mission::latitude.name, 54.196783 },
                                            { mission::longitude.name, 41.397421 },
                                            { mission::altitude.name, 850 },
@@ -32,6 +38,9 @@ INSTANTIATE_TEST_SUITE_P(
                                          &test_mission::waypoint }),
                       WaypointTestArgs({ md::utils::generateId(),
                                          "WPT 2",
+                                         false,
+                                         false,
+                                         false,
                                          { { mission::latitude.name, 54.196783 },
                                            { mission::longitude.name, 41.397421 },
                                            { mission::altitude.name, 850 },
@@ -39,6 +48,9 @@ INSTANTIATE_TEST_SUITE_P(
                                          &test_mission::waypoint }),
                       WaypointTestArgs({ md::utils::generateId(),
                                          "CRL 2",
+                                         true,
+                                         false,
+                                         true,
                                          { { mission::latitude.name, 54.196783 },
                                            { mission::longitude.name, 41.397421 },
                                            { mission::altitude.name, 850 },
@@ -53,6 +65,9 @@ TEST_P(WaypointTest, testConstructFromMap)
     map.insert(params::id, args.id.toString());
     map.insert(params::name, args.name);
     map.insert(params::params, QJsonValue::fromVariant(args.params));
+    map.insert(params::current, args.current);
+    map.insert(params::reached, args.reached);
+    map.insert(params::confirmed, args.confirmed);
 
     Waypoint waypoint(args.type, map);
 
@@ -60,6 +75,9 @@ TEST_P(WaypointTest, testConstructFromMap)
     EXPECT_EQ(waypoint.name(), args.name);
     EXPECT_EQ(waypoint.parameters(), args.params);
     EXPECT_EQ(waypoint.type(), args.type);
+    EXPECT_EQ(waypoint.current(), args.current);
+    EXPECT_EQ(waypoint.reached(), args.reached);
+    EXPECT_EQ(waypoint.confirmed(), args.confirmed);
 }
 
 TEST_P(WaypointTest, testFromVariant)
@@ -70,16 +88,25 @@ TEST_P(WaypointTest, testFromVariant)
     QVariantMap map;
     map.insert(params::name, args.name);
     map.insert(params::params, QJsonValue::fromVariant(args.params));
+    map.insert(params::current, args.current);
+    map.insert(params::reached, args.reached);
+    map.insert(params::confirmed, args.confirmed);
 
     waypoint.fromVariantMap(map);
     EXPECT_EQ(waypoint.name(), args.name);
     EXPECT_EQ(waypoint.parameters(), args.params);
+    EXPECT_EQ(waypoint.current(), args.current);
+    EXPECT_EQ(waypoint.reached(), args.reached);
+    EXPECT_EQ(waypoint.confirmed(), args.confirmed);
 }
 
 TEST_P(WaypointTest, testToVariant)
 {
     WaypointTestArgs args = GetParam();
     Waypoint waypoint(args.type, GetParam().name, GetParam().id, GetParam().params);
+    waypoint.setCurrent(args.current);
+    waypoint.setReached(args.reached);
+    waypoint.setConfirmed(args.confirmed);
 
     QVariantMap map;
     map.insert(params::id, args.id);
@@ -87,6 +114,9 @@ TEST_P(WaypointTest, testToVariant)
     if (!args.params.isEmpty())
         map.insert(params::params, args.params);
     map.insert(params::type, args.type->name);
+    map.insert(params::current, args.current);
+    map.insert(params::reached, args.reached);
+    map.insert(params::confirmed, args.confirmed);
 
     EXPECT_EQ(map, waypoint.toVariantMap(true));
 }

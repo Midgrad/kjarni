@@ -34,9 +34,6 @@ public:
 public slots:
     void setType(Type type);
 
-signals:
-    void typeChanged(Type type);
-
 private:
     Type m_type;
 

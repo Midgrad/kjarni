@@ -1,18 +1,10 @@
 #include "waypoint.h"
 
 #include <QDebug>
-#include <QMetaEnum>
+
+#include "route_traits.h"
 
 using namespace md::domain;
-
-namespace
-{
-Waypoint::State stateFromVariant(const QVariant& value)
-{
-    auto&& metaEnum = QMetaEnum::fromType<Waypoint::State>();
-    return static_cast<Waypoint::State>(metaEnum.keyToValue(value.toString().toUtf8().constData()));
-}
-} // namespace
 
 Waypoint::Waypoint(const WaypointType* type, const QString& name, const QVariant& id,
                    const QVariantMap& parameters, QObject* parent) :
@@ -31,7 +23,9 @@ Waypoint::Waypoint(const WaypointType* type, const QString& name, const QVariant
 Waypoint::Waypoint(const WaypointType* type, const QVariantMap& map, QObject* parent) :
     Entity(map, parent),
     m_type(type),
-    m_state(::stateFromVariant(map.value(params::state)))
+    m_current(map.value(params::current, false).toBool()),
+    m_reached(map.value(params::reached, false).toBool()),
+    m_confirmed(map.value(params::confirmed, false).toBool())
 {
     Q_ASSERT(type);
 }
@@ -41,16 +35,20 @@ QVariantMap Waypoint::toVariantMap(bool recursive) const
     Q_UNUSED(recursive)
 
     QVariantMap map = Entity::toVariantMap();
+
     map.insert(params::type, m_type->name);
-    map.insert(params::state, QVariant::fromValue(m_state).toString());
+    map.insert(params::current, m_current);
+    map.insert(params::reached, m_reached);
+    map.insert(params::confirmed, m_confirmed);
 
     return map;
 }
 
 void Waypoint::fromVariantMap(const QVariantMap& map)
 {
-    if (map.contains(params::state))
-        this->setState(::stateFromVariant(map.value(params::state)));
+    m_current = map.value(params::current, m_current).toBool();
+    m_reached = map.value(params::reached, m_reached).toBool();
+    m_confirmed = map.value(params::confirmed, m_confirmed).toBool();
 
     Entity::fromVariantMap(map);
 }
@@ -60,9 +58,19 @@ const WaypointType* Waypoint::type() const
     return m_type;
 }
 
-Waypoint::State Waypoint::state() const
+bool Waypoint::current() const
 {
-    return m_state;
+    return m_current;
+}
+
+bool Waypoint::reached() const
+{
+    return m_reached;
+}
+
+bool Waypoint::confirmed() const
+{
+    return m_confirmed;
 }
 
 void Waypoint::setType(const WaypointType* type)
@@ -73,18 +81,36 @@ void Waypoint::setType(const WaypointType* type)
         return;
 
     m_type = type;
-    emit typeChanged();
+    emit changed();
 
     this->syncParameters();
 }
 
-void Waypoint::setState(State state)
+void Waypoint::setCurrent(bool current)
 {
-    if (m_state == state)
+    if (m_current == current)
         return;
 
-    m_state = state;
-    emit stateChanged();
+    m_current = current;
+    emit changed();
+}
+
+void Waypoint::setConfirmed(bool confirmed)
+{
+    if (m_confirmed == confirmed)
+        return;
+
+    m_confirmed = confirmed;
+    emit changed();
+}
+
+void Waypoint::setReached(bool reached)
+{
+    if (m_reached == reached)
+        return;
+
+    m_reached = reached;
+    emit changed();
 }
 
 void Waypoint::setAndCheckParameter(const QString& key, const QVariant& value)
@@ -114,15 +140,21 @@ void Waypoint::resetParameters()
 
 void Waypoint::syncParameters()
 {
-    QStringList unneededParameters = this->parameters().keys();
+    QVariantMap parameters = this->parameters();
+
+    // Add parameters defaulted by type
     for (const Parameter* parameter : m_type->parameters)
     {
-        // If parameter exist - remove it from unneededParameters
-        if (!unneededParameters.removeOne(parameter->name))
-        {
-            // Or add it with default value
-            this->setParameter(parameter->name, parameter->defaultValue);
-        }
+        if (!parameters.contains(parameter->name))
+            parameters.insert(parameter->name, parameter->defaultValue);
     }
-    this->removeParameters(unneededParameters);
+
+    // Remove unneeded parameters
+    for (const QString& key : parameters.keys())
+    {
+        if (!m_type->parameter(key))
+            parameters.remove(key);
+    }
+
+    this->setParameters(parameters);
 }

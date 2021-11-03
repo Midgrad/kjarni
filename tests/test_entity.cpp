@@ -36,12 +36,10 @@ TEST_P(EntityTest, testParameters)
     EntityTestArgs args = GetParam();
     Entity entity(GetParam().id, GetParam().name, GetParam().params);
 
-    QSignalSpy oneSpy(&entity, &Entity::parameterChanged);
-    QSignalSpy manySpy(&entity, &Entity::parametersChanged);
+    QSignalSpy spy(&entity, &Entity::changed);
 
     EXPECT_EQ(entity.parameters(), args.params);
-    EXPECT_EQ(oneSpy.count(), 0);
-    EXPECT_EQ(manySpy.count(), 0);
+    EXPECT_EQ(spy.count(), 0);
 
     entity.setParameters(
         { { "bool_propery", true }, { "int_propery", -42 }, { "string_propery", "test" } });
@@ -50,20 +48,17 @@ TEST_P(EntityTest, testParameters)
     EXPECT_EQ(entity.parameter("int_propery"), -42);
     EXPECT_EQ(entity.parameter("string_propery"), "test");
 
-    EXPECT_EQ(oneSpy.count(), 3);
-    EXPECT_EQ(manySpy.count(), 1);
+    EXPECT_EQ(spy.count(), 1);
 
     entity.removeParameter("string_propery");
 
     EXPECT_EQ(entity.parameter("string_propery"), QVariant());
-    EXPECT_EQ(oneSpy.count(), 4);
-    EXPECT_EQ(manySpy.count(), 2);
+    EXPECT_EQ(spy.count(), 2);
 
     entity.removeParameters({ "bool_propery", "int_propery" });
 
     EXPECT_TRUE(entity.parameters().isEmpty());
-    EXPECT_EQ(oneSpy.count(), 6);
-    EXPECT_EQ(manySpy.count(), 3);
+    EXPECT_EQ(spy.count(), 3);
 }
 
 TEST_P(EntityTest, testConstructFromMap)

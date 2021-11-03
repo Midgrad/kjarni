@@ -37,8 +37,10 @@ QVariantMap Vehicle::toVariantMap(bool recursive) const
 
 void Vehicle::fromVariantMap(const QVariantMap& map)
 {
+    if (map.contains(params::type))
+        m_type = ::typeFromVariant(map.value(params::type));
+
     Entity::fromVariantMap(map);
-    this->setType(::typeFromVariant(map.value(params::type)));
 }
 
 Vehicle::Type Vehicle::type() const
@@ -52,5 +54,5 @@ void Vehicle::setType(Type type)
         return;
 
     m_type = type;
-    emit typeChanged(type);
+    emit changed();
 }

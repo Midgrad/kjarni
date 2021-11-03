@@ -36,9 +36,7 @@ public slots:
     void removeParameter(const QString& key);
 
 signals:
-    void nameChanged();
-    void parameterChanged(QString key, QVariant value);
-    void parametersChanged();
+    void changed();
 
 private:
     const QVariant m_id;

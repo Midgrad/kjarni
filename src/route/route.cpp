@@ -114,11 +114,7 @@ void Route::addWaypoint(Waypoint* waypoint)
     if (!waypoint->parent())
         waypoint->setParent(this);
 
-    // TODO: changed & selfChanged
-    connect(waypoint, &Waypoint::parametersChanged, this, [waypoint, this]() {
-        emit waypointChanged(waypoint);
-    });
-    connect(waypoint, &Waypoint::stateChanged, this, [waypoint, this]() {
+    connect(waypoint, &Waypoint::changed, this, [waypoint, this]() {
         emit waypointChanged(waypoint);
     });
 
@@ -149,12 +145,12 @@ void Route::setCurrentWaypointIndex(int currentWaypointIndex)
         return;
 
     if (m_currentWaypoint)
-        m_currentWaypoint->setState(Waypoint::Normal);
+        m_currentWaypoint->setCurrent(false);
 
     m_currentWaypoint = currentWaypoint;
 
     if (m_currentWaypoint)
-        m_currentWaypoint->setState(Waypoint::Current);
+        m_currentWaypoint->setCurrent(true);
 
     emit currentWaypointChanged(currentWaypointIndex);
 }

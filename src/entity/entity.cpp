@@ -59,12 +59,10 @@ QVariantMap Entity::toVariantMap(bool recursive) const
 
 void Entity::fromVariantMap(const QVariantMap& map)
 {
-    if (map.contains(params::name))
-        this->setName(map.value(params::name).toString());
-    if (map.contains(params::params))
-    {
-        this->setParameters(map.value(params::params).toMap());
-    }
+    m_name = map.value(params::name, m_name).toString();
+    m_parameters = map.value(params::params, m_parameters).toMap();
+
+    emit changed();
 }
 
 void Entity::setParameters(const QVariantMap& parameters)
@@ -73,12 +71,7 @@ void Entity::setParameters(const QVariantMap& parameters)
         return;
 
     m_parameters = parameters;
-
-    for (auto it = parameters.constBegin(); it != parameters.constEnd(); ++it)
-    {
-        emit parameterChanged(it.key(), it.value());
-    }
-    emit parametersChanged();
+    emit changed();
 }
 
 void Entity::setParameter(const QString& key, const QVariant& value)
@@ -87,33 +80,30 @@ void Entity::setParameter(const QString& key, const QVariant& value)
         return;
 
     m_parameters[key] = value;
-    emit parameterChanged(key, value);
-    emit parametersChanged();
+    emit changed();
 }
 
 void Entity::removeParameters(const QStringList& keys)
 {
-    bool changed = false;
+    bool changedFlag = false;
 
     for (const QString& key : keys)
     {
         if (m_parameters.remove(key))
         {
-            changed = true;
-            emit parameterChanged(key, QVariant());
+            changedFlag = true;
         }
     }
 
-    if (changed)
-        emit parametersChanged();
+    if (changedFlag)
+        emit changed();
 }
 
 void Entity::removeParameter(const QString& key)
 {
     if (m_parameters.remove(key))
     {
-        emit parameterChanged(key, QVariant());
-        emit parametersChanged();
+        emit changed();
     }
 }
 
@@ -123,5 +113,5 @@ void Entity::setName(const QString& name)
         return;
 
     m_name = name;
-    emit nameChanged();
+    emit changed();
 }
