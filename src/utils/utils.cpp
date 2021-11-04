@@ -8,7 +8,7 @@ namespace md::utils
 {
 QVariant generateId()
 {
-    // NOTE: .toString() is a workaround, cause QVariant loses {} cases SOMETIMES
+    // NOTE: .toString() is a workaround, cause QVariant loses {} SOMETIMES
     return QUuid::createUuid().toString();
 }
 

@@ -18,7 +18,8 @@ RoutesRepositorySql::RoutesRepositorySql(QSqlDatabase* database, QObject* parent
     IRoutesRepository(parent),
     m_routesTable(database, ::routes),
     m_waypointsTable(database, ::waypoints),
-    m_routeWaypointsTable(database, ::routeWaypoints)
+    m_routeWaypointsTable(database, ::routeWaypoints),
+    m_mutex(QMutex::Recursive)
 {
 }
 
@@ -42,6 +43,12 @@ QList<Route*> RoutesRepositorySql::routes() const
 {
     QMutexLocker locker(&m_mutex);
     return m_routes.values();
+}
+
+const RouteType* RoutesRepositorySql::routeType(const QString& name) const
+{
+    QMutexLocker locker(&m_mutex);
+    return m_routeTypes.value(name, nullptr);
 }
 
 QList<const RouteType*> RoutesRepositorySql::routeTypes() const
