@@ -8,6 +8,7 @@
 namespace
 {
 constexpr char missions[] = "missions";
+constexpr char homeWaypoints[] = "home_waypoints";
 } // namespace
 
 using namespace md::domain;
@@ -16,7 +17,8 @@ MissionsRepositorySql::MissionsRepositorySql(IRoutesRepository* routes, QSqlData
                                              QObject* parent) :
     IMissionsRepository(parent),
     m_routes(routes),
-    m_missionsTable(database, ::missions)
+    m_missionsTable(database, ::missions),
+    m_homeWaypointsTable(database, ::homeWaypoints)
 {
 }
 
@@ -107,8 +109,14 @@ void MissionsRepositorySql::removeMission(Mission* mission)
 {
     QMutexLocker locker(&m_mutex);
 
-    if (!mission->id().isNull())
-        m_missionsTable.removeEntity(mission);
+    if (mission->id().isNull())
+    {
+        qWarning() << "Can't remove mission with no id" << mission;
+        return;
+    }
+
+    m_missionsTable.removeEntity(mission);
+    m_homeWaypointsTable.removeEntity(mission->homePoint());
 
     m_missions.remove(mission->id());
 
@@ -121,9 +129,14 @@ void MissionsRepositorySql::restoreMission(Mission* mission)
     QMutexLocker locker(&m_mutex);
 
     if (mission->id().isNull())
+    {
+        qWarning() << "Can't resore mission with no id" << mission;
         return;
+    }
 
     m_missionsTable.readEntity(mission);
+    m_homeWaypointsTable.readEntity(mission->homePoint());
+
     emit missionChanged(mission);
 }
 
@@ -145,11 +158,14 @@ void MissionsRepositorySql::saveMission(Mission* mission)
 
     if (m_missions.contains(mission->id()))
     {
+        m_homeWaypointsTable.updateEntity(mission->homePoint());
         m_missionsTable.updateEntity(mission);
+
         emit missionChanged(mission);
     }
     else
     {
+        m_homeWaypointsTable.insertEntity(mission->homePoint());
         m_missionsTable.insertEntity(mission);
         m_missions.insert(mission->id(), mission);
         emit missionAdded(mission);
@@ -167,6 +183,10 @@ Mission* MissionsRepositorySql::readMission(const QVariant& id)
         qWarning() << "Unknown mission type" << typeName;
         return nullptr;
     }
+
+    QVariant homeId = map.value(params::home);
+    QVariantMap homeMap = m_homeWaypointsTable.selectById(homeId);
+    map[params::home] = homeMap;
 
     Mission* mission = new Mission(type, map);
     m_missions.insert(id, mission);

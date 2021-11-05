@@ -21,7 +21,11 @@ public:
     const MissionType* type() const;
     QVariant vehicleId() const;
     MissionOperation* operation() const;
+    Waypoint* homePoint() const;
     Route* route() const;
+    int count() const;
+    Waypoint* waypoint(int index) const;
+    QList<Waypoint*> waypoints() const;
 
 public slots:
     void assignRoute(Route* route);
@@ -32,7 +36,8 @@ signals:
 private:
     const MissionType* m_type;
     const QVariant m_vehicleId;
-    MissionOperation* const m_operation;
+    MissionOperation* const m_operation; //TODO: mision operation to service
+    Waypoint* const m_homePoint;
     Route* m_route = nullptr;
 };
 } // namespace md::domain

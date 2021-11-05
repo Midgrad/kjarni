@@ -38,6 +38,7 @@ private:
 
     IRoutesRepository* const m_routes;
     data_source::EntitySqlTable m_missionsTable;
+    data_source::EntitySqlTable m_homeWaypointsTable;
 
     QMap<QString, const MissionType*> m_missionTypes;
     QMap<QVariant, Mission*> m_missions;

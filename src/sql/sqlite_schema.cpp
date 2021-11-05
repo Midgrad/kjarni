@@ -66,6 +66,12 @@ void SqliteSchema::setup()
                "FOREIGN KEY(waypoint) REFERENCES waypoints(id), "
                "FOREIGN KEY(route) REFERENCES routes(id));");
 
+    query.exec("CREATE TABLE home_waypoints ("
+               "id UUID PRIMARY KEY NOT NULL, "
+               "name STRING, "
+               "params TEXT, "
+               "type STRING);");
+
     query.exec("CREATE TABLE missions ("
                "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
@@ -73,8 +79,10 @@ void SqliteSchema::setup()
                "type STRING, "
                "route UUID, "
                "vehicle UUID, "
+               "home UUID, "
                "FOREIGN KEY(route) REFERENCES routes(id), "
-               "FOREIGN KEY(vehicle) REFERENCES vehicles(id));");
+               "FOREIGN KEY(vehicle) REFERENCES vehicles(id), "
+               "FOREIGN KEY(home) REFERENCES home_waypoints(id));");
 
     query.exec("INSERT INTO schema_version (version) VALUES (\'14.10.00_19.10.2021\')");
 }

@@ -109,7 +109,10 @@ void RoutesRepositorySql::removeRoute(Route* route)
     QMutexLocker locker(&m_mutex);
 
     if (route->id().isNull())
+    {
+        qWarning() << "Can't remove route with no id" << route;
         return;
+    }
 
     // Remove all route waypoints for route
     m_routeWaypointsTable.removeByCondition({ params::route, route->id() });
@@ -134,7 +137,10 @@ void RoutesRepositorySql::restoreRoute(Route* route)
     QMutexLocker locker(&m_mutex);
 
     if (route->id().isNull())
+    {
+        qWarning() << "Can't resore route with no id" << route;
         return;
+    }
 
     // Restore waypoints and delete new points
     auto remover = [](Waypoint* waypoint) {

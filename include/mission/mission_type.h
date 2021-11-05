@@ -10,10 +10,11 @@ class MissionType
     Q_GADGET
 
 public:
-    MissionType(const QString& name, const RouteType* routeType);
+    MissionType(const QString& name, const RouteType* routeType, const WaypointType* homePointType);
 
     const QString name;
     const RouteType* routeType;
+    const WaypointType* homePointType;
 };
 
 } // namespace md::domain

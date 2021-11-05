@@ -46,7 +46,7 @@ private:
 
     const RouteType* const m_type;
     QList<Waypoint*> m_waypoins;
-    Waypoint* m_currentWaypoint = nullptr;
+    Waypoint* m_currentWaypoint = nullptr; // TODO: current to mission
 };
 } // namespace md::domain
 

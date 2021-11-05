@@ -17,7 +17,7 @@ const WaypointType circle = { "circle",
                                 &mission::relative, &airspeed, &radius } };
 
 const RouteType routeType = { "test_route", { &waypoint, &circle } };
-const MissionType missionType = { "test_mission", &routeType };
+const MissionType missionType = { "test_mission", &routeType, &waypoint };
 
 } // namespace md::domain::test_mission
 
