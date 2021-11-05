@@ -72,7 +72,18 @@ Waypoint* Mission::waypoint(int index) const
 {
     if (index == 0)
         return m_homePoint;
-    return m_route->waypoint(index - 1);
+
+    return m_route ? m_route->waypoint(index - 1) : nullptr;
+}
+
+Waypoint* Mission::currentWaypoint() const
+{
+    return m_currentWaypoint;
+}
+
+int Mission::currentWaypointIndex() const
+{
+    return this->waypoints().indexOf(m_currentWaypoint);
 }
 
 QList<Waypoint*> Mission::waypoints() const
@@ -81,7 +92,7 @@ QList<Waypoint*> Mission::waypoints() const
 
     waypoints.append(m_homePoint);
     if (m_route)
-        m_route->waypoints();
+        waypoints += m_route->waypoints();
 
     return waypoints;
 }
@@ -101,6 +112,38 @@ void Mission::assignRoute(Route* route)
     if (m_route == route)
         return;
 
+    if (m_route)
+    {
+        disconnect(m_route, nullptr, this, nullptr);
+    }
+
     m_route = route;
+
+    if (m_route)
+    {
+        connect(m_route, &Route::waypointAdded, this, &Mission::waypointsChanged);
+        connect(m_route, &Route::waypointChanged, this, &Mission::waypointsChanged);
+        connect(m_route, &Route::waypointRemoved, this, &Mission::waypointsChanged);
+    }
+
     emit routeChanged(m_route);
+    emit waypointsChanged();
+}
+
+void Mission::setCurrentWaypointIndex(int currentWaypointIndex)
+{
+    Waypoint* currentWaypoint = this->waypoint(currentWaypointIndex);
+
+    if (m_currentWaypoint == currentWaypoint)
+        return;
+
+    if (m_currentWaypoint)
+        m_currentWaypoint->setCurrent(false);
+
+    m_currentWaypoint = currentWaypoint;
+
+    if (m_currentWaypoint)
+        m_currentWaypoint->setCurrent(true);
+
+    emit currentWaypointChanged(currentWaypointIndex);
 }

@@ -24,29 +24,22 @@ public:
     int index(Waypoint* waypoint) const;
     const QList<Waypoint*>& waypoints() const;
     Waypoint* waypoint(int index) const;
-    Waypoint* currentWaypoint() const;
-    int currentWaypointIndex() const;
 
 public slots:
     void setWaypoints(const QList<Waypoint*>& waypoins);
     void addWaypoint(Waypoint* waypoint);
     void removeWaypoint(Waypoint* waypoint);
-    void setCurrentWaypointIndex(int currentWaypointIndex);
 
 signals:
     void waypointAdded(Waypoint* waypoint);
     void waypointChanged(Waypoint* waypoint);
     void waypointRemoved(Waypoint* waypoint);
-    void currentWaypointChanged(int index);
-
-    void switchWaypoint(int waypoint); // Goto waypoint
 
 private:
     void fromVariantMapImpl(const QVariantMap& map);
 
     const RouteType* const m_type;
     QList<Waypoint*> m_waypoins;
-    Waypoint* m_currentWaypoint = nullptr; // TODO: current to mission
 };
 } // namespace md::domain
 
