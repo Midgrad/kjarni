@@ -15,7 +15,7 @@ public:
     const WaypointType* waypointType(const QString& name) const;
 
     const QString name;
-    const QVector<const WaypointType*> waypointTypes;
+    const QMap<QString, const WaypointType*> waypointTypes;
 };
 } // namespace md::domain
 

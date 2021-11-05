@@ -2,21 +2,26 @@
 
 using namespace md::domain;
 
+namespace
+{
+QMap<QString, const WaypointType*> typesToMap(const QVector<const WaypointType*>& waypointTypes)
+{
+    QMap<QString, const WaypointType*> map;
+    for (const WaypointType* type : waypointTypes)
+    {
+        map[type->name] = type;
+    }
+    return map;
+}
+} // namespace
+
 RouteType::RouteType(const QString& name, const QVector<const WaypointType*>& waypointTypes) :
     name(name),
-    waypointTypes(waypointTypes)
+    waypointTypes(::typesToMap(waypointTypes))
 {
 }
 
 const WaypointType* RouteType::waypointType(const QString& name) const
 {
-    // TODO: change to map
-    auto result = std::find_if(waypointTypes.begin(), waypointTypes.end(),
-                               [name](const WaypointType* type) {
-                                   return type->name == name;
-                               });
-    if (result != std::end(waypointTypes))
-        return *result;
-
-    return nullptr;
+    return this->waypointTypes.value(name, nullptr);
 }

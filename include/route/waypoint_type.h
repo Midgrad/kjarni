@@ -47,7 +47,7 @@ public:
     QVariantMap defaultParameters() const;
 
     const QString name;
-    QMap<QString, const Parameter*> parameters;
+    const QMap<QString, const Parameter*> parameters;
 };
 } // namespace md::domain
 

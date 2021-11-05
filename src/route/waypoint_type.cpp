@@ -4,6 +4,19 @@
 
 using namespace md::domain;
 
+namespace
+{
+QMap<QString, const Parameter*> paramsToMap(const QVector<const Parameter*>& parameters)
+{
+    QMap<QString, const Parameter*> map;
+    for (const Parameter* parameter : parameters)
+    {
+        map[parameter->name] = parameter;
+    }
+    return map;
+}
+} // namespace
+
 Parameter::Parameter(const QString& name, Type type, const QVariant& defaultValue,
                      const QVariant& minValue, const QVariant& maxValue, const QVariant& step) :
     name(name),
@@ -33,12 +46,9 @@ QVariant Parameter::guard(const QVariant& value) const
 }
 
 WaypointType::WaypointType(const QString& name, const QVector<const Parameter*>& parameters) :
-    name(name)
+    name(name),
+    parameters(::paramsToMap(parameters))
 {
-    for (const Parameter* parameter : parameters)
-    {
-        this->parameters[parameter->name] = parameter;
-    }
 }
 
 const Parameter* WaypointType::parameter(const QString& name) const
