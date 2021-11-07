@@ -45,10 +45,10 @@ QList<Route*> RoutesRepositorySql::routes() const
     return m_routes.values();
 }
 
-const RouteType* RoutesRepositorySql::routeType(const QString& name) const
+const RouteType* RoutesRepositorySql::routeType(const QString& id) const
 {
     QMutexLocker locker(&m_mutex);
-    return m_routeTypes.value(name, nullptr);
+    return m_routeTypes.value(id, nullptr);
 }
 
 QList<const RouteType*> RoutesRepositorySql::routeTypes() const
@@ -61,14 +61,14 @@ void RoutesRepositorySql::registerRouteType(const RouteType* routeType)
 {
     QMutexLocker locker(&m_mutex);
 
-    if (m_routeTypes.contains(routeType->name))
+    if (m_routeTypes.contains(routeType->id))
         return;
 
-    m_routeTypes.insert(routeType->name, routeType);
+    m_routeTypes.insert(routeType->id, routeType);
 
     for (const WaypointType* wptType : routeType->waypointTypes)
     {
-        m_waypointTypes.insert(wptType->name, wptType);
+        m_waypointTypes.insert(wptType->id, wptType);
     }
 
     emit routeTypesChanged();
@@ -78,14 +78,14 @@ void RoutesRepositorySql::unregisterRouteType(const RouteType* routeType)
 {
     QMutexLocker locker(&m_mutex);
 
-    if (!m_routeTypes.contains(routeType->name))
+    if (!m_routeTypes.contains(routeType->id))
         return;
 
-    m_routeTypes.remove(routeType->name);
+    m_routeTypes.remove(routeType->id);
 
     for (const WaypointType* wptType : routeType->waypointTypes)
     {
-        m_waypointTypes.remove(wptType->name);
+        m_waypointTypes.remove(wptType->id);
     }
 
     emit routeTypesChanged();
@@ -230,12 +230,12 @@ void RoutesRepositorySql::saveWaypoint(Route* route, Waypoint* waypoint)
 Route* RoutesRepositorySql::readRoute(const QVariant& id)
 {
     QVariantMap map = m_routesTable.selectById(id);
-    QString typeName = map.value(params::type).toString();
+    QString typeId = map.value(params::type).toString();
 
-    const RouteType* const type = m_routeTypes.value(typeName);
+    const RouteType* const type = m_routeTypes.value(typeId);
     if (!type)
     {
-        qWarning() << "Unknown route type" << typeName;
+        qWarning() << "Unknown route type" << typeId;
         return nullptr;
     }
 
@@ -259,12 +259,12 @@ Route* RoutesRepositorySql::readRoute(const QVariant& id)
 Waypoint* RoutesRepositorySql::readWaypoint(const QVariant& id)
 {
     QVariantMap map = m_waypointsTable.selectById(id);
-    QString typeName = map.value(params::type).toString();
+    QString typeId = map.value(params::type).toString();
 
-    const WaypointType* const type = m_waypointTypes.value(typeName);
+    const WaypointType* const type = m_waypointTypes.value(typeId);
     if (!type)
     {
-        qWarning() << "Unknown waypoint type" << typeName;
+        qWarning() << "Unknown waypoint type" << typeId;
         return nullptr;
     }
 

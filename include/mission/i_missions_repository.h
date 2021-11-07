@@ -22,6 +22,7 @@ public:
     virtual Mission* missionForVehicle(const QVariant& vehicleId) const = 0;
     virtual QVariantList missionIds() const = 0;
     virtual QList<Mission*> missions() const = 0;
+    virtual const MissionType* missionType(const QString& id) const = 0;
     virtual QList<const MissionType*> missionTypes() const = 0;
 
     virtual void registerMissionType(const MissionType* type) = 0;

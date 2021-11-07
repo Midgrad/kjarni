@@ -11,25 +11,22 @@ QMap<QString, const Parameter*> paramsToMap(const QVector<const Parameter*>& par
     QMap<QString, const Parameter*> map;
     for (const Parameter* parameter : parameters)
     {
-        map[parameter->name] = parameter;
+        map[parameter->id] = parameter;
     }
     return map;
 }
 } // namespace
 
-Parameter::Parameter(const QString& name, Type type, const QVariant& defaultValue,
-                     const QVariant& minValue, const QVariant& maxValue, const QVariant& step) :
+Parameter::Parameter(const QString& id, const QString& name, Type type,
+                     const QVariant& defaultValue, const QVariant& minValue,
+                     const QVariant& maxValue, const QVariant& step) :
+    id(id),
     name(name),
     type(type),
     defaultValue(defaultValue),
     minValue(minValue),
     maxValue(maxValue),
     step(step)
-{
-}
-
-Parameter::Parameter(const Parameter& other) :
-    Parameter(other.name, other.type, other.defaultValue, other.minValue, other.maxValue, other.step)
 {
 }
 
@@ -45,15 +42,17 @@ QVariant Parameter::guard(const QVariant& value) const
     return value;
 }
 
-WaypointType::WaypointType(const QString& name, const QVector<const Parameter*>& parameters) :
+WaypointType::WaypointType(const QString& id, const QString& name,
+                           const QVector<const Parameter*>& parameters) :
+    id(id),
     name(name),
     parameters(::paramsToMap(parameters))
 {
 }
 
-const Parameter* WaypointType::parameter(const QString& name) const
+const Parameter* WaypointType::parameter(const QString& id) const
 {
-    return this->parameters.value(name, nullptr);
+    return this->parameters.value(id, nullptr);
 }
 
 QVariantMap WaypointType::defaultParameters() const
@@ -61,7 +60,7 @@ QVariantMap WaypointType::defaultParameters() const
     QVariantMap map;
     for (const Parameter* parameter : parameters)
     {
-        map.insert(parameter->name, parameter->defaultValue);
+        map.insert(parameter->id, parameter->defaultValue);
     }
     return map;
 }

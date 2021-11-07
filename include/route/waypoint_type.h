@@ -18,13 +18,13 @@ public:
         Real
     };
 
-    Parameter(const QString& name, Type type = Real, const QVariant& defaultValue = 0,
-              const QVariant& minValue = QVariant(), const QVariant& maxValue = QVariant(),
-              const QVariant& step = 1);
-    Parameter(const Parameter& other);
+    Parameter(const QString& id, const QString& name, Type type = Real,
+              const QVariant& defaultValue = 0, const QVariant& minValue = QVariant(),
+              const QVariant& maxValue = QVariant(), const QVariant& step = 1);
 
     QVariant guard(const QVariant& value) const;
 
+    const QString id;
     const QString name;
     const Type type;
     const QVariant defaultValue;
@@ -41,11 +41,13 @@ class WaypointType
     Q_GADGET
 
 public:
-    WaypointType(const QString& name, const QVector<const Parameter*>& parameters);
+    WaypointType(const QString& id, const QString& name,
+                 const QVector<const Parameter*>& parameters);
 
-    const Parameter* parameter(const QString& name) const;
+    const Parameter* parameter(const QString& id) const;
     QVariantMap defaultParameters() const;
 
+    const QString id;
     const QString name;
     const QMap<QString, const Parameter*> parameters;
 };

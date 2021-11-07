@@ -19,7 +19,7 @@ public:
     virtual Route* route(const QVariant& id) const override;
     virtual QVariantList routeIds() const override;
     virtual QList<Route*> routes() const override;
-    const RouteType* routeType(const QString& name) const override;
+    const RouteType* routeType(const QString& id) const override;
     virtual QList<const RouteType*> routeTypes() const override;
 
     virtual void registerRouteType(const RouteType* routeType) override;

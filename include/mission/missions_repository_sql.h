@@ -22,6 +22,7 @@ public:
     Mission* missionForVehicle(const QVariant& vehicleId) const override;
     QVariantList missionIds() const override;
     QList<Mission*> missions() const override;
+    const MissionType* missionType(const QString& id) const override;
     QList<const MissionType*> missionTypes() const override;
 
     void registerMissionType(const MissionType* type) override;

@@ -24,38 +24,37 @@ public:
     WaypointTest() = default;
 };
 
-INSTANTIATE_TEST_SUITE_P(
-    instantiation, WaypointTest,
-    ::testing::Values(WaypointTestArgs({ md::utils::generateId(),
-                                         "WPT 1",
-                                         true,
-                                         false,
-                                         false,
-                                         { { mission::latitude.name, 54.196783 },
-                                           { mission::longitude.name, 41.397421 },
-                                           { mission::altitude.name, 850 },
-                                           { mission::relative.name, true } },
-                                         &test_mission::waypoint }),
-                      WaypointTestArgs({ md::utils::generateId(),
-                                         "WPT 2",
-                                         false,
-                                         false,
-                                         false,
-                                         { { mission::latitude.name, 54.196783 },
-                                           { mission::longitude.name, 41.397421 },
-                                           { mission::altitude.name, 850 },
-                                           { mission::relative.name, true } },
-                                         &test_mission::waypoint }),
-                      WaypointTestArgs({ md::utils::generateId(),
-                                         "CRL 2",
-                                         true,
-                                         false,
-                                         true,
-                                         { { mission::latitude.name, 54.196783 },
-                                           { mission::longitude.name, 41.397421 },
-                                           { mission::altitude.name, 850 },
-                                           { mission::relative.name, true } },
-                                         &test_mission::circle })));
+INSTANTIATE_TEST_SUITE_P(instantiation, WaypointTest,
+                         ::testing::Values(WaypointTestArgs({ md::utils::generateId(),
+                                                              "WPT 1",
+                                                              true,
+                                                              false,
+                                                              false,
+                                                              { { mission::latitude.id, 54.196783 },
+                                                                { mission::longitude.id, 41.397421 },
+                                                                { mission::altitude.id, 850 },
+                                                                { mission::relative.id, true } },
+                                                              &test_mission::waypoint }),
+                                           WaypointTestArgs({ md::utils::generateId(),
+                                                              "WPT 2",
+                                                              false,
+                                                              false,
+                                                              false,
+                                                              { { mission::latitude.id, 54.196783 },
+                                                                { mission::longitude.id, 41.397421 },
+                                                                { mission::altitude.id, 850 },
+                                                                { mission::relative.id, true } },
+                                                              &test_mission::waypoint }),
+                                           WaypointTestArgs({ md::utils::generateId(),
+                                                              "CRL 2",
+                                                              true,
+                                                              false,
+                                                              true,
+                                                              { { mission::latitude.id, 54.196783 },
+                                                                { mission::longitude.id, 41.397421 },
+                                                                { mission::altitude.id, 850 },
+                                                                { mission::relative.id, true } },
+                                                              &test_mission::circle })));
 
 TEST_P(WaypointTest, testConstructFromMap)
 {
@@ -113,7 +112,7 @@ TEST_P(WaypointTest, testToVariant)
     map.insert(params::name, args.name);
     if (!args.params.isEmpty())
         map.insert(params::params, args.params);
-    map.insert(params::type, args.type->name);
+    map.insert(params::type, args.type->id);
     map.insert(params::current, args.current);
     map.insert(params::reached, args.reached);
     map.insert(params::confirmed, args.confirmed);

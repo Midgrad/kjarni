@@ -9,19 +9,21 @@ QMap<QString, const WaypointType*> typesToMap(const QVector<const WaypointType*>
     QMap<QString, const WaypointType*> map;
     for (const WaypointType* type : waypointTypes)
     {
-        map[type->name] = type;
+        map[type->id] = type;
     }
     return map;
 }
 } // namespace
 
-RouteType::RouteType(const QString& name, const QVector<const WaypointType*>& waypointTypes) :
+RouteType::RouteType(const QString& id, const QString& name,
+                     const QVector<const WaypointType*>& waypointTypes) :
+    id(id),
     name(name),
     waypointTypes(::typesToMap(waypointTypes))
 {
 }
 
-const WaypointType* RouteType::waypointType(const QString& name) const
+const WaypointType* RouteType::waypointType(const QString& id) const
 {
-    return this->waypointTypes.value(name, nullptr);
+    return this->waypointTypes.value(id, nullptr);
 }

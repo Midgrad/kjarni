@@ -20,7 +20,7 @@ public:
     virtual Route* route(const QVariant& id) const = 0;
     virtual QVariantList routeIds() const = 0;
     virtual QList<Route*> routes() const = 0;
-    virtual const RouteType* routeType(const QString& name) const = 0;
+    virtual const RouteType* routeType(const QString& id) const = 0;
     virtual QList<const RouteType*> routeTypes() const = 0;
 
     virtual void registerRouteType(const RouteType* wptType) = 0;

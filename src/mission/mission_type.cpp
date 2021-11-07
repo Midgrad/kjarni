@@ -2,8 +2,9 @@
 
 using namespace md::domain;
 
-MissionType::MissionType(const QString& name, const RouteType* routeType,
+MissionType::MissionType(const QString& id, const QString& name, const RouteType* routeType,
                          const WaypointType* homePointType) :
+    id(id),
     name(name),
     routeType(routeType),
     homePointType(homePointType)

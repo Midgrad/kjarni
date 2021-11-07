@@ -15,13 +15,13 @@ public:
     {
         waypoints.append(QVariantMap({ { params::id, md::utils::generateId() },
                                        { params::name, "WPT 1" },
-                                       { params::type, test_mission::waypoint.name } }));
+                                       { params::type, test_mission::waypoint.id } }));
         waypoints.append(QVariantMap({ { params::id, md::utils::generateId() },
                                        { params::name, "WPT 2" },
-                                       { params::type, test_mission::waypoint.name } }));
+                                       { params::type, test_mission::waypoint.id } }));
         waypoints.append(QVariantMap({ { params::id, md::utils::generateId() },
                                        { params::name, "CRL 3" },
-                                       { params::type, test_mission::circle.name } }));
+                                       { params::type, test_mission::circle.id } }));
     }
 
     QVariantList waypoints;
@@ -47,7 +47,7 @@ TEST_F(RouteTest, testConstructFromMap)
 
         EXPECT_EQ(route.waypoint(index)->id(), waypoint.value(params::id));
         EXPECT_EQ(route.waypoint(index)->name(), waypoint.value(params::name));
-        EXPECT_EQ(route.waypoint(index)->type()->name, waypoint.value(params::type));
+        EXPECT_EQ(route.waypoint(index)->type()->id, waypoint.value(params::type));
         index++;
     }
 }
@@ -72,7 +72,7 @@ TEST_F(RouteTest, testFromVariant)
 
         EXPECT_EQ(route.waypoint(index)->id(), waypoint.value(params::id));
         EXPECT_EQ(route.waypoint(index)->name(), waypoint.value(params::name));
-        EXPECT_EQ(route.waypoint(index)->type()->name, waypoint.value(params::type));
+        EXPECT_EQ(route.waypoint(index)->type()->id, waypoint.value(params::type));
         index++;
     }
 }

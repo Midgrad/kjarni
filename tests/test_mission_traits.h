@@ -5,19 +5,21 @@
 
 namespace md::domain::test_mission
 {
-const Parameter radius = { "radius", Parameter::Real, 100 };
-const Parameter airspeed = { "airspeed", Parameter::Int, 10 };
-const Parameter passthrough = { "passthrough", Parameter::Bool, true };
+const Parameter radius = { "radius", "Radius", Parameter::Real, 100 };
+const Parameter airspeed = { "airspeed", "Airspeed", Parameter::Int, 10 };
+const Parameter passthrough = { "passthrough", "Passthrough", Parameter::Bool, true };
 
 const WaypointType waypoint = { "waypoint",
+                                "Waypoint",
                                 { &mission::latitude, &mission::longitude, &mission::altitude,
                                   &mission::relative, &airspeed, &passthrough } };
 const WaypointType circle = { "circle",
+                              "Circle",
                               { &mission::latitude, &mission::longitude, &mission::altitude,
                                 &mission::relative, &airspeed, &radius } };
 
-const RouteType routeType = { "test_route", { &waypoint, &circle } };
-const MissionType missionType = { "test_mission", &routeType, &waypoint };
+const RouteType routeType = { "test_route", "Test Route", { &waypoint, &circle } };
+const MissionType missionType = { "test_mission", "Test Mission", &routeType, &waypoint };
 
 } // namespace md::domain::test_mission
 

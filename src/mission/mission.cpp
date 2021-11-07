@@ -29,7 +29,7 @@ QVariantMap Mission::toVariantMap(bool recursive) const
 {
     QVariantMap map = Entity::toVariantMap();
 
-    map.insert(params::type, m_type->name);
+    map.insert(params::type, m_type->id);
     map.insert(params::vehicle, m_vehicleId);
 
     if (recursive)

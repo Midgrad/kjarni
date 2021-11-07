@@ -19,10 +19,14 @@ constexpr char confirmed[] = "confirmed";
 
 namespace mission
 {
-const Parameter latitude = { "latitude", Parameter::Real, 0.0 };
-const Parameter longitude = { "longitude", Parameter::Real, 0.0 };
-const Parameter altitude = { "altitude", Parameter::Real, 100.0 };
-const Parameter relative = { "relative", Parameter::Bool, true };
+const Parameter latitude = { "latitude", QT_TRANSLATE_NOOP("Route", "Latitude"), Parameter::Real,
+                             0.0 };
+const Parameter longitude = { "longitude", QT_TRANSLATE_NOOP("Route", "Longitude"), Parameter::Real,
+                              0.0 };
+const Parameter altitude = { "altitude", QT_TRANSLATE_NOOP("Route", "Altitude"), Parameter::Real,
+                             100.0 };
+const Parameter relative = { "relative", QT_TRANSLATE_NOOP("Route", "Rel. alt."), Parameter::Bool,
+                             true };
 } // namespace mission
 } // namespace md::domain
 

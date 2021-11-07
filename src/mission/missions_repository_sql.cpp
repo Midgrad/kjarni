@@ -58,6 +58,11 @@ QList<Mission*> MissionsRepositorySql::missions() const
     return m_missions.values();
 }
 
+const MissionType* MissionsRepositorySql::missionType(const QString& id) const
+{
+    return m_missionTypes.value(id, nullptr);
+}
+
 QList<const MissionType*> MissionsRepositorySql::missionTypes() const
 {
     QMutexLocker locker(&m_mutex);
@@ -68,10 +73,10 @@ void MissionsRepositorySql::registerMissionType(const MissionType* type)
 {
     QMutexLocker locker(&m_mutex);
 
-    if (m_missionTypes.contains(type->name))
+    if (m_missionTypes.contains(type->id))
         return;
 
-    m_missionTypes.insert(type->name, type);
+    m_missionTypes.insert(type->id, type);
     m_routes->registerRouteType(type->routeType);
 
     emit missionTypesChanged();
@@ -81,11 +86,11 @@ void MissionsRepositorySql::unregisterMissionType(const MissionType* type)
 {
     QMutexLocker locker(&m_mutex);
 
-    if (!m_missionTypes.contains(type->name))
+    if (!m_missionTypes.contains(type->id))
         return;
 
     m_routes->unregisterRouteType(type->routeType);
-    m_missionTypes.remove(type->name);
+    m_missionTypes.remove(type->id);
 
     emit missionTypesChanged();
 }
@@ -175,12 +180,12 @@ void MissionsRepositorySql::saveMission(Mission* mission)
 Mission* MissionsRepositorySql::readMission(const QVariant& id)
 {
     QVariantMap map = m_missionsTable.selectById(id);
-    QString typeName = map.value(params::type).toString();
+    QString typeId = map.value(params::type).toString();
 
-    const MissionType* const type = m_missionTypes.value(typeName);
+    const MissionType* const type = m_missionTypes.value(typeId);
     if (!type)
     {
-        qWarning() << "Unknown mission type" << typeName;
+        qWarning() << "Unknown mission type" << typeId;
         return nullptr;
     }
 

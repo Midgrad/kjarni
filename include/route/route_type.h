@@ -10,10 +10,12 @@ class RouteType
     Q_GADGET
 
 public:
-    RouteType(const QString& name, const QVector<const WaypointType*>& waypointTypes);
+    RouteType(const QString& id, const QString& name,
+              const QVector<const WaypointType*>& waypointTypes);
 
-    const WaypointType* waypointType(const QString& name) const;
+    const WaypointType* waypointType(const QString& id) const;
 
+    const QString id;
     const QString name;
     const QMap<QString, const WaypointType*> waypointTypes;
 };

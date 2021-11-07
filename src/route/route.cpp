@@ -27,7 +27,7 @@ QVariantMap Route::toVariantMap(bool recursive) const
 {
     QVariantMap map = Entity::toVariantMap();
 
-    map.insert(params::type, m_type->name);
+    map.insert(params::type, m_type->id);
 
     if (recursive)
     {

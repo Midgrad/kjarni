@@ -36,7 +36,7 @@ QVariantMap Waypoint::toVariantMap(bool recursive) const
 
     QVariantMap map = Entity::toVariantMap();
 
-    map.insert(params::type, m_type->name);
+    map.insert(params::type, m_type->id);
     map.insert(params::current, m_current);
     map.insert(params::reached, m_reached);
     map.insert(params::confirmed, m_confirmed);
@@ -145,8 +145,8 @@ void Waypoint::syncParameters()
     // Add parameters defaulted by type
     for (const Parameter* parameter : m_type->parameters)
     {
-        if (!parameters.contains(parameter->name))
-            parameters.insert(parameter->name, parameter->defaultValue);
+        if (!parameters.contains(parameter->id))
+            parameters.insert(parameter->id, parameter->defaultValue);
     }
 
     // Remove unneeded parameters
