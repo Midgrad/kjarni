@@ -32,6 +32,10 @@ Parameter::Parameter(const QString& id, const QString& name, Type type,
 
 QVariant Parameter::guard(const QVariant& value) const
 {
+    // Special case for null/NaN parameters
+    if (value.isNull())
+        return value;
+
     QVariant result = value;
     if (!minValue.isNull())
         result = qMax(result, minValue);
