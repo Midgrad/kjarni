@@ -31,9 +31,9 @@ public slots:
     void removeWaypoint(Waypoint* waypoint);
 
 signals:
-    void waypointAdded(Waypoint* waypoint);
-    void waypointChanged(Waypoint* waypoint);
-    void waypointRemoved(Waypoint* waypoint);
+    void waypointAdded(int index, Waypoint* waypoint);
+    void waypointChanged(int index, Waypoint* waypoint);
+    void waypointRemoved(int index, Waypoint* waypoint);
 
 private:
     void fromVariantMapImpl(const QVariantMap& map);

@@ -143,7 +143,7 @@ void RoutesRepositorySql::restoreRoute(Route* route)
     }
 
     // Restore waypoints and delete new points
-    auto remover = [](Waypoint* waypoint) {
+    auto remover = [](int, Waypoint* waypoint) {
         waypoint->deleteLater();
     };
     connect(route, &Route::waypointRemoved, this, remover);

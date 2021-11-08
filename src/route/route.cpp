@@ -105,17 +105,18 @@ void Route::addWaypoint(Waypoint* waypoint)
         waypoint->setParent(this);
 
     connect(waypoint, &Waypoint::changed, this, [waypoint, this]() {
-        emit waypointChanged(waypoint);
+        emit waypointChanged(this->index(waypoint), waypoint);
     });
 
     m_waypoins.append(waypoint);
-    emit waypointAdded(waypoint);
+    emit waypointAdded(m_waypoins.count() - 1, waypoint);
 }
 
 void Route::removeWaypoint(Waypoint* waypoint)
 {
+    int index = m_waypoins.indexOf(waypoint);
     // Remove but don't delete waypoint
-    if (!m_waypoins.contains(waypoint))
+    if (index == -1)
         return;
 
     if (waypoint->parent() == this)
@@ -124,7 +125,7 @@ void Route::removeWaypoint(Waypoint* waypoint)
     disconnect(waypoint, nullptr, this, nullptr);
 
     m_waypoins.removeOne(waypoint);
-    emit waypointRemoved(waypoint);
+    emit waypointRemoved(index, waypoint);
 }
 
 void Route::fromVariantMapImpl(const QVariantMap& map)
