@@ -25,8 +25,14 @@ const Parameter longitude = { "longitude", QT_TRANSLATE_NOOP("Route", "Longitude
                               qQNaN() };
 const Parameter altitude = { "altitude", QT_TRANSLATE_NOOP("Route", "Altitude"), Parameter::Real,
                              0.0 };
-const Parameter relative = { "relative", QT_TRANSLATE_NOOP("Route", "Rel. alt."), Parameter::Bool,
-                             true };
+const Parameter relativeAlt = { "relative_alt", QT_TRANSLATE_NOOP("Route", "Rel.alt."),
+                                Parameter::Bool, true };
+const Parameter distance = { "distance", QT_TRANSLATE_NOOP("Route", "Distance"), Parameter::Real,
+                             0.0 };
+const Parameter time = { "time", QT_TRANSLATE_NOOP("Route", "Time"), Parameter::Int, 0 };
+const Parameter yaw = { "yaw", QT_TRANSLATE_NOOP("Route", "Yaw"), Parameter::Real, qQNaN() };
+const Parameter pitch = { "pitch", QT_TRANSLATE_NOOP("Route", "Pitch"), Parameter::Real, 15.0 };
+const Parameter radius = { "radius", QT_TRANSLATE_NOOP("Route", "Radius"), Parameter::Real, 0 };
 } // namespace mission
 } // namespace md::domain
 

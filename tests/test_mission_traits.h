@@ -13,12 +13,12 @@ const WaypointType waypoint = { "waypoint",
                                 "Waypoint",
                                 "WPT",
                                 { &mission::latitude, &mission::longitude, &mission::altitude,
-                                  &mission::relative, &airspeed, &passthrough } };
+                                  &mission::relativeAlt, &airspeed, &passthrough } };
 const WaypointType circle = { "circle",
                               "Circle",
                               "CRL",
                               { &mission::latitude, &mission::longitude, &mission::altitude,
-                                &mission::relative, &airspeed, &radius } };
+                                &mission::relativeAlt, &airspeed, &radius } };
 
 const RouteType routeType = { "test_route", "Test Route", { &waypoint, &circle } };
 const MissionType missionType = { "test_mission", "Test Mission", &routeType, &waypoint };
