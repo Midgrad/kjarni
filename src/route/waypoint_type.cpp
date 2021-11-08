@@ -42,10 +42,11 @@ QVariant Parameter::guard(const QVariant& value) const
     return value;
 }
 
-WaypointType::WaypointType(const QString& id, const QString& name,
+WaypointType::WaypointType(const QString& id, const QString& name, const QString& shortName,
                            const QVector<const Parameter*>& parameters) :
     id(id),
     name(name),
+    shortName(shortName),
     parameters(::paramsToMap(parameters))
 {
 }

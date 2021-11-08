@@ -11,10 +11,12 @@ const Parameter passthrough = { "passthrough", "Passthrough", Parameter::Bool, t
 
 const WaypointType waypoint = { "waypoint",
                                 "Waypoint",
+                                "WPT",
                                 { &mission::latitude, &mission::longitude, &mission::altitude,
                                   &mission::relative, &airspeed, &passthrough } };
 const WaypointType circle = { "circle",
                               "Circle",
+                              "CRL",
                               { &mission::latitude, &mission::longitude, &mission::altitude,
                                 &mission::relative, &airspeed, &radius } };
 

@@ -41,7 +41,7 @@ class WaypointType
     Q_GADGET
 
 public:
-    WaypointType(const QString& id, const QString& name,
+    WaypointType(const QString& id, const QString& name, const QString& shortName,
                  const QVector<const Parameter*>& parameters);
 
     const Parameter* parameter(const QString& id) const;
@@ -49,6 +49,7 @@ public:
 
     const QString id;
     const QString name;
+    const QString shortName;
     const QMap<QString, const Parameter*> parameters;
 };
 } // namespace md::domain
