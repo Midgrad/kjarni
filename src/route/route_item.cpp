@@ -24,7 +24,7 @@ QVariantMap RouteItem::toVariantMap() const
 {
     QVariantMap map = Entity::toVariantMap();
 
-    map.insert(params::type, m_type->id);
+    map.insert(props::type, m_type->id);
 
     return map;
 }

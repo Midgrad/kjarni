@@ -40,9 +40,9 @@ TEST_P(RouteItemTest, testConstructFromMap)
     RouteItemTestArgs args = GetParam();
 
     QVariantMap map;
-    map.insert(params::id, args.id.toString());
-    map.insert(params::name, args.name);
-    map.insert(params::params, QJsonValue::fromVariant(args.params));
+    map.insert(props::id, args.id.toString());
+    map.insert(props::name, args.name);
+    map.insert(props::params, QJsonValue::fromVariant(args.params));
 
     RouteItem routeItem(args.type, map);
 
@@ -58,8 +58,8 @@ TEST_P(RouteItemTest, testFromVariant)
     RouteItem routeItem(args.type, QString(), args.id);
 
     QVariantMap map;
-    map.insert(params::name, args.name);
-    map.insert(params::params, QJsonValue::fromVariant(args.params));
+    map.insert(props::name, args.name);
+    map.insert(props::params, QJsonValue::fromVariant(args.params));
 
     routeItem.fromVariantMap(map);
     EXPECT_EQ(routeItem.name(), args.name);
@@ -73,11 +73,11 @@ TEST_P(RouteItemTest, testToVariant)
     routeItem.setParameters(args.params);
 
     QVariantMap map;
-    map.insert(params::id, args.id);
-    map.insert(params::name, args.name);
+    map.insert(props::id, args.id);
+    map.insert(props::name, args.name);
     if (!args.params.isEmpty())
-        map.insert(params::params, args.params);
-    map.insert(params::type, args.type->id);
+        map.insert(props::params, args.params);
+    map.insert(props::type, args.type->id);
 
     EXPECT_EQ(map, routeItem.toVariantMap());
 }

@@ -34,10 +34,10 @@ bool MissionOperation::isComplete() const
 QVariantMap MissionOperation::toVariantMap() const
 {
     QVariantMap map;
-    map[params::progress] = m_progress;
-    map[params::total] = m_total;
-    map[params::complete] = this->isComplete();
-    map[params::type] = QVariant::fromValue(m_type).toString();
+    map[props::progress] = m_progress;
+    map[props::total] = m_total;
+    map[props::complete] = this->isComplete();
+    map[props::type] = QVariant::fromValue(m_type).toString();
     return map;
 }
 

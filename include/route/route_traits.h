@@ -6,7 +6,7 @@
 
 namespace md::domain
 {
-namespace params
+namespace props
 {
 constexpr char waypoints[] = "waypoints";
 constexpr char waypoint[] = "waypoint";

@@ -99,7 +99,7 @@ void VehiclesRepositorySql::saveVehicle(Vehicle* vehicle)
 Vehicle* VehiclesRepositorySql::readVehicle(const QVariant& id)
 {
     QVariantMap map = m_vehiclesTable.selectById(id);
-    QString typeName = map.value(params::type).toString();
+    QString typeName = map.value(props::type).toString();
 
     Vehicle* vehicle = new Vehicle(map, this);
     m_vehicles.insert(id, vehicle);

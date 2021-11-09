@@ -66,9 +66,9 @@ TEST_P(EntityTest, testConstructFromMap)
     EntityTestArgs args = GetParam();
 
     QVariantMap map;
-    map.insert(params::id, args.id.toString());
-    map.insert(params::name, args.name);
-    map.insert(params::params, QJsonValue::fromVariant(args.params));
+    map.insert(props::id, args.id.toString());
+    map.insert(props::name, args.name);
+    map.insert(props::params, QJsonValue::fromVariant(args.params));
 
     Entity entity(map);
 
@@ -83,8 +83,8 @@ TEST_P(EntityTest, testFromVariant)
     Entity entity(args.id, QString());
 
     QVariantMap map;
-    map.insert(params::name, args.name);
-    map.insert(params::params, QJsonValue::fromVariant(args.params));
+    map.insert(props::name, args.name);
+    map.insert(props::params, QJsonValue::fromVariant(args.params));
 
     entity.fromVariantMap(map);
     EXPECT_EQ(entity.id(), args.id);
@@ -98,11 +98,11 @@ TEST_P(EntityTest, testToVariant)
     Entity entity(GetParam().id, GetParam().name, GetParam().params);
 
     QVariantMap map;
-    map.insert(params::id, args.id);
+    map.insert(props::id, args.id);
     if (!args.name.isNull())
-        map.insert(params::name, args.name);
+        map.insert(props::name, args.name);
     if (!args.params.isEmpty())
-        map.insert(params::params, args.params);
+        map.insert(props::params, args.params);
 
     EXPECT_EQ(map, entity.toVariantMap());
 }

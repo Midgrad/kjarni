@@ -13,15 +13,15 @@ class RouteTest : public ::testing::Test
 public:
     RouteTest()
     {
-        waypoints.append(QVariantMap({ { params::id, md::utils::generateId() },
-                                       { params::name, "WPT 1" },
-                                       { params::type, test_mission::waypoint.id } }));
-        waypoints.append(QVariantMap({ { params::id, md::utils::generateId() },
-                                       { params::name, "WPT 2" },
-                                       { params::type, test_mission::waypoint.id } }));
-        waypoints.append(QVariantMap({ { params::id, md::utils::generateId() },
-                                       { params::name, "CRL 3" },
-                                       { params::type, test_mission::circle.id } }));
+        waypoints.append(QVariantMap({ { props::id, md::utils::generateId() },
+                                       { props::name, "WPT 1" },
+                                       { props::type, test_mission::waypoint.id } }));
+        waypoints.append(QVariantMap({ { props::id, md::utils::generateId() },
+                                       { props::name, "WPT 2" },
+                                       { props::type, test_mission::waypoint.id } }));
+        waypoints.append(QVariantMap({ { props::id, md::utils::generateId() },
+                                       { props::name, "CRL 3" },
+                                       { props::type, test_mission::circle.id } }));
     }
 
     QVariantList waypoints;
@@ -30,14 +30,14 @@ public:
 TEST_F(RouteTest, testConstructFromMap)
 {
     QVariantMap map;
-    map.insert(params::id, md::utils::generateId());
-    map.insert(params::name, "Test route");
-    map.insert(params::waypoints, waypoints);
+    map.insert(props::id, md::utils::generateId());
+    map.insert(props::name, "Test route");
+    map.insert(props::waypoints, waypoints);
 
     Route route(&test_mission::routeType, map);
 
-    EXPECT_EQ(route.id(), map.value(params::id));
-    EXPECT_EQ(route.name(), map.value(params::name));
+    EXPECT_EQ(route.id(), map.value(props::id));
+    EXPECT_EQ(route.name(), map.value(props::name));
     EXPECT_EQ(route.waypointsCount(), waypoints.count());
 
     int index = 0;
@@ -45,9 +45,9 @@ TEST_F(RouteTest, testConstructFromMap)
     {
         QVariantMap waypoint = value.toMap();
 
-        EXPECT_EQ(route.waypoint(index)->id(), waypoint.value(params::id));
-        EXPECT_EQ(route.waypoint(index)->name(), waypoint.value(params::name));
-        EXPECT_EQ(route.waypoint(index)->type()->id, waypoint.value(params::type));
+        EXPECT_EQ(route.waypoint(index)->id(), waypoint.value(props::id));
+        EXPECT_EQ(route.waypoint(index)->name(), waypoint.value(props::name));
+        EXPECT_EQ(route.waypoint(index)->type()->id, waypoint.value(props::type));
         index++;
     }
 }
@@ -57,12 +57,12 @@ TEST_F(RouteTest, testFromVariant)
     Route route(&test_mission::routeType, "Invalid name");
 
     QVariantMap map;
-    map.insert(params::name, "Test route");
-    map.insert(params::waypoints, waypoints);
+    map.insert(props::name, "Test route");
+    map.insert(props::waypoints, waypoints);
 
     route.fromVariantMap(map);
 
-    EXPECT_EQ(route.name(), map.value(params::name));
+    EXPECT_EQ(route.name(), map.value(props::name));
     EXPECT_EQ(route.waypointsCount(), waypoints.count());
 
     int index = 0;
@@ -70,9 +70,9 @@ TEST_F(RouteTest, testFromVariant)
     {
         QVariantMap waypoint = value.toMap();
 
-        EXPECT_EQ(route.waypoint(index)->id(), waypoint.value(params::id));
-        EXPECT_EQ(route.waypoint(index)->name(), waypoint.value(params::name));
-        EXPECT_EQ(route.waypoint(index)->type()->id, waypoint.value(params::type));
+        EXPECT_EQ(route.waypoint(index)->id(), waypoint.value(props::id));
+        EXPECT_EQ(route.waypoint(index)->name(), waypoint.value(props::name));
+        EXPECT_EQ(route.waypoint(index)->type()->id, waypoint.value(props::type));
         index++;
     }
 }
@@ -93,8 +93,8 @@ TEST_F(RouteTest, testAddWaypoint)
 TEST_F(RouteTest, testRemoveWaypoint)
 {
     QVariantMap map;
-    map.insert(params::name, "Test route");
-    map.insert(params::waypoints, waypoints);
+    map.insert(props::name, "Test route");
+    map.insert(props::waypoints, waypoints);
 
     Route route(&test_mission::routeType, map);
 
@@ -113,8 +113,8 @@ TEST_F(RouteTest, testRemoveWaypoint)
 TEST_F(RouteTest, testSetWaypoints)
 {
     QVariantMap map;
-    map.insert(params::name, "Test route");
-    map.insert(params::waypoints, waypoints);
+    map.insert(props::name, "Test route");
+    map.insert(props::waypoints, waypoints);
 
     Route route(&test_mission::routeType, map);
 

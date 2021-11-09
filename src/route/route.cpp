@@ -27,7 +27,7 @@ QVariantMap Route::toVariantMap() const
 {
     QVariantMap map = Entity::toVariantMap();
 
-    map.insert(params::type, m_type->id);
+    map.insert(props::type, m_type->id);
 
     return map;
 }
@@ -142,14 +142,14 @@ void Route::removeWaypoint(Waypoint* waypoint)
 
 void Route::fromVariantMapImpl(const QVariantMap& map)
 {
-    if (map.contains(params::waypoints))
+    if (map.contains(props::waypoints))
     {
-        QVariantList waypoints = map.value(params::waypoints).toList();
+        QVariantList waypoints = map.value(props::waypoints).toList();
         int counter = 0;
         for (const QVariant& value : waypoints)
         {
             QVariantMap map = value.toMap();
-            QString typeName = map.value(params::type, tr("empty")).toString();
+            QString typeName = map.value(props::type, tr("empty")).toString();
             auto type = m_type->waypointType(typeName);
             if (!type)
             {

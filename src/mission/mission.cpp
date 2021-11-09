@@ -19,9 +19,9 @@ Mission::Mission(const MissionType* type, const QString& name, const QVariant& v
 Mission::Mission(const MissionType* type, const QVariantMap& map, QObject* parent) :
     Entity(map, parent),
     m_type(type),
-    m_vehicleId(map.value(params::vehicle)),
+    m_vehicleId(map.value(props::vehicle)),
     m_operation(new MissionOperation(this)),
-    m_homePoint(new Waypoint(type->homePointType, map.value(params::home).toMap()))
+    m_homePoint(new Waypoint(type->homePointType, map.value(props::home).toMap()))
 {
 }
 
@@ -29,13 +29,13 @@ QVariantMap Mission::toVariantMap() const
 {
     QVariantMap map = Entity::toVariantMap();
 
-    map.insert(params::type, m_type->id);
-    map.insert(params::vehicle, m_vehicleId);
-    map.insert(params::home, m_homePoint->id());
+    map.insert(props::type, m_type->id);
+    map.insert(props::vehicle, m_vehicleId);
+    map.insert(props::home, m_homePoint->id());
 
     if (m_route)
     {
-        map.insert(params::route, m_route->id());
+        map.insert(props::route, m_route->id());
     }
 
     return map;

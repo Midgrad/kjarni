@@ -12,8 +12,8 @@ Entity::Entity(const QVariant& id, const QString& name, const QVariantMap& param
 }
 
 Entity::Entity(const QVariantMap& map, QObject* parent) :
-    Entity(map.value(params::id, utils::generateId()), map.value(params::name).toString(),
-           map.value(params::params).toMap(), parent)
+    Entity(map.value(props::id, utils::generateId()), map.value(props::name).toString(),
+           map.value(props::params).toMap(), parent)
 {
 }
 
@@ -46,19 +46,19 @@ QVariantMap Entity::toVariantMap() const
     QVariantMap map;
 
     if (!m_id.isNull())
-        map.insert(params::id, m_id.toString());
+        map.insert(props::id, m_id.toString());
     if (!m_name.isNull())
-        map.insert(params::name, m_name);
+        map.insert(props::name, m_name);
     if (!m_parameters.isEmpty())
-        map.insert(params::params, m_parameters);
+        map.insert(props::params, m_parameters);
 
     return map;
 }
 
 void Entity::fromVariantMap(const QVariantMap& map)
 {
-    m_name = map.value(params::name, m_name).toString();
-    m_parameters = map.value(params::params, m_parameters).toMap();
+    m_name = map.value(props::name, m_name).toString();
+    m_parameters = map.value(props::params, m_parameters).toMap();
 
     emit changed();
 }

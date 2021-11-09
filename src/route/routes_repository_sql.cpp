@@ -115,7 +115,7 @@ void RoutesRepositorySql::removeRoute(Route* route)
     }
 
     // Remove all route waypoints for route
-    m_routeWaypointsTable.removeByCondition({ params::route, route->id() });
+    m_routeWaypointsTable.removeByCondition({ props::route, route->id() });
 
     // Remove stored waypoints for route, new points will be deleted by parent
     for (Waypoint* waypoint : m_routeWaypoints.values(route))
@@ -193,7 +193,7 @@ void RoutesRepositorySql::saveRoute(Route* route)
             continue;
 
         m_routeWaypointsTable.removeByConditions(
-            { { params::route, route->id() }, { params::waypoint, waypoint->id() } });
+            { { props::route, route->id() }, { props::waypoint, waypoint->id() } });
         this->removeWaypoint(waypoint);
         m_routeWaypoints.remove(route, waypoint);
         waypoint->deleteLater();
@@ -223,14 +223,14 @@ void RoutesRepositorySql::saveWaypoint(Route* route, Waypoint* waypoint)
         m_routeWaypoints.insert(route, waypoint);
 
         m_routeWaypointsTable.insert(
-            { { params::route, route->id() }, { params::waypoint, waypoint->id() } });
+            { { props::route, route->id() }, { props::waypoint, waypoint->id() } });
     }
 }
 
 Route* RoutesRepositorySql::readRoute(const QVariant& id)
 {
     QVariantMap map = m_routesTable.selectById(id);
-    QString typeId = map.value(params::type).toString();
+    QString typeId = map.value(props::type).toString();
 
     const RouteType* const type = m_routeTypes.value(typeId);
     if (!type)
@@ -244,7 +244,7 @@ Route* RoutesRepositorySql::readRoute(const QVariant& id)
 
     // Read waypoints for route
     for (const QVariant& waypointId :
-         m_routeWaypointsTable.selectOne({ { params::route, route->id() } }, params::waypoint))
+         m_routeWaypointsTable.selectOne({ { props::route, route->id() } }, props::waypoint))
     {
         Waypoint* waypoint = m_waypoints.contains(waypointId) ? m_waypoints.value(waypointId)
                                                               : this->readWaypoint(waypointId);
@@ -259,7 +259,7 @@ Route* RoutesRepositorySql::readRoute(const QVariant& id)
 Waypoint* RoutesRepositorySql::readWaypoint(const QVariant& id)
 {
     QVariantMap map = m_waypointsTable.selectById(id);
-    QString typeId = map.value(params::type).toString();
+    QString typeId = map.value(props::type).toString();
 
     const WaypointType* const type = m_waypointTypes.value(typeId);
     if (!type)

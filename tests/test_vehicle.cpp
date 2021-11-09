@@ -32,10 +32,10 @@ TEST_P(VehicleTest, testConstructFromMap)
     VehicleTestArgs args = GetParam();
 
     QVariantMap map;
-    map.insert(params::id, args.id.toString());
-    map.insert(params::name, args.name);
-    map.insert(params::params, QJsonValue::fromVariant(args.params));
-    map.insert(params::type, QVariant::fromValue(args.type).toString());
+    map.insert(props::id, args.id.toString());
+    map.insert(props::name, args.name);
+    map.insert(props::params, QJsonValue::fromVariant(args.params));
+    map.insert(props::type, QVariant::fromValue(args.type).toString());
 
     Vehicle vehicle(map);
 
@@ -52,9 +52,9 @@ TEST_P(VehicleTest, testFromVariant)
     VehicleTestArgs args = GetParam();
 
     QVariantMap map;
-    map.insert(params::name, args.name);
-    map.insert(params::params, QJsonValue::fromVariant(args.params));
-    map.insert(params::type, QVariant::fromValue(args.type).toString());
+    map.insert(props::name, args.name);
+    map.insert(props::params, QJsonValue::fromVariant(args.params));
+    map.insert(props::type, QVariant::fromValue(args.type).toString());
 
     vehicle.fromVariantMap(map);
     EXPECT_EQ(vehicle.name(), args.name);
@@ -70,11 +70,11 @@ TEST_P(VehicleTest, testToVariant)
     vehicle.setParameters(GetParam().params);
 
     QVariantMap map;
-    map.insert(params::id, vehicle.id());
-    map.insert(params::name, args.name);
+    map.insert(props::id, vehicle.id());
+    map.insert(props::name, args.name);
     if (!args.params.isEmpty())
-        map.insert(params::params, args.params);
-    map.insert(params::type, QVariant::fromValue(args.type).toString());
+        map.insert(props::params, args.params);
+    map.insert(props::type, QVariant::fromValue(args.type).toString());
 
     EXPECT_EQ(map, vehicle.toVariantMap());
 }

@@ -24,11 +24,11 @@ QVariantMap EntitySqlTable::selectById(const QVariant& id, const QString& column
         return QVariantMap();
 
     QVariantMap map = select.first();
-    if (map.contains(domain::params::params))
+    if (map.contains(domain::props::params))
     {
-        QJsonDocument doc = QJsonDocument::fromJson(map.value(domain::params::params).toByteArray());
+        QJsonDocument doc = QJsonDocument::fromJson(map.value(domain::props::params).toByteArray());
         QVariantMap params = doc.object().toVariantMap();
-        map[domain::params::params] = params;
+        map[domain::props::params] = params;
     }
     return map;
 }
@@ -67,11 +67,11 @@ QVariantMap EntitySqlTable::entityToMap(domain::Entity* entity)
 {
     QVariantMap map = entity->toVariantMap();
 
-    if (map.contains(domain::params::params))
+    if (map.contains(domain::props::params))
     {
-        QJsonObject json = QJsonObject::fromVariantMap(map.value(domain::params::params).toMap());
+        QJsonObject json = QJsonObject::fromVariantMap(map.value(domain::props::params).toMap());
         QJsonDocument doc(json);
-        map[domain::params::params] = doc.toJson();
+        map[domain::props::params] = doc.toJson();
     }
     return map;
 }

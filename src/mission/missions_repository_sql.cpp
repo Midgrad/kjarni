@@ -123,7 +123,7 @@ void MissionsRepositorySql::removeMission(Mission* mission)
     }
 
     // Remove mission waypoints for route
-    m_homeWaypointsTable.removeByCondition({ params::mission, mission->id() });
+    m_homeWaypointsTable.removeByCondition({ props::mission, mission->id() });
 
     // Remove home waypoint
     m_waypointsTable.removeEntity(mission->homePoint());
@@ -180,8 +180,8 @@ void MissionsRepositorySql::saveMission(Mission* mission)
     {
         m_waypointsTable.insertEntity(mission->homePoint());
         m_missionsTable.insertEntity(mission);
-        m_homeWaypointsTable.insert({ { params::mission, mission->id() },
-                                      { params::waypoint, mission->homePoint()->id() } });
+        m_homeWaypointsTable.insert({ { props::mission, mission->id() },
+                                      { props::waypoint, mission->homePoint()->id() } });
 
         m_missions.insert(mission->id(), mission);
         emit missionAdded(mission);
@@ -191,7 +191,7 @@ void MissionsRepositorySql::saveMission(Mission* mission)
 Mission* MissionsRepositorySql::readMission(const QVariant& id)
 {
     QVariantMap map = m_missionsTable.selectById(id);
-    QString typeId = map.value(params::type).toString();
+    QString typeId = map.value(props::type).toString();
 
     const MissionType* const type = m_missionTypes.value(typeId);
     if (!type)
@@ -201,20 +201,20 @@ Mission* MissionsRepositorySql::readMission(const QVariant& id)
     }
 
     // Read home waypoint for mission
-    QVariantList waypointIds = m_homeWaypointsTable.selectOne({ { params::mission, id } },
-                                                              params::waypoint);
+    QVariantList waypointIds = m_homeWaypointsTable.selectOne({ { props::mission, id } },
+                                                              props::waypoint);
     if (waypointIds.length())
     {
         QVariant homeId = waypointIds.first();
         QVariantMap homeMap = m_waypointsTable.selectById(homeId);
-        map[params::home] = homeMap;
+        map[props::home] = homeMap;
     }
 
     Mission* mission = new Mission(type, map);
     m_missions.insert(id, mission);
     emit missionAdded(mission);
 
-    Route* route = m_routes->route(map.value(params::route));
+    Route* route = m_routes->route(map.value(props::route));
     mission->assignRoute(route);
 
     return mission;

@@ -49,10 +49,10 @@ TEST_P(WaypointTest, testConstructFromMap)
     WaypointTestArgs args = GetParam();
 
     QVariantMap map;
-    map.insert(params::id, args.id.toString());
-    map.insert(params::name, args.name);
+    map.insert(props::id, args.id.toString());
+    map.insert(props::name, args.name);
     md::utils::mergeMap(map, args.position.toVariantMap());
-    map.insert(params::params, QJsonValue::fromVariant(args.params));
+    map.insert(props::params, QJsonValue::fromVariant(args.params));
 
     Waypoint waypoint(args.type, map);
 
@@ -71,9 +71,9 @@ TEST_P(WaypointTest, testFromVariant)
     Waypoint waypoint(args.type, QString(), args.id);
 
     QVariantMap map;
-    map.insert(params::name, args.name);
+    map.insert(props::name, args.name);
     md::utils::mergeMap(map, args.position.toVariantMap());
-    map.insert(params::params, QJsonValue::fromVariant(args.params));
+    map.insert(props::params, QJsonValue::fromVariant(args.params));
 
     waypoint.fromVariantMap(map);
     EXPECT_EQ(waypoint.name(), args.name);
@@ -92,10 +92,10 @@ TEST_P(WaypointTest, testToVariant)
 
     QVariantMap result = waypoint.toVariantMap();
 
-    EXPECT_EQ(result.value(params::id), args.id);
-    EXPECT_EQ(result.value(params::type), args.type->id);
-    EXPECT_EQ(result.value(params::type), args.type->id);
-    EXPECT_EQ(result.value(params::params), args.params);
+    EXPECT_EQ(result.value(props::id), args.id);
+    EXPECT_EQ(result.value(props::type), args.type->id);
+    EXPECT_EQ(result.value(props::type), args.type->id);
+    EXPECT_EQ(result.value(props::params), args.params);
 
     if (args.position.isValid())
     {

@@ -18,9 +18,9 @@ Waypoint::Waypoint(const WaypointType* type, const QVariantMap& map, QObject* pa
     RouteItem(type, map, parent),
     m_type(type),
     m_position(map),
-    m_current(map.value(params::current, false).toBool()),
-    m_reached(map.value(params::reached, false).toBool()),
-    m_confirmed(map.value(params::confirmed, false).toBool())
+    m_current(map.value(props::current, false).toBool()),
+    m_reached(map.value(props::reached, false).toBool()),
+    m_confirmed(map.value(props::confirmed, false).toBool())
 {
 }
 
@@ -30,9 +30,9 @@ QVariantMap Waypoint::toVariantMap() const
 
     utils::mergeMap(map, m_position.toVariantMap());
 
-    map.insert(params::current, m_current);
-    map.insert(params::reached, m_reached);
-    map.insert(params::confirmed, m_confirmed);
+    map.insert(props::current, m_current);
+    map.insert(props::reached, m_reached);
+    map.insert(props::confirmed, m_confirmed);
 
     return map;
 }
@@ -41,9 +41,9 @@ void Waypoint::fromVariantMap(const QVariantMap& map)
 {
     m_position = map;
 
-    m_current = map.value(params::current, m_current).toBool();
-    m_reached = map.value(params::reached, m_reached).toBool();
-    m_confirmed = map.value(params::confirmed, m_confirmed).toBool();
+    m_current = map.value(props::current, m_current).toBool();
+    m_reached = map.value(props::reached, m_reached).toBool();
+    m_confirmed = map.value(props::confirmed, m_confirmed).toBool();
 
     Entity::fromVariantMap(map);
 }
