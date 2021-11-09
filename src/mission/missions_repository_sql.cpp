@@ -8,6 +8,7 @@
 namespace
 {
 constexpr char missions[] = "missions";
+constexpr char waypoints[] = "waypoints";
 constexpr char homeWaypoints[] = "home_waypoints";
 } // namespace
 
@@ -18,6 +19,7 @@ MissionsRepositorySql::MissionsRepositorySql(IRoutesRepository* routes, QSqlData
     IMissionsRepository(parent),
     m_routes(routes),
     m_missionsTable(database, ::missions),
+    m_waypointsTable(database, ::waypoints),
     m_homeWaypointsTable(database, ::homeWaypoints)
 {
 }
@@ -120,8 +122,14 @@ void MissionsRepositorySql::removeMission(Mission* mission)
         return;
     }
 
+    // Remove mission waypoints for route
+    m_homeWaypointsTable.removeByCondition({ params::mission, mission->id() });
+
+    // Remove home waypoint
+    m_waypointsTable.removeEntity(mission->homePoint());
+
+    // Remove mission
     m_missionsTable.removeEntity(mission);
-    m_homeWaypointsTable.removeEntity(mission->homePoint());
 
     m_missions.remove(mission->id());
 
@@ -140,7 +148,7 @@ void MissionsRepositorySql::restoreMission(Mission* mission)
     }
 
     m_missionsTable.readEntity(mission);
-    m_homeWaypointsTable.readEntity(mission->homePoint());
+    m_waypointsTable.readEntity(mission->homePoint());
 
     emit missionChanged(mission);
 }
@@ -163,15 +171,18 @@ void MissionsRepositorySql::saveMission(Mission* mission)
 
     if (m_missions.contains(mission->id()))
     {
-        m_homeWaypointsTable.updateEntity(mission->homePoint());
+        m_waypointsTable.updateEntity(mission->homePoint());
         m_missionsTable.updateEntity(mission);
 
         emit missionChanged(mission);
     }
     else
     {
-        m_homeWaypointsTable.insertEntity(mission->homePoint());
+        m_waypointsTable.insertEntity(mission->homePoint());
         m_missionsTable.insertEntity(mission);
+        m_homeWaypointsTable.insert({ { params::mission, mission->id() },
+                                      { params::waypoint, mission->homePoint()->id() } });
+
         m_missions.insert(mission->id(), mission);
         emit missionAdded(mission);
     }
@@ -189,9 +200,15 @@ Mission* MissionsRepositorySql::readMission(const QVariant& id)
         return nullptr;
     }
 
-    QVariant homeId = map.value(params::home);
-    QVariantMap homeMap = m_homeWaypointsTable.selectById(homeId);
-    map[params::home] = homeMap;
+    // Read home waypoint for mission
+    QVariantList waypointIds = m_homeWaypointsTable.selectOne({ { params::mission, id } },
+                                                              params::waypoint);
+    if (waypointIds.length())
+    {
+        QVariant homeId = waypointIds.first();
+        QVariantMap homeMap = m_waypointsTable.selectById(homeId);
+        map[params::home] = homeMap;
+    }
 
     Mission* mission = new Mission(type, map);
     m_missions.insert(id, mission);

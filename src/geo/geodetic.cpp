@@ -13,8 +13,10 @@ Geodetic::Geodetic(double latitude, double longitude, float altitude, const QStr
 }
 
 Geodetic::Geodetic(const QVariantMap& map) :
-    Geodetic(map.value(::latitude, qQNaN()).toDouble(), map.value(::longitude, qQNaN()).toDouble(),
-             map.value(::altitude, qQNaN()).toFloat(), map.value(::datum, datums::wgs84).toString())
+    Geodetic(map.value(geo::latitude, qQNaN()).toDouble(),
+             map.value(geo::longitude, qQNaN()).toDouble(),
+             map.value(geo::altitude, qQNaN()).toFloat(),
+             map.value(geo::datum, geo::datums::wgs84).toString())
 {
 }
 
@@ -47,10 +49,10 @@ QString Geodetic::datum() const
 
 QVariantMap Geodetic::toVariantMap() const
 {
-    return QVariantMap{ { ::latitude, m_latitude },
-                        { ::longitude, m_longitude },
-                        { ::altitude, m_altitude },
-                        { ::datum, m_datum } };
+    return QVariantMap{ { geo::latitude, m_latitude },
+                        { geo::longitude, m_longitude },
+                        { geo::altitude, m_altitude },
+                        { geo::datum, m_datum } };
 }
 
 bool Geodetic::isValidPosition() const
@@ -89,6 +91,6 @@ namespace md::domain
 bool operator==(const Geodetic& first, const Geodetic& second)
 {
     return first.m_latitude == second.m_latitude && first.m_longitude == second.m_longitude &&
-           first.m_datum == second.m_datum;
+           first.m_altitude == second.m_altitude && first.m_datum == second.m_datum;
 }
 } // namespace md::domain

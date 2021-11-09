@@ -7,11 +7,12 @@
 
 namespace md::domain
 {
+// TODO: IConvertable
 class Geodetic
 {
 public:
     Geodetic(double latitude, double longitude, float altitude,
-             const QString& datum = datums::wgs84);
+             const QString& datum = geo::datums::wgs84);
     Geodetic(const QVariantMap& map);
     Geodetic();
 
@@ -38,6 +39,8 @@ private:
 };
 
 bool operator==(const Geodetic& first, const Geodetic& second);
+
+// TODO: qDebug() operator
 } // namespace md::domain
 
 #endif // GEODETIC_H

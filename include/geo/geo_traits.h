@@ -1,7 +1,9 @@
 #ifndef GEO_TRAITS_H
 #define GEO_TRAITS_H
 
-namespace md::domain
+#include "kjarni_traits.h"
+
+namespace md::domain::geo
 {
 // Datums provided in proj4 format
 namespace datums
@@ -13,6 +15,6 @@ constexpr char latitude[] = "latitude";
 constexpr char longitude[] = "longitude";
 constexpr char altitude[] = "altitude";
 constexpr char datum[] = "datum";
-} // namespace md::domain
+} // namespace md::domain::geo
 
 #endif // GEO_TRAITS_H

@@ -5,22 +5,32 @@
 
 namespace md::domain::test_mission
 {
+// Prameters
 const Parameter radius = { "radius", "Radius", Parameter::Real, 100 };
+const Parameter altitude = { "altitude", "Altitude", Parameter::Real, 0.0 };
 const Parameter airspeed = { "airspeed", "Airspeed", Parameter::Int, 10 };
 const Parameter passthrough = { "passthrough", "Passthrough", Parameter::Bool, true };
 
-const RouteItemType waypoint = { "waypoint",
+// RouteItems
+const RouteItemType changeSpeed{ "ch_speed", "Change speed", "CH SPD", { &airspeed } };
+const RouteItemType changeAltitude{ "ch_speed", "Change alt", "CH ALT", { &altitude } };
+const RouteItemType takePhoto{ "take_photo", "Take photo", "PHOTO", {} };
+
+// Waypoints
+const WaypointType waypoint = { "waypoint",
                                 "Waypoint",
                                 "WPT",
-                                { &route::latitude, &route::longitude, &route::altitude,
-                                  &route::relativeAlt, &airspeed, &passthrough } };
-const RouteItemType circle = { "circle",
-                              "Circle",
-                              "CRL",
-                              { &route::latitude, &route::longitude, &route::altitude,
-                                &route::relativeAlt, &airspeed, &radius } };
+                                { &route::relativeAlt, &passthrough },
+                                { &changeSpeed, &changeAltitude, &takePhoto } };
+const WaypointType circle = { "circle", "Circle", "CRL", { &route::relativeAlt, &radius }, {} };
+const WaypointType loop = {
+    "circle", "Circle", "CRL", { &route::relativeAlt, &radius }, { &changeAltitude }
+};
 
-const RouteType routeType = { "test_route", "Test Route", { &waypoint, &circle } };
+// Routes
+const RouteType routeType = { "test_route", "Test Route", { &waypoint, &circle, &loop } };
+
+// Mission
 const MissionType missionType = { "test_mission", "Test Mission", &routeType, &waypoint };
 
 } // namespace md::domain::test_mission

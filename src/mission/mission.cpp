@@ -12,7 +12,7 @@ Mission::Mission(const MissionType* type, const QString& name, const QVariant& v
     m_type(type),
     m_vehicleId(vehicleId),
     m_operation(new MissionOperation(this)),
-    m_homePoint(new RouteItem(type->homePointType, type->homePointType->shortName))
+    m_homePoint(new Waypoint(type->homePointType, type->homePointType->shortName))
 {
 }
 
@@ -21,7 +21,7 @@ Mission::Mission(const MissionType* type, const QVariantMap& map, QObject* paren
     m_type(type),
     m_vehicleId(map.value(params::vehicle)),
     m_operation(new MissionOperation(this)),
-    m_homePoint(new RouteItem(type->homePointType, map.value(params::home).toMap()))
+    m_homePoint(new Waypoint(type->homePointType, map.value(params::home).toMap()))
 {
 }
 
@@ -31,7 +31,6 @@ QVariantMap Mission::toVariantMap() const
 
     map.insert(params::type, m_type->id);
     map.insert(params::vehicle, m_vehicleId);
-
     map.insert(params::home, m_homePoint->id());
 
     if (m_route)
@@ -59,10 +58,10 @@ Route* Mission::route() const
 
 int Mission::count() const
 {
-    return m_route ? m_route->count() : 1; // route + home point
+    return m_route ? m_route->waypointsCount() : 1; // route + home point
 }
 
-RouteItem* Mission::waypoint(int index) const
+Waypoint* Mission::waypoint(int index) const
 {
     if (index == 0)
         return m_homePoint;
@@ -70,7 +69,7 @@ RouteItem* Mission::waypoint(int index) const
     return m_route ? m_route->waypoint(index - 1) : nullptr;
 }
 
-RouteItem* Mission::currentWaypoint() const
+Waypoint* Mission::currentWaypoint() const
 {
     return m_currentWaypoint;
 }
@@ -80,9 +79,9 @@ int Mission::currentWaypointIndex() const
     return this->waypoints().indexOf(m_currentWaypoint);
 }
 
-QList<RouteItem*> Mission::waypoints() const
+QList<Waypoint*> Mission::waypoints() const
 {
-    QList<RouteItem*> waypoints;
+    QList<Waypoint*> waypoints;
 
     waypoints.append(m_homePoint);
     if (m_route)
@@ -96,7 +95,7 @@ MissionOperation* Mission::operation() const
     return m_operation;
 }
 
-RouteItem* Mission::homePoint() const
+Waypoint* Mission::homePoint() const
 {
     return m_homePoint;
 }
@@ -126,7 +125,7 @@ void Mission::assignRoute(Route* route)
 
 void Mission::setCurrentWaypointIndex(int currentWaypointIndex)
 {
-    RouteItem* currentWaypoint = this->waypoint(currentWaypointIndex);
+    Waypoint* currentWaypoint = this->waypoint(currentWaypointIndex);
 
     if (m_currentWaypoint == currentWaypoint)
         return;

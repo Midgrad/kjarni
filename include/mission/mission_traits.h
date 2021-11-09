@@ -9,6 +9,7 @@ namespace md::domain
 namespace params
 {
 constexpr char vehicle[] = "vehicle";
+constexpr char mission[] = "mission";
 constexpr char home[] = "home";
 constexpr char complete[] = "complete";
 constexpr char progress[] = "progress";

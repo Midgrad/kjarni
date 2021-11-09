@@ -3,38 +3,33 @@
 #include <QDebug>
 
 #include "route_traits.h"
+#include "utils.h"
 
 using namespace md::domain;
 
 Waypoint::Waypoint(const WaypointType* type, const QString& name, const QVariant& id,
-                   const QVariantMap& parameters, QObject* parent) :
-    Entity(id, name, parameters, parent),
-    m_type(type)
-{
-    Q_ASSERT(type);
-}
-
-Waypoint::Waypoint(const WaypointType* type, const QString& name, const QVariant& id,
                    QObject* parent) :
-    Waypoint(type, name, id, type->defaultParameters(), parent)
+    RouteItem(type, name, id, parent),
+    m_type(type)
 {
 }
 
 Waypoint::Waypoint(const WaypointType* type, const QVariantMap& map, QObject* parent) :
-    Entity(map, parent),
+    RouteItem(type, map, parent),
     m_type(type),
+    m_position(map),
     m_current(map.value(params::current, false).toBool()),
     m_reached(map.value(params::reached, false).toBool()),
     m_confirmed(map.value(params::confirmed, false).toBool())
 {
-    Q_ASSERT(type);
 }
 
 QVariantMap Waypoint::toVariantMap() const
 {
-    QVariantMap map = Entity::toVariantMap();
+    QVariantMap map = RouteItem::toVariantMap();
 
-    map.insert(params::type, m_type->id);
+    utils::mergeMap(map, m_position.toVariantMap());
+
     map.insert(params::current, m_current);
     map.insert(params::reached, m_reached);
     map.insert(params::confirmed, m_confirmed);
@@ -44,6 +39,8 @@ QVariantMap Waypoint::toVariantMap() const
 
 void Waypoint::fromVariantMap(const QVariantMap& map)
 {
+    m_position = map;
+
     m_current = map.value(params::current, m_current).toBool();
     m_reached = map.value(params::reached, m_reached).toBool();
     m_confirmed = map.value(params::confirmed, m_confirmed).toBool();
@@ -54,6 +51,31 @@ void Waypoint::fromVariantMap(const QVariantMap& map)
 const WaypointType* Waypoint::type() const
 {
     return m_type;
+}
+
+const Geodetic& Waypoint::position() const
+{
+    return m_position;
+}
+
+int Waypoint::count() const
+{
+    return m_items.count();
+}
+
+int Waypoint::index(RouteItem* item) const
+{
+    return m_items.indexOf(item);
+}
+
+RouteItem* Waypoint::item(int index) const
+{
+    return m_items.value(index, nullptr);
+}
+
+const QList<RouteItem*>& Waypoint::items() const
+{
+    return m_items;
 }
 
 bool Waypoint::current() const
@@ -73,15 +95,74 @@ bool Waypoint::confirmed() const
 
 void Waypoint::setType(const WaypointType* type)
 {
-    Q_ASSERT(type);
-
     if (m_type == type)
         return;
 
     m_type = type;
-    emit changed();
+    RouteItem::setType(type);
+}
 
-    this->syncParameters();
+void Waypoint::setPosition(const Geodetic& position)
+{
+    if (m_position == position)
+        return;
+
+    m_position = position;
+    emit changed();
+}
+
+void Waypoint::setItems(const QList<RouteItem*>& items)
+{
+    // Remove old items (std::remove_if does not emit signals)
+    for (RouteItem* item : qAsConst(m_items))
+    {
+        // Skip item if we have it in new list
+        if (items.contains(item))
+            continue;
+
+        this->removeItem(item);
+    }
+
+    // Add new items to the end
+    for (RouteItem* item : items)
+    {
+        this->addItem(item);
+    }
+}
+
+void Waypoint::addItem(RouteItem* item)
+{
+    if (m_items.contains(item))
+        return;
+
+    if (item->thread() != this->thread())
+        item->moveToThread(this->thread());
+
+    if (!item->parent())
+        item->setParent(this);
+
+    connect(item, &RouteItem::changed, this, [item, this]() {
+        emit itemChanged(this->index(item), item);
+    });
+
+    m_items.append(item);
+    emit itemAdded(m_items.count() - 1, item);
+}
+
+void Waypoint::removeItem(RouteItem* item)
+{
+    int index = m_items.indexOf(item);
+    // Remove but don't delete item
+    if (index == -1)
+        return;
+
+    if (item->parent() == this)
+        item->setParent(nullptr);
+
+    disconnect(item, nullptr, this, nullptr);
+
+    m_items.removeOne(item);
+    emit itemRemoved(index, item);
 }
 
 void Waypoint::setCurrent(bool current)
@@ -109,50 +190,4 @@ void Waypoint::setReached(bool reached)
 
     m_reached = reached;
     emit changed();
-}
-
-void Waypoint::setAndCheckParameter(const QString& key, const QVariant& value)
-{
-    QVariant guarded = value;
-    auto parameter = m_type->parameter(key);
-    if (parameter)
-    {
-        guarded = parameter->guard(value);
-    }
-    this->setParameter(key, guarded);
-}
-
-void Waypoint::resetParameter(const QString& key)
-{
-    auto parameter = m_type->parameter(key);
-    if (!parameter)
-        return;
-
-    this->setParameter(key, parameter->defaultValue);
-}
-
-void Waypoint::resetParameters()
-{
-    this->setParameters(m_type->defaultParameters());
-}
-
-void Waypoint::syncParameters()
-{
-    QVariantMap parameters = this->parameters();
-
-    // Add parameters defaulted by type
-    for (const Parameter* parameter : m_type->parameters)
-    {
-        if (!parameters.contains(parameter->id))
-            parameters.insert(parameter->id, parameter->defaultValue);
-    }
-
-    // Remove unneeded parameters
-    for (const QString& key : parameters.keys())
-    {
-        if (!m_type->parameter(key))
-            parameters.remove(key);
-    }
-
-    this->setParameters(parameters);
 }

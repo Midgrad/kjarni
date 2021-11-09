@@ -1,7 +1,7 @@
 #ifndef ROUTE_TRAITS_H
 #define ROUTE_TRAITS_H
 
-#include "kjarni_traits.h"
+#include "geo_traits.h"
 #include "route_type.h"
 
 namespace md::domain
@@ -19,12 +19,6 @@ constexpr char confirmed[] = "confirmed";
 
 namespace route
 {
-const Parameter latitude = { "latitude", QT_TRANSLATE_NOOP("Route", "Latitude"), Parameter::Real,
-                             qQNaN() };
-const Parameter longitude = { "longitude", QT_TRANSLATE_NOOP("Route", "Longitude"), Parameter::Real,
-                              qQNaN() };
-const Parameter altitude = { "altitude", QT_TRANSLATE_NOOP("Route", "Altitude"), Parameter::Real,
-                             0.0 };
 const Parameter relativeAlt = { "relative_alt", QT_TRANSLATE_NOOP("Route", "Rel.alt."),
                                 Parameter::Bool, true };
 const Parameter distance = { "distance", QT_TRANSLATE_NOOP("Route", "Distance"), Parameter::Real,

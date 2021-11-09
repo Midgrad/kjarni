@@ -20,6 +20,21 @@ QString nameToId(const QString& name);
 
 // Generate numerated name from type
 QString nameFromType(const QString& type, const QStringList& occupiedNames);
+
+// Merge 2 varinat maps to one
+QVariantMap mergeMap(QVariantMap& dest, const QVariantMap& source);
+
+// Convert list to map with ids
+template<typename T>
+QMap<QString, const T*> listToMap(const QVector<const T*>& list)
+{
+    QMap<QString, const T*> map;
+    for (const T* type : list)
+    {
+        map[type->id] = type;
+    }
+    return map;
+}
 } // namespace md::utils
 
 #endif // UTILS_H

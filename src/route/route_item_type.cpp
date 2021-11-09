@@ -1,21 +1,9 @@
 #include "route_item_type.h"
 
 #include "route_item.h"
+#include "utils.h"
 
 using namespace md::domain;
-
-namespace
-{
-QMap<QString, const Parameter*> paramsToMap(const QVector<const Parameter*>& parameters)
-{
-    QMap<QString, const Parameter*> map;
-    for (const Parameter* parameter : parameters)
-    {
-        map[parameter->id] = parameter;
-    }
-    return map;
-}
-} // namespace
 
 Parameter::Parameter(const QString& id, const QString& name, Type type,
                      const QVariant& defaultValue, const QVariant& minValue,
@@ -51,7 +39,7 @@ RouteItemType::RouteItemType(const QString& id, const QString& name, const QStri
     id(id),
     name(name),
     shortName(shortName),
-    parameters(::paramsToMap(parameters))
+    parameters(utils::listToMap<Parameter>(parameters))
 {
 }
 

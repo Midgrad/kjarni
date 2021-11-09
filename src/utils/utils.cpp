@@ -74,4 +74,13 @@ QString nameFromType(const QString& type, const QStringList& occupiedNames)
     return name;
 }
 
+QVariantMap mergeMap(QVariantMap& dest, const QVariantMap& source)
+{
+    for (auto it = source.constBegin(); it != source.constEnd(); ++it)
+    {
+        dest[it.key()] = it.value();
+    }
+    return dest;
+}
+
 } // namespace md::utils

@@ -38,7 +38,7 @@ TEST_F(RouteTest, testConstructFromMap)
 
     EXPECT_EQ(route.id(), map.value(params::id));
     EXPECT_EQ(route.name(), map.value(params::name));
-    EXPECT_EQ(route.count(), waypoints.count());
+    EXPECT_EQ(route.waypointsCount(), waypoints.count());
 
     int index = 0;
     for (const QVariant& value : qAsConst(waypoints))
@@ -63,7 +63,7 @@ TEST_F(RouteTest, testFromVariant)
     route.fromVariantMap(map);
 
     EXPECT_EQ(route.name(), map.value(params::name));
-    EXPECT_EQ(route.count(), waypoints.count());
+    EXPECT_EQ(route.waypointsCount(), waypoints.count());
 
     int index = 0;
     for (const QVariant& value : qAsConst(waypoints))
@@ -81,12 +81,12 @@ TEST_F(RouteTest, testAddWaypoint)
 {
     Route route(&test_mission::routeType, "Route");
 
-    EXPECT_TRUE(route.count() == 0);
+    EXPECT_TRUE(route.waypointsCount() == 0);
 
-    auto wpt = new RouteItem(&test_mission::waypoint, "WPT");
+    auto wpt = new Waypoint(&test_mission::waypoint, "WPT");
     route.addWaypoint(wpt);
 
-    ASSERT_TRUE(route.count() == 1);
+    ASSERT_TRUE(route.waypointsCount() == 1);
     EXPECT_EQ(route.waypoint(0), wpt);
 }
 
@@ -98,13 +98,13 @@ TEST_F(RouteTest, testRemoveWaypoint)
 
     Route route(&test_mission::routeType, map);
 
-    ASSERT_EQ(route.count(), 3);
+    ASSERT_EQ(route.waypointsCount(), 3);
 
     auto wpt = route.waypoint(1);
     EXPECT_EQ(wpt->parent(), &route);
     route.removeWaypoint(wpt);
 
-    EXPECT_EQ(route.count(), 2);
+    EXPECT_EQ(route.waypointsCount(), 2);
     EXPECT_EQ(wpt->parent(), nullptr);
     EXPECT_FALSE(route.index(wpt) > -1);
     delete wpt;
@@ -118,11 +118,11 @@ TEST_F(RouteTest, testSetWaypoints)
 
     Route route(&test_mission::routeType, map);
 
-    ASSERT_EQ(route.count(), 3);
+    ASSERT_EQ(route.waypointsCount(), 3);
 
-    QList<RouteItem*> newWaypoints = route.waypoints();
+    QList<Waypoint*> newWaypoints = route.waypoints();
     newWaypoints.removeFirst();
-    auto newWpt = new RouteItem(&test_mission::waypoint, "WPT");
+    auto newWpt = new Waypoint(&test_mission::waypoint, "WPT");
     newWaypoints.append(newWpt);
 
     route.setWaypoints(newWaypoints);

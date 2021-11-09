@@ -57,6 +57,10 @@ void SqliteSchema::setup()
                "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
                "params TEXT, "
+               "latitude REAL, "
+               "longitude REAL, "
+               "altitude REAL, "
+               "datum STRING, "
                "confirmed INTEGER, "
                "type STRING);");
 
@@ -66,12 +70,6 @@ void SqliteSchema::setup()
                "FOREIGN KEY(waypoint) REFERENCES waypoints(id), "
                "FOREIGN KEY(route) REFERENCES routes(id));");
 
-    query.exec("CREATE TABLE home_waypoints ("
-               "id UUID PRIMARY KEY NOT NULL, "
-               "name STRING, "
-               "params TEXT, "
-               "type STRING);");
-
     query.exec("CREATE TABLE missions ("
                "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
@@ -79,10 +77,14 @@ void SqliteSchema::setup()
                "type STRING, "
                "route UUID, "
                "vehicle UUID, "
-               "home UUID, "
                "FOREIGN KEY(route) REFERENCES routes(id), "
-               "FOREIGN KEY(vehicle) REFERENCES vehicles(id), "
-               "FOREIGN KEY(home) REFERENCES home_waypoints(id));");
+               "FOREIGN KEY(vehicle) REFERENCES vehicles(id));");
 
-    query.exec("INSERT INTO schema_version (version) VALUES (\'14.10.00_19.10.2021\')");
+    query.exec("CREATE TABLE home_waypoints ("
+               "waypoint UUID PRIMARY KEY NOT NULL, "
+               "mission UUID, "
+               "FOREIGN KEY(waypoint) REFERENCES waypoints(id), "
+               "FOREIGN KEY(mission) REFERENCES missions(id));");
+
+    query.exec("INSERT INTO schema_version (version) VALUES (\'17.14.00_09.11.2021\')");
 }

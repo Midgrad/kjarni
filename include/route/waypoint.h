@@ -1,18 +1,17 @@
 #ifndef WAYPOINT_H
 #define WAYPOINT_H
 
-#include "entity.h"
+#include "geodetic.h"
+#include "route_item.h"
 #include "waypoint_type.h"
 
 namespace md::domain
 {
-class Waypoint : public Entity
+class Waypoint : public RouteItem
 {
     Q_OBJECT
 
 public:
-    Waypoint(const WaypointType* type, const QString& name, const QVariant& id,
-             const QVariantMap& parameters, QObject* parent = nullptr);
     Waypoint(const WaypointType* type, const QString& name,
              const QVariant& id = utils::generateId(), QObject* parent = nullptr);
     Waypoint(const WaypointType* type, const QVariantMap& map, QObject* parent = nullptr);
@@ -20,7 +19,14 @@ public:
     QVariantMap toVariantMap() const override;
     void fromVariantMap(const QVariantMap& map) override;
 
-    const WaypointType* type() const;
+    const WaypointType* type() const override;
+
+    const Geodetic& position() const;
+
+    int count() const;
+    int index(RouteItem* item) const;
+    RouteItem* item(int index) const;
+    const QList<RouteItem*>& items() const;
 
     bool current() const;
     bool reached() const;
@@ -29,20 +35,27 @@ public:
 public slots:
     void setType(const WaypointType* type);
 
+    void setPosition(const Geodetic& position);
+
+    void setItems(const QList<RouteItem*>& items);
+    void addItem(RouteItem* item);
+    void removeItem(RouteItem* item);
+
     void setCurrent(bool current);
     void setReached(bool reached);
     void setConfirmed(bool confirmed);
 
-    void setAndCheckParameter(const QString& key, const QVariant& value);
-    void resetParameter(const QString& key);
-    void resetParameters();
-    void syncParameters();
-
 signals:
-    void typeChanged();
+    void itemAdded(int index, RouteItem* item);
+    void itemChanged(int index, RouteItem* item);
+    void itemRemoved(int index, RouteItem* item);
 
 private:
     const WaypointType* m_type;
+    Geodetic m_position;
+    QList<RouteItem*> m_items;
+
+    // TODO: to MissionRoute
     bool m_current = false;
     bool m_reached = false;
     bool m_confirmed = false;
