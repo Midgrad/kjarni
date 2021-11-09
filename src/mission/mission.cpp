@@ -25,24 +25,18 @@ Mission::Mission(const MissionType* type, const QVariantMap& map, QObject* paren
 {
 }
 
-QVariantMap Mission::toVariantMap(bool recursive) const
+QVariantMap Mission::toVariantMap() const
 {
     QVariantMap map = Entity::toVariantMap();
 
     map.insert(params::type, m_type->id);
     map.insert(params::vehicle, m_vehicleId);
 
-    if (recursive)
-        map.insert(params::home, m_homePoint->toVariantMap(recursive));
-    else
-        map.insert(params::home, m_homePoint->id());
+    map.insert(params::home, m_homePoint->id());
 
     if (m_route)
     {
-        if (recursive)
-            map.insert(params::route, m_route->toVariantMap(recursive));
-        else
-            map.insert(params::route, m_route->id());
+        map.insert(params::route, m_route->id());
     }
 
     return map;

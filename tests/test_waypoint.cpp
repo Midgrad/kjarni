@@ -136,7 +136,7 @@ TEST_P(WaypointTest, testToVariant)
     map.insert(params::reached, args.reached);
     map.insert(params::confirmed, args.confirmed);
 
-    EXPECT_EQ(map, waypoint.toVariantMap(true));
+    EXPECT_EQ(map, waypoint.toVariantMap());
 }
 
 TEST_P(WaypointTest, testConstructDefaultParamsByType)

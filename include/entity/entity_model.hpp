@@ -46,7 +46,7 @@ QVariant EntityModel<Entity>::data(const QModelIndex& index, int role) const
     case ParametersRole:
         return entity->parameters();
     case VariantRole:
-        return entity->toVariantMap(true);
+        return entity->toVariantMap();
     }
     return QVariant();
 }

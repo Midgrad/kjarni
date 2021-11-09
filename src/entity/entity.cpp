@@ -41,10 +41,8 @@ QVariant Entity::parameter(const QString& key) const
     return m_parameters.value(key);
 }
 
-QVariantMap Entity::toVariantMap(bool recursive) const
+QVariantMap Entity::toVariantMap() const
 {
-    Q_UNUSED(recursive)
-
     QVariantMap map;
 
     if (!m_id.isNull())

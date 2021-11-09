@@ -30,10 +30,8 @@ Waypoint::Waypoint(const WaypointType* type, const QVariantMap& map, QObject* pa
     Q_ASSERT(type);
 }
 
-QVariantMap Waypoint::toVariantMap(bool recursive) const
+QVariantMap Waypoint::toVariantMap() const
 {
-    Q_UNUSED(recursive)
-
     QVariantMap map = Entity::toVariantMap();
 
     map.insert(params::type, m_type->id);

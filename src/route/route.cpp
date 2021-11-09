@@ -23,21 +23,11 @@ Route::Route(const RouteType* type, const QVariantMap& map, QObject* parent) :
     this->fromVariantMapImpl(map);
 }
 
-QVariantMap Route::toVariantMap(bool recursive) const
+QVariantMap Route::toVariantMap() const
 {
     QVariantMap map = Entity::toVariantMap();
 
     map.insert(params::type, m_type->id);
-
-    if (recursive)
-    {
-        QVariantList waypoints;
-        for (Waypoint* waypoint : m_waypoins)
-        {
-            waypoints.append(waypoint->toVariantMap(recursive));
-        }
-        map.insert(params::waypoints, waypoints);
-    }
 
     return map;
 }

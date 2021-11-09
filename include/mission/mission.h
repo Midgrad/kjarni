@@ -16,7 +16,7 @@ public:
             const QVariant& id = utils::generateId(), QObject* parent = nullptr);
     Mission(const MissionType* type, const QVariantMap& map, QObject* parent = nullptr);
 
-    QVariantMap toVariantMap(bool recursive) const override;
+    QVariantMap toVariantMap() const override;
 
     const MissionType* type() const;
     QVariant vehicleId() const;

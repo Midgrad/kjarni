@@ -15,7 +15,7 @@ public:
           QObject* parent = nullptr);
     Route(const RouteType* type, const QVariantMap& map, QObject* parent = nullptr);
 
-    QVariantMap toVariantMap(bool recursive) const override;
+    QVariantMap toVariantMap() const override;
     void fromVariantMap(const QVariantMap& map) override;
 
     const RouteType* type() const;

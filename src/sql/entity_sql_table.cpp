@@ -65,7 +65,7 @@ void EntitySqlTable::removeEntity(domain::Entity* entity)
 
 QVariantMap EntitySqlTable::entityToMap(domain::Entity* entity)
 {
-    QVariantMap map = entity->toVariantMap(false);
+    QVariantMap map = entity->toVariantMap();
 
     if (map.contains(domain::params::params))
     {

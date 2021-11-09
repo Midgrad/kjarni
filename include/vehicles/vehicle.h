@@ -26,7 +26,7 @@ public:
             QObject* parent = nullptr);
     Vehicle(const QVariantMap& map, QObject* parent = nullptr);
 
-    QVariantMap toVariantMap(bool recursive = true) const override;
+    QVariantMap toVariantMap() const override;
     void fromVariantMap(const QVariantMap& map) override;
 
     Type type() const;

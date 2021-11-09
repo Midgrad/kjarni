@@ -25,7 +25,7 @@ public:
     const QVariantMap& parameters() const;
     QVariant parameter(const QString& key) const;
 
-    virtual QVariantMap toVariantMap(bool recursive = true) const;
+    virtual QVariantMap toVariantMap() const;
     virtual void fromVariantMap(const QVariantMap& map);
 
 public slots:

@@ -26,10 +26,8 @@ Vehicle::Vehicle(const QVariantMap& map, QObject* parent) :
 {
 }
 
-QVariantMap Vehicle::toVariantMap(bool recursive) const
+QVariantMap Vehicle::toVariantMap() const
 {
-    Q_UNUSED(recursive)
-
     QVariantMap map = Entity::toVariantMap();
     map.insert(params::type, QVariant::fromValue(m_type).toString());
     return map;
