@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <QDebug>
 #include <QSignalSpy>
 
 #include "test_mission_traits.h"
@@ -22,6 +23,24 @@ class WaypointTest : public ::testing::TestWithParam<WaypointTestArgs>
 {
 public:
     WaypointTest() = default;
+
+    bool compareMapsWithNaNs(const QVariantMap& first, const QVariantMap& second)
+    {
+        if (first.count() != second.count())
+            return false;
+
+        for (auto it = first.begin(); it != first.end(); ++it)
+        {
+            if (qIsNaN(it.value().toDouble()) && qIsNaN(second.value(it.key()).toDouble()))
+                continue;
+
+            if (it.value() != second.value(it.key()))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 };
 
 INSTANTIATE_TEST_SUITE_P(instantiation, WaypointTest,
@@ -125,7 +144,7 @@ TEST_P(WaypointTest, testConstructDefaultParamsByType)
     WaypointTestArgs args = GetParam();
     Waypoint waypoint(args.type, GetParam().name, GetParam().id);
 
-    EXPECT_EQ(waypoint.parameters(), args.type->defaultParameters());
+    EXPECT_TRUE(compareMapsWithNaNs(waypoint.parameters(), args.type->defaultParameters()));
 }
 
 TEST_P(WaypointTest, testResetParamToTypeDeafult)
@@ -143,7 +162,7 @@ TEST_P(WaypointTest, testResetParamToTypeDeafult)
 
     waypoint.resetParameter(args.params.firstKey());
 
-    EXPECT_EQ(waypoint.parameters(), args.type->defaultParameters());
+    EXPECT_TRUE(compareMapsWithNaNs(waypoint.parameters(), args.type->defaultParameters()));
 }
 
 TEST_P(WaypointTest, testResetParamsToTypeDeafults)
@@ -155,7 +174,7 @@ TEST_P(WaypointTest, testResetParamsToTypeDeafults)
 
     waypoint.resetParameters();
 
-    EXPECT_EQ(waypoint.parameters(), args.type->defaultParameters());
+    EXPECT_TRUE(compareMapsWithNaNs(waypoint.parameters(), args.type->defaultParameters()));
 }
 
 TEST_P(WaypointTest, testSyncParams)
