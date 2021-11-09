@@ -1,6 +1,6 @@
-#include "waypoint_type.h"
+#include "route_item_type.h"
 
-#include "waypoint.h"
+#include "route_item.h"
 
 using namespace md::domain;
 
@@ -46,8 +46,8 @@ QVariant Parameter::guard(const QVariant& value) const
     return value;
 }
 
-WaypointType::WaypointType(const QString& id, const QString& name, const QString& shortName,
-                           const QVector<const Parameter*>& parameters) :
+RouteItemType::RouteItemType(const QString& id, const QString& name, const QString& shortName,
+                             const QVector<const Parameter*>& parameters) :
     id(id),
     name(name),
     shortName(shortName),
@@ -55,12 +55,12 @@ WaypointType::WaypointType(const QString& id, const QString& name, const QString
 {
 }
 
-const Parameter* WaypointType::parameter(const QString& id) const
+const Parameter* RouteItemType::parameter(const QString& id) const
 {
     return this->parameters.value(id, nullptr);
 }
 
-QVariantMap WaypointType::defaultParameters() const
+QVariantMap RouteItemType::defaultParameters() const
 {
     QVariantMap map;
     for (const Parameter* parameter : parameters)

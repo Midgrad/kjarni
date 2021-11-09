@@ -21,25 +21,25 @@ public:
     const RouteType* type() const;
 
     int count() const;
-    int index(Waypoint* waypoint) const;
-    const QList<Waypoint*>& waypoints() const;
-    Waypoint* waypoint(int index) const;
+    int index(RouteItem* waypoint) const;
+    const QList<RouteItem*>& waypoints() const;
+    RouteItem* waypoint(int index) const;
 
 public slots:
-    void setWaypoints(const QList<Waypoint*>& waypoins);
-    void addWaypoint(Waypoint* waypoint);
-    void removeWaypoint(Waypoint* waypoint);
+    void setWaypoints(const QList<RouteItem*>& waypoins);
+    void addWaypoint(RouteItem* waypoint);
+    void removeWaypoint(RouteItem* waypoint);
 
 signals:
-    void waypointAdded(int index, Waypoint* waypoint);
-    void waypointChanged(int index, Waypoint* waypoint);
-    void waypointRemoved(int index, Waypoint* waypoint);
+    void waypointAdded(int index, RouteItem* waypoint);
+    void waypointChanged(int index, RouteItem* waypoint);
+    void waypointRemoved(int index, RouteItem* waypoint);
 
 private:
     void fromVariantMapImpl(const QVariantMap& map);
 
     const RouteType* const m_type;
-    QList<Waypoint*> m_waypoins;
+    QList<RouteItem*> m_waypoins;
 };
 } // namespace md::domain
 

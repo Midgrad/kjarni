@@ -12,7 +12,7 @@ Mission::Mission(const MissionType* type, const QString& name, const QVariant& v
     m_type(type),
     m_vehicleId(vehicleId),
     m_operation(new MissionOperation(this)),
-    m_homePoint(new Waypoint(type->homePointType, type->homePointType->shortName))
+    m_homePoint(new RouteItem(type->homePointType, type->homePointType->shortName))
 {
 }
 
@@ -21,7 +21,7 @@ Mission::Mission(const MissionType* type, const QVariantMap& map, QObject* paren
     m_type(type),
     m_vehicleId(map.value(params::vehicle)),
     m_operation(new MissionOperation(this)),
-    m_homePoint(new Waypoint(type->homePointType, map.value(params::home).toMap()))
+    m_homePoint(new RouteItem(type->homePointType, map.value(params::home).toMap()))
 {
 }
 
@@ -62,7 +62,7 @@ int Mission::count() const
     return m_route ? m_route->count() : 1; // route + home point
 }
 
-Waypoint* Mission::waypoint(int index) const
+RouteItem* Mission::waypoint(int index) const
 {
     if (index == 0)
         return m_homePoint;
@@ -70,7 +70,7 @@ Waypoint* Mission::waypoint(int index) const
     return m_route ? m_route->waypoint(index - 1) : nullptr;
 }
 
-Waypoint* Mission::currentWaypoint() const
+RouteItem* Mission::currentWaypoint() const
 {
     return m_currentWaypoint;
 }
@@ -80,9 +80,9 @@ int Mission::currentWaypointIndex() const
     return this->waypoints().indexOf(m_currentWaypoint);
 }
 
-QList<Waypoint*> Mission::waypoints() const
+QList<RouteItem*> Mission::waypoints() const
 {
-    QList<Waypoint*> waypoints;
+    QList<RouteItem*> waypoints;
 
     waypoints.append(m_homePoint);
     if (m_route)
@@ -96,7 +96,7 @@ MissionOperation* Mission::operation() const
     return m_operation;
 }
 
-Waypoint* Mission::homePoint() const
+RouteItem* Mission::homePoint() const
 {
     return m_homePoint;
 }
@@ -126,7 +126,7 @@ void Mission::assignRoute(Route* route)
 
 void Mission::setCurrentWaypointIndex(int currentWaypointIndex)
 {
-    Waypoint* currentWaypoint = this->waypoint(currentWaypointIndex);
+    RouteItem* currentWaypoint = this->waypoint(currentWaypointIndex);
 
     if (m_currentWaypoint == currentWaypoint)
         return;

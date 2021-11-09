@@ -49,25 +49,25 @@ int Route::count() const
     return m_waypoins.count();
 }
 
-int Route::index(Waypoint* waypoint) const
+int Route::index(RouteItem* waypoint) const
 {
     return m_waypoins.indexOf(waypoint);
 }
 
-const QList<Waypoint*>& Route::waypoints() const
+const QList<RouteItem*>& Route::waypoints() const
 {
     return m_waypoins;
 }
 
-Waypoint* Route::waypoint(int index) const
+RouteItem* Route::waypoint(int index) const
 {
     return m_waypoins.value(index, nullptr);
 }
 
-void Route::setWaypoints(const QList<Waypoint*>& waypoins)
+void Route::setWaypoints(const QList<RouteItem*>& waypoins)
 {
     // Remove old waypoints (std::remove_if does not emit signals)
-    for (Waypoint* waypoint : qAsConst(m_waypoins))
+    for (RouteItem* waypoint : qAsConst(m_waypoins))
     {
         // Skip waypoint if we have it in new list
         if (waypoins.contains(waypoint))
@@ -77,13 +77,13 @@ void Route::setWaypoints(const QList<Waypoint*>& waypoins)
     }
 
     // Add new waypoints to the end
-    for (Waypoint* waypoint : waypoins)
+    for (RouteItem* waypoint : waypoins)
     {
         this->addWaypoint(waypoint);
     }
 }
 
-void Route::addWaypoint(Waypoint* waypoint)
+void Route::addWaypoint(RouteItem* waypoint)
 {
     if (m_waypoins.contains(waypoint))
         return;
@@ -94,7 +94,7 @@ void Route::addWaypoint(Waypoint* waypoint)
     if (!waypoint->parent())
         waypoint->setParent(this);
 
-    connect(waypoint, &Waypoint::changed, this, [waypoint, this]() {
+    connect(waypoint, &RouteItem::changed, this, [waypoint, this]() {
         emit waypointChanged(this->index(waypoint), waypoint);
     });
 
@@ -102,7 +102,7 @@ void Route::addWaypoint(Waypoint* waypoint)
     emit waypointAdded(m_waypoins.count() - 1, waypoint);
 }
 
-void Route::removeWaypoint(Waypoint* waypoint)
+void Route::removeWaypoint(RouteItem* waypoint)
 {
     int index = m_waypoins.indexOf(waypoint);
     // Remove but don't delete waypoint
@@ -137,7 +137,7 @@ void Route::fromVariantMapImpl(const QVariantMap& map)
 
             if (counter >= m_waypoins.count())
             {
-                auto waypoint = new Waypoint(type, map);
+                auto waypoint = new RouteItem(type, map);
                 waypoint->moveToThread(this->thread());
                 waypoint->setParent(this);
 

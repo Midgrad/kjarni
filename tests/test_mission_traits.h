@@ -9,16 +9,16 @@ const Parameter radius = { "radius", "Radius", Parameter::Real, 100 };
 const Parameter airspeed = { "airspeed", "Airspeed", Parameter::Int, 10 };
 const Parameter passthrough = { "passthrough", "Passthrough", Parameter::Bool, true };
 
-const WaypointType waypoint = { "waypoint",
+const RouteItemType waypoint = { "waypoint",
                                 "Waypoint",
                                 "WPT",
-                                { &mission::latitude, &mission::longitude, &mission::altitude,
-                                  &mission::relativeAlt, &airspeed, &passthrough } };
-const WaypointType circle = { "circle",
+                                { &route::latitude, &route::longitude, &route::altitude,
+                                  &route::relativeAlt, &airspeed, &passthrough } };
+const RouteItemType circle = { "circle",
                               "Circle",
                               "CRL",
-                              { &mission::latitude, &mission::longitude, &mission::altitude,
-                                &mission::relativeAlt, &airspeed, &radius } };
+                              { &route::latitude, &route::longitude, &route::altitude,
+                                &route::relativeAlt, &airspeed, &radius } };
 
 const RouteType routeType = { "test_route", "Test Route", { &waypoint, &circle } };
 const MissionType missionType = { "test_mission", "Test Mission", &routeType, &waypoint };

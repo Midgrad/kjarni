@@ -17,7 +17,7 @@ constexpr char reached[] = "reached";
 constexpr char confirmed[] = "confirmed";
 } // namespace params
 
-namespace mission
+namespace route
 {
 const Parameter latitude = { "latitude", QT_TRANSLATE_NOOP("Route", "Latitude"), Parameter::Real,
                              qQNaN() };
@@ -33,7 +33,7 @@ const Parameter time = { "time", QT_TRANSLATE_NOOP("Route", "Time"), Parameter::
 const Parameter yaw = { "yaw", QT_TRANSLATE_NOOP("Route", "Yaw"), Parameter::Real, qQNaN() };
 const Parameter pitch = { "pitch", QT_TRANSLATE_NOOP("Route", "Pitch"), Parameter::Real, 15.0 };
 const Parameter radius = { "radius", QT_TRANSLATE_NOOP("Route", "Radius"), Parameter::Real, 0 };
-} // namespace mission
+} // namespace route
 } // namespace md::domain
 
 #endif // ROUTE_TRAITS_H
