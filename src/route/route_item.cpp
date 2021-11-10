@@ -22,9 +22,7 @@ RouteItem::RouteItem(const RouteItemType* type, const QVariantMap& map, QObject*
 QVariantMap RouteItem::toVariantMap() const
 {
     QVariantMap map = Entity::toVariantMap();
-
     map.insert(props::type, m_type->id);
-
     return map;
 }
 
@@ -51,24 +49,24 @@ void RouteItem::setType(const RouteItemType* type)
     this->syncParameters();
 }
 
-void RouteItem::setAndCheckParameter(const QString& key, const QVariant& value)
+void RouteItem::setAndCheckParameter(const QString& paramId, const QVariant& value)
 {
     QVariant guarded = value;
-    auto parameter = m_type->parameter(key);
+    auto parameter = m_type->parameter(paramId);
     if (parameter)
     {
         guarded = parameter->guard(value);
     }
-    this->setParameter(key, guarded);
+    this->setParameter(paramId, guarded);
 }
 
-void RouteItem::resetParameter(const QString& key)
+void RouteItem::resetParameter(const QString& paramId)
 {
-    auto parameter = m_type->parameter(key);
+    auto parameter = m_type->parameter(paramId);
     if (!parameter)
         return;
 
-    this->setParameter(key, parameter->defaultValue);
+    this->setParameter(paramId, parameter->defaultValue);
 }
 
 void RouteItem::resetParameters()
@@ -88,10 +86,10 @@ void RouteItem::syncParameters()
     }
 
     // Remove unneeded parameters
-    for (const QString& key : parameters.keys())
+    for (const QString& paramId : parameters.keys())
     {
-        if (!m_type->parameter(key))
-            parameters.remove(key);
+        if (!m_type->parameter(paramId))
+            parameters.remove(paramId);
     }
 
     this->setParameters(parameters);

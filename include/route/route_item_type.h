@@ -18,10 +18,11 @@ public:
         Real
     };
 
-    Parameter(const QString& id, const QString& name, Type type = Real,
-              const QVariant& defaultValue = 0, const QVariant& minValue = QVariant(),
-              const QVariant& maxValue = QVariant(), const QVariant& step = 1);
+    Parameter(const QString& id, const QString& name, Type type, const QVariant& defaultValue,
+              const QVariant& minValue, const QVariant& maxValue, const QVariant& step = 1);
+    Parameter(const QString& id, const QString& name, bool defaultValue = false);
 
+    QVariantMap toVariantMap() const;
     QVariant guard(const QVariant& value) const;
 
     const QString id;

@@ -23,8 +23,8 @@ public:
 public slots:
     void setType(const RouteItemType* type);
 
-    void setAndCheckParameter(const QString& key, const QVariant& value);
-    void resetParameter(const QString& key);
+    void setAndCheckParameter(const QString& paramId, const QVariant& value);
+    void resetParameter(const QString& paramId);
     void resetParameters();
     void syncParameters();
 

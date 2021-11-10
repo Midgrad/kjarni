@@ -6,10 +6,11 @@
 namespace md::domain::test_mission
 {
 // Prameters
-const Parameter radius = { "radius", "Radius", Parameter::Real, 100 };
-const Parameter altitude = { "altitude", "Altitude", Parameter::Real, 0.0 };
-const Parameter airspeed = { "airspeed", "Airspeed", Parameter::Int, 10 };
-const Parameter passthrough = { "passthrough", "Passthrough", Parameter::Bool, true };
+const Parameter radius = { "radius", "Radius", Parameter::Real, 100, 0, route::maxRadius };
+const Parameter altitude = { "altitude", "Altitude",         Parameter::Real,
+                             0.0,        route::minAltitude, route::maxAltitude };
+const Parameter airspeed = { "airspeed", "Airspeed", Parameter::Int, 10, 0, 100 };
+const Parameter passthrough = { "passthrough", "Passthrough", true };
 
 // RouteItems
 const RouteItemType changeSpeed{ "ch_speed", "Change speed", "CH SPD", { &airspeed } };

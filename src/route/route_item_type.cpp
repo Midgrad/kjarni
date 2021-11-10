@@ -1,6 +1,7 @@
 #include "route_item_type.h"
 
 #include "route_item.h"
+#include "route_traits.h"
 #include "utils.h"
 
 using namespace md::domain;
@@ -16,6 +17,24 @@ Parameter::Parameter(const QString& id, const QString& name, Type type,
     maxValue(maxValue),
     step(step)
 {
+}
+
+Parameter::Parameter(const QString& id, const QString& name, bool defaultValue) :
+    Parameter(id, name, Bool, defaultValue, QVariant(), QVariant(), QVariant())
+{
+}
+
+QVariantMap Parameter::toVariantMap() const
+{
+    QVariantMap map;
+    map.insert(props::id, id);
+    map.insert(props::name, name);
+    map.insert(props::defaultValue, defaultValue);
+    map.insert(props::minValue, minValue);
+    map.insert(props::maxValue, maxValue);
+    map.insert(props::step, step);
+    map.insert(props::type, QVariant::fromValue(type).toString());
+    return map;
 }
 
 QVariant Parameter::guard(const QVariant& value) const
@@ -46,10 +65,8 @@ RouteItemType::RouteItemType(const QString& id, const QString& name, const QStri
 QVariantMap RouteItemType::toVariantMap() const
 {
     QVariantMap map;
-
     map.insert(props::id, id);
     map.insert(props::name, name);
-
     return map;
 }
 

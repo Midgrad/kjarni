@@ -16,10 +16,8 @@ RouteType::RouteType(const QString& id, const QString& name,
 QVariantMap RouteType::toVariantMap() const
 {
     QVariantMap map;
-
     map.insert(props::id, id);
     map.insert(props::name, name);
-
     return map;
 }
 
