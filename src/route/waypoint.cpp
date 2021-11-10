@@ -7,9 +7,8 @@
 
 using namespace md::domain;
 
-Waypoint::Waypoint(const WaypointType* type, const QString& name, const QVariant& id,
-                   QObject* parent) :
-    RouteItem(type, name, id, parent),
+Waypoint::Waypoint(const WaypointType* type, const QVariant& id, QObject* parent) :
+    RouteItem(type, id, parent),
     m_type(type)
 {
 }

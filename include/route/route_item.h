@@ -11,8 +11,8 @@ class RouteItem : public Entity
     Q_OBJECT
 
 public:
-    RouteItem(const RouteItemType* type, const QString& name,
-              const QVariant& id = utils::generateId(), QObject* parent = nullptr);
+    RouteItem(const RouteItemType* type, const QVariant& id = utils::generateId(),
+              QObject* parent = nullptr);
     RouteItem(const RouteItemType* type, const QVariantMap& map, QObject* parent = nullptr);
 
     QVariantMap toVariantMap() const override;

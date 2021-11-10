@@ -142,7 +142,6 @@ bool SqlTable::updateByConditions(const QVariantMap& valueMap, const ConditionMa
     QStringList pairs;
     for (const QString& name : filtered.keys())
     {
-        // TODO: ignore names missmatching table columns
         pairs.append(name + " = " + sql::hold + name);
     }
 

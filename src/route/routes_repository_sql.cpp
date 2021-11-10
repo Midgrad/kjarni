@@ -189,7 +189,7 @@ void RoutesRepositorySql::saveRoute(Route* route)
     // Remove deleted waypoints
     for (Waypoint* waypoint : m_routeWaypoints.values(route))
     {
-        if (route->index(waypoint) > -1)
+        if (route->waypointIndex(waypoint) > -1)
             continue;
 
         m_routeWaypointsTable.removeByConditions(

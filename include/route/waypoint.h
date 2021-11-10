@@ -12,8 +12,8 @@ class Waypoint : public RouteItem
     Q_OBJECT
 
 public:
-    Waypoint(const WaypointType* type, const QString& name,
-             const QVariant& id = utils::generateId(), QObject* parent = nullptr);
+    Waypoint(const WaypointType* type, const QVariant& id = utils::generateId(),
+             QObject* parent = nullptr);
     Waypoint(const WaypointType* type, const QVariantMap& map, QObject* parent = nullptr);
 
     QVariantMap toVariantMap() const override;

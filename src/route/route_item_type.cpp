@@ -43,6 +43,16 @@ RouteItemType::RouteItemType(const QString& id, const QString& name, const QStri
 {
 }
 
+QVariantMap RouteItemType::toVariantMap() const
+{
+    QVariantMap map;
+
+    map.insert(props::id, id);
+    map.insert(props::name, name);
+
+    return map;
+}
+
 const Parameter* RouteItemType::parameter(const QString& id) const
 {
     return this->parameters.value(id, nullptr);

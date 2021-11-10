@@ -49,7 +49,7 @@ int Route::waypointsCount() const
     return m_waypoints.count();
 }
 
-int Route::index(Waypoint* waypoint) const
+int Route::waypointIndex(Waypoint* waypoint) const
 {
     return m_waypoints.indexOf(waypoint);
 }
@@ -117,7 +117,7 @@ void Route::addWaypoint(Waypoint* waypoint)
         waypoint->setParent(this);
 
     connect(waypoint, &RouteItem::changed, this, [waypoint, this]() {
-        emit waypointChanged(this->index(waypoint), waypoint);
+        emit waypointChanged(this->waypointIndex(waypoint), waypoint);
     });
 
     m_waypoints.append(waypoint);

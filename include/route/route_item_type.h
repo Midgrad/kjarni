@@ -6,7 +6,7 @@
 
 namespace md::domain
 {
-class Parameter
+class Parameter // TODO: parameters to bounded context, Parametered
 {
     Q_GADGET
 
@@ -43,6 +43,8 @@ class RouteItemType
 public:
     RouteItemType(const QString& id, const QString& name, const QString& shortName,
                   const QVector<const Parameter*>& parameters);
+
+    QVariantMap toVariantMap() const;
 
     const Parameter* parameter(const QString& id) const;
     QVariantMap defaultParameters() const;

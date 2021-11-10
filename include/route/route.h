@@ -21,7 +21,7 @@ public:
     const RouteType* type() const;
 
     int waypointsCount() const;
-    int index(Waypoint* waypoint) const;
+    int waypointIndex(Waypoint* waypoint) const;
     const QList<Waypoint*>& waypoints() const;
     Waypoint* waypoint(int index) const;
 

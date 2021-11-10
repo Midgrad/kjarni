@@ -13,6 +13,8 @@ public:
     RouteType(const QString& id, const QString& name,
               const QVector<const WaypointType*>& waypointTypes);
 
+    QVariantMap toVariantMap() const;
+
     const WaypointType* waypointType(const QString& id) const;
 
     const QString id;

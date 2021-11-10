@@ -6,9 +6,8 @@
 
 using namespace md::domain;
 
-RouteItem::RouteItem(const RouteItemType* type, const QString& name, const QVariant& id,
-                     QObject* parent) :
-    Entity(id, name, type->defaultParameters(), parent),
+RouteItem::RouteItem(const RouteItemType* type, const QVariant& id, QObject* parent) :
+    Entity(id, type->shortName, type->defaultParameters(), parent),
     m_type(type)
 {
 }
@@ -47,8 +46,8 @@ void RouteItem::setType(const RouteItemType* type)
         return;
 
     m_type = type;
-    emit changed();
 
+    this->setName(type->shortName);
     this->syncParameters();
 }
 

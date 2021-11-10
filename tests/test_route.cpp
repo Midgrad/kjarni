@@ -83,7 +83,7 @@ TEST_F(RouteTest, testAddWaypoint)
 
     EXPECT_TRUE(route.waypointsCount() == 0);
 
-    auto wpt = new Waypoint(&test_mission::waypoint, "WPT");
+    auto wpt = new Waypoint(&test_mission::waypoint);
     route.addWaypoint(wpt);
 
     ASSERT_TRUE(route.waypointsCount() == 1);
@@ -106,7 +106,7 @@ TEST_F(RouteTest, testRemoveWaypoint)
 
     EXPECT_EQ(route.waypointsCount(), 2);
     EXPECT_EQ(wpt->parent(), nullptr);
-    EXPECT_FALSE(route.index(wpt) > -1);
+    EXPECT_FALSE(route.waypointIndex(wpt) > -1);
     delete wpt;
 }
 
@@ -122,7 +122,7 @@ TEST_F(RouteTest, testSetWaypoints)
 
     QList<Waypoint*> newWaypoints = route.waypoints();
     newWaypoints.removeFirst();
-    auto newWpt = new Waypoint(&test_mission::waypoint, "WPT");
+    auto newWpt = new Waypoint(&test_mission::waypoint);
     newWaypoints.append(newWpt);
 
     route.setWaypoints(newWaypoints);

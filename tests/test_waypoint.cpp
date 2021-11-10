@@ -12,7 +12,6 @@ using namespace md::domain;
 struct WaypointTestArgs
 {
     QVariant id;
-    QString name;
     Geodetic position;
     QVariantMap params;
     const WaypointType* type;
@@ -28,18 +27,15 @@ INSTANTIATE_TEST_SUITE_P(
     instantiation, WaypointTest,
     ::testing::Values(
         WaypointTestArgs({ md::utils::generateId(),
-                           "WPT 1",
                            Geodetic(),
                            { { route::relativeAlt.id, false },
                              { test_mission::passthrough.id, true } },
                            &test_mission::waypoint }),
         WaypointTestArgs({ md::utils::generateId(),
-                           "CRL 2",
                            Geodetic(54.196783, 41.397421, 850),
                            { { route::relativeAlt.id, true }, { test_mission::radius.id, 650 } },
                            &test_mission::circle }),
         WaypointTestArgs({ md::utils::generateId(),
-                           "LOP 2",
                            Geodetic(44.782442, 36.120283, 451.65),
                            { { route::relativeAlt.id, true }, { test_mission::radius.id, 350 } },
                            &test_mission::loop })));
@@ -50,14 +46,12 @@ TEST_P(WaypointTest, testConstructFromMap)
 
     QVariantMap map;
     map.insert(props::id, args.id.toString());
-    map.insert(props::name, args.name);
     md::utils::mergeMap(map, args.position.toVariantMap());
     map.insert(props::params, QJsonValue::fromVariant(args.params));
 
     Waypoint waypoint(args.type, map);
 
     EXPECT_EQ(waypoint.id(), args.id);
-    EXPECT_EQ(waypoint.name(), args.name);
 
     if (waypoint.position().isValid() && args.position.isValid())
         EXPECT_EQ(waypoint.position(), args.position);
@@ -68,15 +62,13 @@ TEST_P(WaypointTest, testConstructFromMap)
 TEST_P(WaypointTest, testFromVariant)
 {
     WaypointTestArgs args = GetParam();
-    Waypoint waypoint(args.type, QString(), args.id);
+    Waypoint waypoint(args.type, args.id);
 
     QVariantMap map;
-    map.insert(props::name, args.name);
     md::utils::mergeMap(map, args.position.toVariantMap());
     map.insert(props::params, QJsonValue::fromVariant(args.params));
 
     waypoint.fromVariantMap(map);
-    EXPECT_EQ(waypoint.name(), args.name);
     if (waypoint.position().isValid() && args.position.isValid())
         EXPECT_EQ(waypoint.position(), args.position);
     EXPECT_EQ(waypoint.parameters(), args.params);
@@ -86,7 +78,7 @@ TEST_P(WaypointTest, testToVariant)
 {
     WaypointTestArgs args = GetParam();
 
-    Waypoint waypoint(args.type, args.name, args.id);
+    Waypoint waypoint(args.type, args.id);
     waypoint.setPosition(args.position);
     waypoint.setParameters(args.params);
 

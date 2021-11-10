@@ -1,5 +1,6 @@
 #include "waypoint_type.h"
 
+#include "route_traits.h"
 #include "utils.h"
 
 using namespace md::domain;

@@ -12,7 +12,7 @@ Mission::Mission(const MissionType* type, const QString& name, const QVariant& v
     m_type(type),
     m_vehicleId(vehicleId),
     m_operation(new MissionOperation(this)),
-    m_homePoint(new Waypoint(type->homePointType, type->homePointType->shortName))
+    m_homePoint(new Waypoint(type->homePointType))
 {
 }
 
