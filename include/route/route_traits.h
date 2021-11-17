@@ -18,6 +18,7 @@ constexpr char step[] = "step";
 constexpr char waypoints[] = "waypoints";
 constexpr char waypoint[] = "waypoint";
 constexpr char route[] = "route";
+constexpr char calcData[] = "calcData";
 
 constexpr char current[] = "current";
 constexpr char reached[] = "reached";

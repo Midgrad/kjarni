@@ -21,6 +21,7 @@ public:
 
     const WaypointType* type() const override;
 
+    QVariantMap calcData();
     const Geodetic& position() const;
 
     int count() const;
@@ -35,6 +36,7 @@ public:
 public slots:
     void setType(const WaypointType* type);
 
+    void setCalcData(const QVariantMap& calcData);
     void setPosition(const Geodetic& position);
 
     void setItems(const QList<RouteItem*>& items);
@@ -52,6 +54,7 @@ signals:
 
 private:
     const WaypointType* m_type;
+    QVariantMap m_calcData;
     Geodetic m_position;
     QList<RouteItem*> m_items;
 

@@ -16,6 +16,7 @@ Waypoint::Waypoint(const WaypointType* type, const QVariant& id, QObject* parent
 Waypoint::Waypoint(const WaypointType* type, const QVariantMap& map, QObject* parent) :
     RouteItem(type, map, parent),
     m_type(type),
+    m_calcData(map.value(props::calcData).toMap()),
     m_position(map),
     m_current(map.value(props::current, false).toBool()),
     m_reached(map.value(props::reached, false).toBool()),
@@ -26,6 +27,8 @@ Waypoint::Waypoint(const WaypointType* type, const QVariantMap& map, QObject* pa
 QVariantMap Waypoint::toVariantMap() const
 {
     QVariantMap map = RouteItem::toVariantMap();
+
+    map.insert(props::calcData, m_calcData);
 
     utils::mergeMap(map, m_position.toVariantMap());
 
@@ -38,6 +41,8 @@ QVariantMap Waypoint::toVariantMap() const
 
 void Waypoint::fromVariantMap(const QVariantMap& map)
 {
+    m_calcData = map.value(props::calcData, m_calcData).toMap();
+
     m_position = map;
 
     m_current = map.value(props::current, m_current).toBool();
@@ -50,6 +55,11 @@ void Waypoint::fromVariantMap(const QVariantMap& map)
 const WaypointType* Waypoint::type() const
 {
     return m_type;
+}
+
+QVariantMap Waypoint::calcData()
+{
+    return m_calcData;
 }
 
 const Geodetic& Waypoint::position() const
@@ -99,6 +109,15 @@ void Waypoint::setType(const WaypointType* type)
 
     m_type = type;
     RouteItem::setType(type);
+}
+
+void Waypoint::setCalcData(const QVariantMap& calcData)
+{
+    if (m_calcData == calcData)
+        return;
+
+    m_calcData = calcData;
+    emit changed();
 }
 
 void Waypoint::setPosition(const Geodetic& position)
