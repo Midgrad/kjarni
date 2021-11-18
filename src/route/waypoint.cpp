@@ -161,10 +161,12 @@ void Waypoint::addItem(RouteItem* item)
 
     connect(item, &RouteItem::changed, this, [item, this]() {
         emit itemChanged(this->index(item), item);
+        emit changed();
     });
 
     m_items.append(item);
     emit itemAdded(m_items.count() - 1, item);
+    emit changed();
 }
 
 void Waypoint::removeItem(RouteItem* item)
@@ -181,6 +183,7 @@ void Waypoint::removeItem(RouteItem* item)
 
     m_items.removeOne(item);
     emit itemRemoved(index, item);
+    emit changed();
 }
 
 void Waypoint::setCurrent(bool current)
