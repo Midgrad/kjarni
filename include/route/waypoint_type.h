@@ -1,22 +1,22 @@
 #ifndef WAYPOINT_TYPE_H
 #define WAYPOINT_TYPE_H
 
-#include "route_item_type.h"
+#include "waypoint_item_type.h"
 
 namespace md::domain
 {
-class WaypointType : public RouteItemType
+class WaypointType : public WaypointItemType
 {
     Q_GADGET
 
 public:
     WaypointType(const QString& id, const QString& name, const QString& shortName,
                  const QVector<const Parameter*>& parameters,
-                 const QVector<const RouteItemType*>& itemTypes = {});
+                 const QVector<const WaypointItemType*>& itemTypes = {});
 
-    const RouteItemType* itemType(const QString& id) const;
+    const WaypointItemType* itemType(const QString& id) const;
 
-    const QMap<QString, const RouteItemType*> itemTypes;
+    const QMap<QString, const WaypointItemType*> itemTypes;
 };
 } // namespace md::domain
 

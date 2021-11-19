@@ -1,5 +1,5 @@
-#ifndef ROUTE_ITEM_TYPE_H
-#define ROUTE_ITEM_TYPE_H
+#ifndef WAYPOINT_ITEM_TYPE_H
+#define WAYPOINT_ITEM_TYPE_H
 
 #include <QVariant>
 #include <QVector>
@@ -36,14 +36,14 @@ public:
     Q_ENUM(Type)
 };
 
-class RouteItem;
-class RouteItemType
+class WaypointItem;
+class WaypointItemType
 {
     Q_GADGET
 
 public:
-    RouteItemType(const QString& id, const QString& name, const QString& shortName,
-                  const QVector<const Parameter*>& parameters);
+    WaypointItemType(const QString& id, const QString& name, const QString& shortName,
+                     const QVector<const Parameter*>& parameters);
 
     QVariantMap toVariantMap() const;
 
@@ -57,4 +57,4 @@ public:
 };
 } // namespace md::domain
 
-#endif // ROUTE_ITEM_TYPE_H
+#endif // WAYPOINT_ITEM_TYPE_H

@@ -85,7 +85,7 @@ void RoutesRepositorySql::unregisterRouteType(const RouteType* routeType)
 
     m_routeTypes.remove(routeType->id);
 
-    for (const RouteItemType* wptType : routeType->waypointTypes)
+    for (const WaypointItemType* wptType : routeType->waypointTypes)
     {
         m_waypointTypes.remove(wptType->id);
     }
@@ -145,7 +145,7 @@ void RoutesRepositorySql::restoreRoute(Route* route)
     }
 
     // Restore waypoints and delete new points
-    auto remover = [](int, RouteItem* waypoint) {
+    auto remover = [](int, WaypointItem* waypoint) {
         waypoint->deleteLater();
     };
     connect(route, &Route::waypointRemoved, this, remover);
@@ -234,7 +234,7 @@ void RoutesRepositorySql::saveWaypoint(Route* route, Waypoint* waypoint)
     }
 
     // Insert or update wpt items
-    for (RouteItem* item : waypoint->items())
+    for (WaypointItem* item : waypoint->items())
     {
         QVariantMap map = m_waypointItemsTable.entityToMap(item);
         map.insert(props::waypoint, waypoint->id());
@@ -264,7 +264,7 @@ void RoutesRepositorySql::restoreWaypoint(Waypoint* waypoint)
     QVariantList itemIds = m_waypointItemsTable.selectOne({ { props::waypoint, waypoint->id() } },
                                                           props::id);
     // Re-read stored items and delete new items
-    for (RouteItem* item : waypoint->items())
+    for (WaypointItem* item : waypoint->items())
     {
         if (itemIds.contains(item->id()))
         {
@@ -345,19 +345,19 @@ Waypoint* RoutesRepositorySql::readWaypoint(const QVariant& id)
     return waypoint;
 }
 
-RouteItem* RoutesRepositorySql::readItem(const QVariant& id, const WaypointType* wptType)
+WaypointItem* RoutesRepositorySql::readItem(const QVariant& id, const WaypointType* wptType)
 {
     QVariantMap map = m_waypointItemsTable.selectById(id);
     QString typeId = map.value(props::type).toString();
 
-    const RouteItemType* const type = wptType->itemType(typeId);
+    const WaypointItemType* const type = wptType->itemType(typeId);
     if (!type)
     {
         qWarning() << "Unknown waypoint item type" << typeId;
         return nullptr;
     }
 
-    return new RouteItem(type, map);
+    return new WaypointItem(type, map);
 }
 
 void RoutesRepositorySql::removeWaypoint(Waypoint* waypoint)

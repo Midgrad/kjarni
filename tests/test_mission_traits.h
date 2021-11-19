@@ -12,10 +12,10 @@ const Parameter altitude = { "altitude", "Altitude",         Parameter::Real,
 const Parameter airspeed = { "airspeed", "Airspeed", Parameter::Int, 10, 0, 100 };
 const Parameter passthrough = { "passthrough", "Passthrough", true };
 
-// RouteItems
-const RouteItemType changeSpeed{ "ch_speed", "Change speed", "CH SPD", { &airspeed } };
-const RouteItemType changeAltitude{ "ch_speed", "Change alt", "CH ALT", { &altitude } };
-const RouteItemType takePhoto{ "take_photo", "Take photo", "PHOTO", {} };
+// WaypointItems
+const WaypointItemType changeSpeed{ "ch_speed", "Change speed", "CH SPD", { &airspeed } };
+const WaypointItemType changeAltitude{ "ch_speed", "Change alt", "CH ALT", { &altitude } };
+const WaypointItemType takePhoto{ "take_photo", "Take photo", "PHOTO", {} };
 
 // Waypoints
 const WaypointType waypoint = { "waypoint",

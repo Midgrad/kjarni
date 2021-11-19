@@ -36,7 +36,7 @@ public slots:
 private:
     Route* readRoute(const QVariant& id);
     Waypoint* readWaypoint(const QVariant& id);
-    RouteItem* readItem(const QVariant& id, const WaypointType* wptType);
+    WaypointItem* readItem(const QVariant& id, const WaypointType* wptType);
     void removeWaypoint(Waypoint* waypoint);
 
     data_source::EntitySqlTable m_routesTable;

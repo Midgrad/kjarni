@@ -8,13 +8,13 @@
 using namespace md::domain;
 
 Waypoint::Waypoint(const WaypointType* type, const QVariant& id, QObject* parent) :
-    RouteItem(type, id, parent),
+    WaypointItem(type, id, parent),
     m_type(type)
 {
 }
 
 Waypoint::Waypoint(const WaypointType* type, const QVariantMap& map, QObject* parent) :
-    RouteItem(type, map, parent),
+    WaypointItem(type, map, parent),
     m_type(type),
     m_calcData(map.value(props::calcData).toMap()),
     m_position(map),
@@ -26,7 +26,7 @@ Waypoint::Waypoint(const WaypointType* type, const QVariantMap& map, QObject* pa
 
 QVariantMap Waypoint::toVariantMap() const
 {
-    QVariantMap map = RouteItem::toVariantMap();
+    QVariantMap map = WaypointItem::toVariantMap();
 
     map.insert(props::calcData, m_calcData);
 
@@ -72,17 +72,17 @@ int Waypoint::count() const
     return m_items.count();
 }
 
-int Waypoint::index(RouteItem* item) const
+int Waypoint::index(WaypointItem* item) const
 {
     return m_items.indexOf(item);
 }
 
-RouteItem* Waypoint::item(int index) const
+WaypointItem* Waypoint::item(int index) const
 {
     return m_items.value(index, nullptr);
 }
 
-const QList<RouteItem*>& Waypoint::items() const
+const QList<WaypointItem*>& Waypoint::items() const
 {
     return m_items;
 }
@@ -108,9 +108,9 @@ void Waypoint::setType(const WaypointType* type)
         return;
 
     m_type = type;
-    RouteItem::setType(type);
+    WaypointItem::setType(type);
 
-    for (RouteItem* item : m_items)
+    for (WaypointItem* item : m_items)
     {
         if (type->itemTypes.contains(item->type()->id))
             continue;
@@ -137,10 +137,10 @@ void Waypoint::setPosition(const Geodetic& position)
     emit changed();
 }
 
-void Waypoint::setItems(const QList<RouteItem*>& items)
+void Waypoint::setItems(const QList<WaypointItem*>& items)
 {
     // Remove old items (std::remove_if does not emit signals)
-    for (RouteItem* item : qAsConst(m_items))
+    for (WaypointItem* item : qAsConst(m_items))
     {
         // Skip item if we have it in new list
         if (items.contains(item))
@@ -150,13 +150,13 @@ void Waypoint::setItems(const QList<RouteItem*>& items)
     }
 
     // Add new items to the end
-    for (RouteItem* item : items)
+    for (WaypointItem* item : items)
     {
         this->addItem(item);
     }
 }
 
-void Waypoint::addItem(RouteItem* item)
+void Waypoint::addItem(WaypointItem* item)
 {
     if (m_items.contains(item))
         return;
@@ -167,7 +167,7 @@ void Waypoint::addItem(RouteItem* item)
     if (!item->parent())
         item->setParent(this);
 
-    connect(item, &RouteItem::changed, this, [item, this]() {
+    connect(item, &WaypointItem::changed, this, [item, this]() {
         emit itemChanged(this->index(item), item);
         emit changed();
     });
@@ -177,7 +177,7 @@ void Waypoint::addItem(RouteItem* item)
     emit changed();
 }
 
-void Waypoint::removeItem(RouteItem* item)
+void Waypoint::removeItem(WaypointItem* item)
 {
     int index = m_items.indexOf(item);
     // Remove but don't delete item

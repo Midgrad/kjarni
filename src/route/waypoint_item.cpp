@@ -1,4 +1,4 @@
-#include "route_item.h"
+#include "waypoint_item.h"
 
 #include <QDebug>
 
@@ -6,37 +6,37 @@
 
 using namespace md::domain;
 
-RouteItem::RouteItem(const RouteItemType* type, const QVariant& id, QObject* parent) :
+WaypointItem::WaypointItem(const WaypointItemType* type, const QVariant& id, QObject* parent) :
     Entity(id, type->shortName, type->defaultParameters(), parent),
     m_type(type)
 {
 }
 
-RouteItem::RouteItem(const RouteItemType* type, const QVariantMap& map, QObject* parent) :
+WaypointItem::WaypointItem(const WaypointItemType* type, const QVariantMap& map, QObject* parent) :
     Entity(map, parent),
     m_type(type)
 {
     Q_ASSERT(type);
 }
 
-QVariantMap RouteItem::toVariantMap() const
+QVariantMap WaypointItem::toVariantMap() const
 {
     QVariantMap map = Entity::toVariantMap();
     map.insert(props::type, m_type->id);
     return map;
 }
 
-void RouteItem::fromVariantMap(const QVariantMap& map)
+void WaypointItem::fromVariantMap(const QVariantMap& map)
 {
     Entity::fromVariantMap(map);
 }
 
-const RouteItemType* RouteItem::type() const
+const WaypointItemType* WaypointItem::type() const
 {
     return m_type;
 }
 
-void RouteItem::setType(const RouteItemType* type)
+void WaypointItem::setType(const WaypointItemType* type)
 {
     Q_ASSERT(type);
 
@@ -49,7 +49,7 @@ void RouteItem::setType(const RouteItemType* type)
     this->syncParameters();
 }
 
-void RouteItem::setAndCheckParameter(const QString& paramId, const QVariant& value)
+void WaypointItem::setAndCheckParameter(const QString& paramId, const QVariant& value)
 {
     QVariant guarded = value;
     auto parameter = m_type->parameter(paramId);
@@ -60,7 +60,7 @@ void RouteItem::setAndCheckParameter(const QString& paramId, const QVariant& val
     this->setParameter(paramId, guarded);
 }
 
-void RouteItem::resetParameter(const QString& paramId)
+void WaypointItem::resetParameter(const QString& paramId)
 {
     auto parameter = m_type->parameter(paramId);
     if (!parameter)
@@ -69,12 +69,12 @@ void RouteItem::resetParameter(const QString& paramId)
     this->setParameter(paramId, parameter->defaultValue);
 }
 
-void RouteItem::resetParameters()
+void WaypointItem::resetParameters()
 {
     this->setParameters(m_type->defaultParameters());
 }
 
-void RouteItem::syncParameters()
+void WaypointItem::syncParameters()
 {
     QVariantMap parameters = this->parameters();
 

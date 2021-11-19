@@ -74,9 +74,9 @@ int Route::itemsCount() const
     return count;
 }
 
-QList<RouteItem*> Route::items() const
+QList<WaypointItem*> Route::items() const
 {
-    QList<RouteItem*> items;
+    QList<WaypointItem*> items;
     for (Waypoint* waypoint : qAsConst(m_waypoints))
     {
         items.append(waypoint);
@@ -116,7 +116,7 @@ void Route::addWaypoint(Waypoint* waypoint)
     if (!waypoint->parent())
         waypoint->setParent(this);
 
-    connect(waypoint, &RouteItem::changed, this, [waypoint, this]() {
+    connect(waypoint, &WaypointItem::changed, this, [waypoint, this]() {
         emit waypointChanged(this->waypointIndex(waypoint), waypoint);
     });
 

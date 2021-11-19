@@ -26,7 +26,7 @@ public:
     Waypoint* waypoint(int index) const;
 
     int itemsCount() const;
-    QList<RouteItem*> items() const;
+    QList<WaypointItem*> items() const;
 
 public slots:
     void setWaypoints(const QList<Waypoint*>& waypoints);
