@@ -126,7 +126,7 @@ void MissionsRepositorySql::removeMission(Mission* mission)
     m_homeWaypointsTable.removeByCondition({ props::mission, mission->id() });
 
     // Remove home waypoint
-    m_waypointsTable.removeEntity(mission->homePoint());
+    m_waypointsTable.removeEntity(mission->route()->homePoint());
 
     // Remove mission
     m_missionsTable.removeEntity(mission);
@@ -148,7 +148,7 @@ void MissionsRepositorySql::restoreMission(Mission* mission)
     }
 
     m_missionsTable.readEntity(mission);
-    m_waypointsTable.readEntity(mission->homePoint());
+    m_waypointsTable.readEntity(mission->route()->homePoint());
 
     emit missionChanged(mission);
 }
@@ -163,25 +163,25 @@ void MissionsRepositorySql::saveMission(Mission* mission)
         return;
     }
 
-    if (mission->route())
-        m_routes->saveRoute(mission->route());
+    if (mission->route()->route())
+        m_routes->saveRoute(mission->route()->route());
 
     mission->moveToThread(this->thread());
     mission->setParent(this);
 
     if (m_missions.contains(mission->id()))
     {
-        m_waypointsTable.updateEntity(mission->homePoint());
+        m_waypointsTable.updateEntity(mission->route()->homePoint());
         m_missionsTable.updateEntity(mission);
 
         emit missionChanged(mission);
     }
     else
     {
-        m_waypointsTable.insertEntity(mission->homePoint());
+        m_waypointsTable.insertEntity(mission->route()->homePoint());
         m_missionsTable.insertEntity(mission);
         m_homeWaypointsTable.insert({ { props::mission, mission->id() },
-                                      { props::waypoint, mission->homePoint()->id() } });
+                                      { props::waypoint, mission->route()->homePoint()->id() } });
 
         m_missions.insert(mission->id(), mission);
         emit missionAdded(mission);
@@ -215,7 +215,7 @@ Mission* MissionsRepositorySql::readMission(const QVariant& id)
     emit missionAdded(mission);
 
     Route* route = m_routes->route(map.value(props::route));
-    mission->assignRoute(route);
+    mission->route()->assignRoute(route);
 
     return mission;
 }

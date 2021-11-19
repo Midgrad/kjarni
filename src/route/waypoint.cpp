@@ -82,7 +82,7 @@ void Waypoint::setType(const WaypointType* type)
     m_type = type;
     WaypointItem::setType(type);
 
-    for (WaypointItem* item : m_items)
+    for (WaypointItem* item : qAsConst(m_items))
     {
         if (type->itemTypes.contains(item->type()->id))
             continue;

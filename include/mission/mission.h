@@ -2,8 +2,7 @@
 #define MISSION_H
 
 #include "mission_operation.h"
-#include "mission_type.h"
-#include "route.h"
+#include "mission_route.h"
 
 namespace md::domain
 {
@@ -21,39 +20,13 @@ public:
     const MissionType* type() const;
     QVariant vehicleId() const;
     MissionOperation* operation() const;
-    // TODO: to MissionRoute
-    Waypoint* homePoint() const;
-    Route* route() const;
-    int currentItem() const;
-
-    int count();
-    WaypointItem* item(int index) const;
-    QList<WaypointItem*> items() const;
-
-    //    int waypointsCount() const;
-    //    QList<Waypoint*> waypoints() const;
-    //    Waypoint* waypoint(int index) const;
-    //    int itemsCount() const;
-    //    QList<WaypointItem*> items() const;
-
-public slots:
-    void assignRoute(Route* route);
-    void setCurrentItem(int currentItem);
-
-signals:
-    void routeChanged(Route* route);
-    void itemsChanged();
-    void currentItemChanged(int index);
-
-    void switchCurrentItem(int item); // Goto item
+    MissionRoute* route() const;
 
 private:
     const MissionType* const m_type;
     const QVariant m_vehicleId;
-    MissionOperation* const m_operation; //TODO: mision operation to service
-    Waypoint* const m_homePoint;
-    Route* m_route = nullptr;
-    int m_currentItem = -1;
+    MissionOperation* const m_operation; // TODO: mision operation to service
+    MissionRoute* const m_route;
 };
 } // namespace md::domain
 
