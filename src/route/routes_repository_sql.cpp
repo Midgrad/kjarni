@@ -9,6 +9,7 @@ namespace
 {
 constexpr char routes[] = "routes";
 constexpr char waypoints[] = "waypoints";
+constexpr char m_waypointItemsTable[] = "waypoint_items";
 constexpr char routeWaypoints[] = "route_waypoints";
 } // namespace
 
@@ -18,6 +19,7 @@ RoutesRepositorySql::RoutesRepositorySql(QSqlDatabase* database, QObject* parent
     IRoutesRepository(parent),
     m_routesTable(database, ::routes),
     m_waypointsTable(database, ::waypoints),
+    m_waypointItemsTable(database, ::m_waypointItemsTable),
     m_routeWaypointsTable(database, ::routeWaypoints),
     m_mutex(QMutex::Recursive)
 {
@@ -150,9 +152,9 @@ void RoutesRepositorySql::restoreRoute(Route* route)
     route->setWaypoints(m_waypoints.values());
     disconnect(route, &Route::waypointRemoved, this, nullptr);
 
-    for (RouteItem* waypoint : route->waypoints())
+    for (Waypoint* waypoint : route->waypoints())
     {
-        m_waypointsTable.readEntity(waypoint);
+        this->restoreWaypoint(waypoint);
     }
 
     m_routesTable.readEntity(route);
@@ -208,9 +210,14 @@ void RoutesRepositorySql::saveRoute(Route* route)
 
 void RoutesRepositorySql::saveWaypoint(Route* route, Waypoint* waypoint)
 {
+    QVariantList itemIds;
+
     if (m_waypoints.contains(waypoint->id()))
     {
         m_waypointsTable.updateEntity(waypoint);
+
+        // Read items for waypoint
+        itemIds = m_waypointItemsTable.selectOne({ { props::waypoint, waypoint->id() } }, props::id);
     }
     else
     {
@@ -225,6 +232,61 @@ void RoutesRepositorySql::saveWaypoint(Route* route, Waypoint* waypoint)
         m_routeWaypointsTable.insert(
             { { props::route, route->id() }, { props::waypoint, waypoint->id() } });
     }
+
+    // Insert or update wpt items
+    for (RouteItem* item : waypoint->items())
+    {
+        QVariantMap map = m_waypointItemsTable.entityToMap(item);
+        map.insert(props::waypoint, waypoint->id());
+
+        if (itemIds.contains(item->id()))
+        {
+            itemIds.removeOne(item->id());
+            m_waypointItemsTable.updateById(map, item->id());
+        }
+        else
+        {
+            m_waypointItemsTable.insert(map);
+        }
+    }
+
+    // Remove deleted items
+    for (const QVariant& id : qAsConst(itemIds))
+    {
+        m_waypointItemsTable.removeById(id);
+    }
+}
+
+void RoutesRepositorySql::restoreWaypoint(Waypoint* waypoint)
+{
+    QMutexLocker locker(&m_mutex);
+
+    QVariantList itemIds = m_waypointItemsTable.selectOne({ { props::waypoint, waypoint->id() } },
+                                                          props::id);
+    // Re-read stored items and delete new items
+    for (RouteItem* item : waypoint->items())
+    {
+        if (itemIds.contains(item->id()))
+        {
+            m_waypointItemsTable.readEntity(item);
+            itemIds.removeOne(item->id());
+        }
+        else
+        {
+            waypoint->removeItem(item);
+            item->deleteLater();
+        }
+    }
+
+    // Read deleted items for waypoint
+    for (const QVariant& itemId : itemIds)
+    {
+        auto item = this->readItem(itemId, waypoint->type());
+        if (item)
+            waypoint->addItem(item);
+    }
+
+    m_waypointsTable.readEntity(waypoint);
 }
 
 Route* RoutesRepositorySql::readRoute(const QVariant& id)
@@ -270,11 +332,43 @@ Waypoint* RoutesRepositorySql::readWaypoint(const QVariant& id)
 
     Waypoint* waypoint = new Waypoint(type, map);
     m_waypoints.insert(id, waypoint);
+
+    // Read items for waypoint
+    for (const QVariant& itemId :
+         m_waypointItemsTable.selectOne({ { props::waypoint, id } }, props::id))
+    {
+        auto item = this->readItem(itemId, waypoint->type());
+        if (item)
+            waypoint->addItem(item);
+    }
+
     return waypoint;
+}
+
+RouteItem* RoutesRepositorySql::readItem(const QVariant& id, const WaypointType* wptType)
+{
+    QVariantMap map = m_waypointItemsTable.selectById(id);
+    QString typeId = map.value(props::type).toString();
+
+    const RouteItemType* const type = wptType->itemType(typeId);
+    if (!type)
+    {
+        qWarning() << "Unknown waypoint item type" << typeId;
+        return nullptr;
+    }
+
+    return new RouteItem(type, map);
 }
 
 void RoutesRepositorySql::removeWaypoint(Waypoint* waypoint)
 {
+    // Remove waypoint's items by id
+    for (const QVariant& itemId :
+         m_waypointItemsTable.selectOne({ { props::waypoint, waypoint->id() } }, props::id))
+    {
+        m_waypointItemsTable.removeById(itemId);
+    }
+
     m_waypointsTable.removeEntity(waypoint);
     m_waypoints.remove(waypoint->id());
 }

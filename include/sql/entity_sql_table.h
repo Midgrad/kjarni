@@ -30,7 +30,6 @@ public:
     void updateEntity(domain::Entity* entity);
     void removeEntity(domain::Entity* entity);
 
-protected:
     QVariantMap entityToMap(domain::Entity* entity);
 };
 

@@ -109,6 +109,14 @@ void Waypoint::setType(const WaypointType* type)
 
     m_type = type;
     RouteItem::setType(type);
+
+    for (RouteItem* item : m_items)
+    {
+        if (type->itemTypes.contains(item->type()->id))
+            continue;
+
+        this->removeItem(item);
+    }
 }
 
 void Waypoint::setCalcData(const QVariantMap& calcData)
