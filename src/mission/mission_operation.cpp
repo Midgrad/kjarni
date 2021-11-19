@@ -28,7 +28,7 @@ int MissionOperation::total() const
 
 bool MissionOperation::isComplete() const
 {
-    return m_progress + 1 >= m_total;
+    return m_progress >= m_total;
 }
 
 QVariantMap MissionOperation::toVariantMap() const

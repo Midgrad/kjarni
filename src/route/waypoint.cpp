@@ -17,10 +17,7 @@ Waypoint::Waypoint(const WaypointType* type, const QVariantMap& map, QObject* pa
     WaypointItem(type, map, parent),
     m_type(type),
     m_calcData(map.value(props::calcData).toMap()),
-    m_position(map),
-    m_current(map.value(props::current, false).toBool()),
-    m_reached(map.value(props::reached, false).toBool()),
-    m_confirmed(map.value(props::confirmed, false).toBool())
+    m_position(map)
 {
 }
 
@@ -29,12 +26,7 @@ QVariantMap Waypoint::toVariantMap() const
     QVariantMap map = WaypointItem::toVariantMap();
 
     map.insert(props::calcData, m_calcData);
-
     utils::mergeMap(map, m_position.toVariantMap());
-
-    map.insert(props::current, m_current);
-    map.insert(props::reached, m_reached);
-    map.insert(props::confirmed, m_confirmed);
 
     return map;
 }
@@ -42,12 +34,7 @@ QVariantMap Waypoint::toVariantMap() const
 void Waypoint::fromVariantMap(const QVariantMap& map)
 {
     m_calcData = map.value(props::calcData, m_calcData).toMap();
-
     m_position = map;
-
-    m_current = map.value(props::current, m_current).toBool();
-    m_reached = map.value(props::reached, m_reached).toBool();
-    m_confirmed = map.value(props::confirmed, m_confirmed).toBool();
 
     Entity::fromVariantMap(map);
 }
@@ -85,21 +72,6 @@ WaypointItem* Waypoint::item(int index) const
 const QList<WaypointItem*>& Waypoint::items() const
 {
     return m_items;
-}
-
-bool Waypoint::current() const
-{
-    return m_current;
-}
-
-bool Waypoint::reached() const
-{
-    return m_reached;
-}
-
-bool Waypoint::confirmed() const
-{
-    return m_confirmed;
 }
 
 void Waypoint::setType(const WaypointType* type)
@@ -191,32 +163,5 @@ void Waypoint::removeItem(WaypointItem* item)
 
     m_items.removeOne(item);
     emit itemRemoved(index, item);
-    emit changed();
-}
-
-void Waypoint::setCurrent(bool current)
-{
-    if (m_current == current)
-        return;
-
-    m_current = current;
-    emit changed();
-}
-
-void Waypoint::setConfirmed(bool confirmed)
-{
-    if (m_confirmed == confirmed)
-        return;
-
-    m_confirmed = confirmed;
-    emit changed();
-}
-
-void Waypoint::setReached(bool reached)
-{
-    if (m_reached == reached)
-        return;
-
-    m_reached = reached;
     emit changed();
 }

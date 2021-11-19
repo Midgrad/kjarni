@@ -23,6 +23,7 @@ Mission::Mission(const MissionType* type, const QVariantMap& map, QObject* paren
     m_operation(new MissionOperation(this)),
     m_homePoint(new Waypoint(type->homePointType, map.value(props::home).toMap()))
 {
+    m_homePoint->setName(tr("Home"));
 }
 
 QVariantMap Mission::toVariantMap() const
@@ -51,45 +52,6 @@ QVariant Mission::vehicleId() const
     return m_vehicleId;
 }
 
-Route* Mission::route() const
-{
-    return m_route;
-}
-
-int Mission::count() const
-{
-    return m_route ? m_route->waypointsCount() : 1; // route + home point
-}
-
-Waypoint* Mission::waypoint(int index) const
-{
-    if (index == 0)
-        return m_homePoint;
-
-    return m_route ? m_route->waypoint(index - 1) : nullptr;
-}
-
-Waypoint* Mission::currentWaypoint() const
-{
-    return m_currentWaypoint;
-}
-
-int Mission::currentWaypointIndex() const
-{
-    return this->waypoints().indexOf(m_currentWaypoint);
-}
-
-QList<Waypoint*> Mission::waypoints() const
-{
-    QList<Waypoint*> waypoints;
-
-    waypoints.append(m_homePoint);
-    if (m_route)
-        waypoints += m_route->waypoints();
-
-    return waypoints;
-}
-
 MissionOperation* Mission::operation() const
 {
     return m_operation;
@@ -98,6 +60,40 @@ MissionOperation* Mission::operation() const
 Waypoint* Mission::homePoint() const
 {
     return m_homePoint;
+}
+
+Route* Mission::route() const
+{
+    return m_route;
+}
+
+int Mission::currentItem() const
+{
+    return m_currentItem;
+}
+
+int Mission::count()
+{
+    return m_route ? m_route->itemsCount() + 1 : 1; // route items (wpt + payload) + home point
+}
+
+WaypointItem* Mission::item(int index) const
+{
+    if (index == 0)
+        return m_homePoint;
+
+    return m_route ? m_route->item(index - 1) : nullptr;
+}
+
+QList<WaypointItem*> Mission::items() const
+{
+    QList<WaypointItem*> items;
+    items.append(m_homePoint);
+
+    if (m_route)
+        items.append(m_route->items());
+
+    return items;
 }
 
 void Mission::assignRoute(Route* route)
@@ -114,29 +110,20 @@ void Mission::assignRoute(Route* route)
 
     if (m_route)
     {
-        connect(m_route, &Route::waypointAdded, this, &Mission::waypointsChanged);
-        connect(m_route, &Route::waypointChanged, this, &Mission::waypointsChanged);
-        connect(m_route, &Route::waypointRemoved, this, &Mission::waypointsChanged);
+        connect(m_route, &Route::waypointAdded, this, &Mission::itemsChanged);
+        connect(m_route, &Route::waypointChanged, this, &Mission::itemsChanged);
+        connect(m_route, &Route::waypointRemoved, this, &Mission::itemsChanged);
     }
 
     emit routeChanged(m_route);
-    emit waypointsChanged();
+    emit itemsChanged();
 }
 
-void Mission::setCurrentWaypointIndex(int currentWaypointIndex)
+void Mission::setCurrentItem(int currentItem)
 {
-    Waypoint* currentWaypoint = this->waypoint(currentWaypointIndex);
-
-    if (m_currentWaypoint == currentWaypoint)
+    if (m_currentItem == currentItem)
         return;
 
-    if (m_currentWaypoint)
-        m_currentWaypoint->setCurrent(false);
-
-    m_currentWaypoint = currentWaypoint;
-
-    if (m_currentWaypoint)
-        m_currentWaypoint->setCurrent(true);
-
-    emit currentWaypointChanged(currentWaypointIndex);
+    m_currentItem = currentItem;
+    emit currentItemChanged(m_currentItem);
 }

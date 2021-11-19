@@ -21,32 +21,39 @@ public:
     const MissionType* type() const;
     QVariant vehicleId() const;
     MissionOperation* operation() const;
+    // TODO: to MissionRoute
     Waypoint* homePoint() const;
     Route* route() const;
-    int count() const;
-    Waypoint* waypoint(int index) const;
-    QList<Waypoint*> waypoints() const;
-    Waypoint* currentWaypoint() const;
-    int currentWaypointIndex() const;
+    int currentItem() const;
+
+    int count();
+    WaypointItem* item(int index) const;
+    QList<WaypointItem*> items() const;
+
+    //    int waypointsCount() const;
+    //    QList<Waypoint*> waypoints() const;
+    //    Waypoint* waypoint(int index) const;
+    //    int itemsCount() const;
+    //    QList<WaypointItem*> items() const;
 
 public slots:
     void assignRoute(Route* route);
-    void setCurrentWaypointIndex(int currentWaypointIndex);
+    void setCurrentItem(int currentItem);
 
 signals:
     void routeChanged(Route* route);
-    void waypointsChanged();
-    void currentWaypointChanged(int index);
+    void itemsChanged();
+    void currentItemChanged(int index);
 
-    void switchWaypoint(int waypoint); // Goto waypoint
+    void switchCurrentItem(int item); // Goto item
 
 private:
     const MissionType* const m_type;
     const QVariant m_vehicleId;
     MissionOperation* const m_operation; //TODO: mision operation to service
     Waypoint* const m_homePoint;
-    Waypoint* m_currentWaypoint = nullptr;
     Route* m_route = nullptr;
+    int m_currentItem = -1;
 };
 } // namespace md::domain
 

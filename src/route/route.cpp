@@ -86,6 +86,25 @@ QList<WaypointItem*> Route::items() const
     return items;
 }
 
+WaypointItem* Route::item(int index) const
+{
+    int count = 0;
+    for (Waypoint* waypoint : qAsConst(m_waypoints))
+    {
+        if (count == index)
+            return waypoint;
+
+        count++;
+        for (WaypointItem* item : waypoint->items())
+        {
+            if (count == index)
+                return item;
+            count++;
+        }
+    }
+    return nullptr;
+}
+
 void Route::setWaypoints(const QList<Waypoint*>& waypoints)
 {
     // Remove old waypoints (std::remove_if does not emit signals)
@@ -127,7 +146,7 @@ void Route::addWaypoint(Waypoint* waypoint)
 void Route::removeWaypoint(Waypoint* waypoint)
 {
     int index = m_waypoints.indexOf(waypoint);
-    // Remove but don't delete waypoint
+    // Remove but don't TODO: delete waypoint
     if (index == -1)
         return;
 
@@ -138,6 +157,14 @@ void Route::removeWaypoint(Waypoint* waypoint)
 
     m_waypoints.removeOne(waypoint);
     emit waypointRemoved(index, waypoint);
+}
+
+void Route::clear()
+{
+    for (Waypoint* waypoint : m_waypoints)
+    {
+        this->removeWaypoint(waypoint);
+    }
 }
 
 void Route::fromVariantMapImpl(const QVariantMap& map)

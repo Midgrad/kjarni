@@ -27,11 +27,13 @@ public:
 
     int itemsCount() const;
     QList<WaypointItem*> items() const;
+    WaypointItem* item(int index) const;
 
 public slots:
     void setWaypoints(const QList<Waypoint*>& waypoints);
     void addWaypoint(Waypoint* waypoint);
     void removeWaypoint(Waypoint* waypoint);
+    void clear();
 
 signals:
     void waypointAdded(int index, Waypoint* waypoint);

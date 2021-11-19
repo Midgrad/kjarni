@@ -29,10 +29,6 @@ public:
     WaypointItem* item(int index) const;
     const QList<WaypointItem*>& items() const;
 
-    bool current() const;
-    bool reached() const;
-    bool confirmed() const;
-
 public slots:
     void setType(const WaypointType* type);
 
@@ -42,10 +38,6 @@ public slots:
     void setItems(const QList<WaypointItem*>& items);
     void addItem(WaypointItem* item);
     void removeItem(WaypointItem* item);
-
-    void setCurrent(bool current);
-    void setReached(bool reached);
-    void setConfirmed(bool confirmed);
 
 signals:
     void itemAdded(int index, WaypointItem* item);
@@ -57,11 +49,6 @@ private:
     QVariantMap m_calcData;
     Geodetic m_position;
     QList<WaypointItem*> m_items;
-
-    // TODO: to MissionRoute
-    bool m_current = false;
-    bool m_reached = false;
-    bool m_confirmed = false;
 };
 } // namespace md::domain
 
