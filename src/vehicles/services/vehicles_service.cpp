@@ -46,9 +46,7 @@ void VehiclesService::removeVehicle(Vehicle* vehicle)
 {
     QMutexLocker locker(&m_mutex);
 
-    if (!vehicle->id().isNull())
-        vehiclesRepo->remove(vehicle);
-
+    vehiclesRepo->remove(vehicle);
     m_vehicles.remove(vehicle->id());
 
     emit vehicleRemoved(vehicle);
@@ -59,9 +57,6 @@ void VehiclesService::restoreVehicle(Vehicle* vehicle)
 {
     QMutexLocker locker(&m_mutex);
 
-    if (vehicle->id().isNull())
-        return;
-
     vehiclesRepo->read(vehicle);
     emit vehicleChanged(vehicle);
 }
@@ -69,12 +64,6 @@ void VehiclesService::restoreVehicle(Vehicle* vehicle)
 void VehiclesService::saveVehicle(Vehicle* vehicle)
 {
     QMutexLocker locker(&m_mutex);
-
-    if (vehicle->id().isNull())
-    {
-        qWarning() << "Can't save vehicle with no id" << vehicle;
-        return;
-    }
 
     if (m_vehicles.contains(vehicle->id()))
     {
