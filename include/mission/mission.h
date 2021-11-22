@@ -6,7 +6,7 @@
 
 namespace md::domain
 {
-class Mission : public Entity
+class Mission : public Named
 {
     Q_OBJECT
 

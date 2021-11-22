@@ -10,11 +10,6 @@ namespace md::domain
 {
 namespace props
 {
-constexpr char defaultValue[] = "defaultValue";
-constexpr char minValue[] = "minValue";
-constexpr char maxValue[] = "maxValue";
-constexpr char step[] = "step";
-
 constexpr char items[] = "items";
 constexpr char waypoints[] = "waypoints";
 constexpr char waypoint[] = "waypoint";

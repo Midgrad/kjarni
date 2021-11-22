@@ -8,7 +8,7 @@ using namespace md::domain;
 
 Mission::Mission(const MissionType* type, const QString& name, const QVariant& vehicleId,
                  const QVariant& id, QObject* parent) :
-    Entity(id, name, QVariantMap(), parent),
+    Named(id, name, parent),
     m_type(type),
     m_vehicleId(vehicleId),
     m_operation(new MissionOperation(this)),
@@ -17,7 +17,7 @@ Mission::Mission(const MissionType* type, const QString& name, const QVariant& v
 }
 
 Mission::Mission(const MissionType* type, const QVariantMap& map, QObject* parent) :
-    Entity(map, parent),
+    Named(map, parent),
     m_type(type),
     m_vehicleId(map.value(props::vehicle)),
     m_operation(new MissionOperation(this)),
@@ -27,7 +27,7 @@ Mission::Mission(const MissionType* type, const QVariantMap& map, QObject* paren
 
 QVariantMap Mission::toVariantMap() const
 {
-    QVariantMap map = Entity::toVariantMap();
+    QVariantMap map = Named::toVariantMap();
 
     map.insert(props::type, m_type->id);
     map.insert(props::vehicle, m_vehicleId);

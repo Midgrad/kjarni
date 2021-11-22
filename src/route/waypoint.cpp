@@ -36,7 +36,7 @@ void Waypoint::fromVariantMap(const QVariantMap& map)
     m_calcData = map.value(props::calcData, m_calcData).toMap();
     m_position = map;
 
-    Entity::fromVariantMap(map);
+    WaypointItem::fromVariantMap(map);
 }
 
 const WaypointType* Waypoint::type() const

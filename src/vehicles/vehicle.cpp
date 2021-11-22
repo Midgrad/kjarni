@@ -15,20 +15,20 @@ Vehicle::Type typeFromVariant(const QVariant& value)
 } // namespace
 
 Vehicle::Vehicle(Type type, const QString& name, const QVariant& id, QObject* parent) :
-    Entity(id, name, QVariantMap(), parent),
+    Parametrised(id, name, QVariantMap(), parent),
     m_type(type)
 {
 }
 
 Vehicle::Vehicle(const QVariantMap& map, QObject* parent) :
-    Entity(map, parent),
+    Parametrised(map, parent),
     m_type(::typeFromVariant(map.value(props::type)))
 {
 }
 
 QVariantMap Vehicle::toVariantMap() const
 {
-    QVariantMap map = Entity::toVariantMap();
+    QVariantMap map = Parametrised::toVariantMap();
     map.insert(props::type, QVariant::fromValue(m_type).toString());
     return map;
 }
@@ -38,7 +38,7 @@ void Vehicle::fromVariantMap(const QVariantMap& map)
     if (map.contains(props::type))
         m_type = ::typeFromVariant(map.value(props::type));
 
-    Entity::fromVariantMap(map);
+    Parametrised::fromVariantMap(map);
 }
 
 Vehicle::Type Vehicle::type() const

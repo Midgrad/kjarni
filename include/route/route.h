@@ -6,7 +6,7 @@
 
 namespace md::domain
 {
-class Route : public Entity
+class Route : public Named
 {
     Q_OBJECT
 

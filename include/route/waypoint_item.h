@@ -6,7 +6,7 @@
 
 namespace md::domain
 {
-class WaypointItem : public Entity
+class WaypointItem : public Parametrised
 {
     Q_OBJECT
 

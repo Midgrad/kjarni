@@ -7,13 +7,13 @@
 using namespace md::domain;
 
 WaypointItem::WaypointItem(const WaypointItemType* type, const QVariant& id, QObject* parent) :
-    Entity(id, type->shortName, type->defaultParameters(), parent),
+    Parametrised(id, type->shortName, type->defaultParameters(), parent),
     m_type(type)
 {
 }
 
 WaypointItem::WaypointItem(const WaypointItemType* type, const QVariantMap& map, QObject* parent) :
-    Entity(map, parent),
+    Parametrised(map, parent),
     m_type(type)
 {
     Q_ASSERT(type);
@@ -21,14 +21,14 @@ WaypointItem::WaypointItem(const WaypointItemType* type, const QVariantMap& map,
 
 QVariantMap WaypointItem::toVariantMap() const
 {
-    QVariantMap map = Entity::toVariantMap();
+    QVariantMap map = Parametrised::toVariantMap();
     map.insert(props::type, m_type->id);
     return map;
 }
 
 void WaypointItem::fromVariantMap(const QVariantMap& map)
 {
-    Entity::fromVariantMap(map);
+    Parametrised::fromVariantMap(map);
 }
 
 const WaypointItemType* WaypointItem::type() const

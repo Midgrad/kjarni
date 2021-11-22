@@ -1,41 +1,10 @@
 #ifndef WAYPOINT_ITEM_TYPE_H
 #define WAYPOINT_ITEM_TYPE_H
 
-#include <QVariant>
-#include <QVector>
+#include "parametrised.h"
 
 namespace md::domain
 {
-class Parameter // TODO: parameters to bounded context, Parametered
-{
-    Q_GADGET
-
-public:
-    enum Type
-    {
-        Bool,
-        Int,
-        Real
-    };
-
-    Parameter(const QString& id, const QString& name, Type type, const QVariant& defaultValue,
-              const QVariant& minValue, const QVariant& maxValue, const QVariant& step = 1);
-    Parameter(const QString& id, const QString& name, bool defaultValue = false);
-
-    QVariantMap toVariantMap() const;
-    QVariant guard(const QVariant& value) const;
-
-    const QString id;
-    const QString name;
-    const Type type;
-    const QVariant defaultValue;
-    const QVariant minValue;
-    const QVariant maxValue;
-    const QVariant step;
-
-    Q_ENUM(Type)
-};
-
 class WaypointItem;
 class WaypointItemType
 {

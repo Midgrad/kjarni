@@ -3,38 +3,38 @@
 #include <QDebug>
 #include <QSignalSpy>
 
-#include "entity.h"
 #include "kjarni_traits.h"
+#include "parametrised.h"
 
 using namespace md::domain;
 
-struct EntityTestArgs
+struct BaseModelsTestArgs
 {
     QVariant id;
     QString name;
     QVariantMap params;
 };
 
-class EntityTest : public ::testing::TestWithParam<EntityTestArgs>
+class BaseModelsTest : public ::testing::TestWithParam<BaseModelsTestArgs>
 {
 public:
-    EntityTest() = default;
+    BaseModelsTest() = default;
 };
 
 INSTANTIATE_TEST_SUITE_P(
-    instantiation, EntityTest,
+    instantiation, BaseModelsTest,
     ::testing::Values(
-        EntityTestArgs({ md::utils::generateId(), "Name 665", {} }),
-        EntityTestArgs({ md::utils::generateId(), "some_name", { { "bool_propery", false } } }),
-        EntityTestArgs({ md::utils::generateId(),
-                         "entity",
-                         { { "int_propery", 34 }, { "float_propery", 34 } } }),
-        EntityTestArgs({ md::utils::generateId(), "", { { "string_propery", "str123" } } })));
+        BaseModelsTestArgs({ md::utils::generateId(), "Name 665", {} }),
+        BaseModelsTestArgs({ md::utils::generateId(), "some_name", { { "bool_propery", false } } }),
+        BaseModelsTestArgs({ md::utils::generateId(),
+                             "entity",
+                             { { "int_propery", 34 }, { "float_propery", 34 } } }),
+        BaseModelsTestArgs({ md::utils::generateId(), "", { { "string_propery", "str123" } } })));
 
-TEST_P(EntityTest, testParameters)
+TEST_P(BaseModelsTest, testParameters)
 {
-    EntityTestArgs args = GetParam();
-    Entity entity(GetParam().id, GetParam().name, GetParam().params);
+    BaseModelsTestArgs args = GetParam();
+    Parametrised entity(GetParam().id, GetParam().name, GetParam().params);
 
     QSignalSpy spy(&entity, &Entity::changed);
 
@@ -61,26 +61,26 @@ TEST_P(EntityTest, testParameters)
     EXPECT_EQ(spy.count(), 3);
 }
 
-TEST_P(EntityTest, testConstructFromMap)
+TEST_P(BaseModelsTest, testConstructFromMap)
 {
-    EntityTestArgs args = GetParam();
+    BaseModelsTestArgs args = GetParam();
 
     QVariantMap map;
     map.insert(props::id, args.id.toString());
     map.insert(props::name, args.name);
     map.insert(props::params, QJsonValue::fromVariant(args.params));
 
-    Entity entity(map);
+    Parametrised entity(map);
 
     EXPECT_EQ(entity.id(), args.id);
     EXPECT_EQ(entity.name(), args.name);
     EXPECT_EQ(entity.parameters(), args.params);
 }
 
-TEST_P(EntityTest, testFromVariant)
+TEST_P(BaseModelsTest, testFromVariant)
 {
-    EntityTestArgs args = GetParam();
-    Entity entity(args.id, QString());
+    BaseModelsTestArgs args = GetParam();
+    Parametrised entity(args.id, QString());
 
     QVariantMap map;
     map.insert(props::name, args.name);
@@ -92,17 +92,15 @@ TEST_P(EntityTest, testFromVariant)
     EXPECT_EQ(entity.parameters(), args.params);
 }
 
-TEST_P(EntityTest, testToVariant)
+TEST_P(BaseModelsTest, testToVariant)
 {
-    EntityTestArgs args = GetParam();
-    Entity entity(GetParam().id, GetParam().name, GetParam().params);
+    BaseModelsTestArgs args = GetParam();
+    Parametrised entity(GetParam().id, GetParam().name, GetParam().params);
 
     QVariantMap map;
     map.insert(props::id, args.id);
-    if (!args.name.isNull())
-        map.insert(props::name, args.name);
-    if (!args.params.isEmpty())
-        map.insert(props::params, args.params);
+    map.insert(props::name, args.name);
+    map.insert(props::params, args.params);
 
     EXPECT_EQ(map, entity.toVariantMap());
 }

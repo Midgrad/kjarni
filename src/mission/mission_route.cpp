@@ -6,7 +6,7 @@ using namespace md::domain;
 
 MissionRoute::MissionRoute(const MissionType* type, const QVariant& id, const QString& name,
                            QObject* parent) :
-    Entity(id, QString(), QVariantMap(), parent),
+    Entity(id, parent),
     m_homePoint(new Waypoint(type->homePointType)),
     m_route(new Route(type->routeType, name))
 {

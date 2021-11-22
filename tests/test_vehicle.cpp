@@ -72,8 +72,7 @@ TEST_P(VehicleTest, testToVariant)
     QVariantMap map;
     map.insert(props::id, vehicle.id());
     map.insert(props::name, args.name);
-    if (!args.params.isEmpty())
-        map.insert(props::params, args.params);
+    map.insert(props::params, args.params);
     map.insert(props::type, QVariant::fromValue(args.type).toString());
 
     EXPECT_EQ(map, vehicle.toVariantMap());

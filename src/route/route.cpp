@@ -8,14 +8,14 @@
 using namespace md::domain;
 
 Route::Route(const RouteType* type, const QString& name, const QVariant& id, QObject* parent) :
-    Entity(id, name, QVariantMap(), parent),
+    Named(id, name, parent),
     m_type(type)
 {
     Q_ASSERT(type);
 }
 
 Route::Route(const RouteType* type, const QVariantMap& map, QObject* parent) :
-    Entity(map, parent),
+    Named(map, parent),
     m_type(type)
 {
     Q_ASSERT(type);
@@ -25,7 +25,7 @@ Route::Route(const RouteType* type, const QVariantMap& map, QObject* parent) :
 
 QVariantMap Route::toVariantMap() const
 {
-    QVariantMap map = Entity::toVariantMap();
+    QVariantMap map = Named::toVariantMap();
 
     map.insert(props::type, m_type->id);
 
@@ -36,7 +36,7 @@ void Route::fromVariantMap(const QVariantMap& map)
 {
     this->fromVariantMapImpl(map);
 
-    Entity::fromVariantMap(map);
+    Named::fromVariantMap(map);
 }
 
 const RouteType* Route::type() const
