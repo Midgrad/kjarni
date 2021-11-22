@@ -1,44 +1,39 @@
-#include "vehicles_repository_sql.h"
+#include "vehicles_service.h"
 
 #include <QDebug>
 #include <QMutexLocker>
 
-namespace
-{
-constexpr char vehicles[] = "vehicles";
-} // namespace
-
 using namespace md::domain;
 
-VehiclesRepositorySql::VehiclesRepositorySql(QSqlDatabase* database, QObject* parent) :
-    IVehiclesRepository(parent),
-    m_vehiclesTable(database, ::vehicles)
+VehiclesService::VehiclesService(IVehiclesRepository* vehiclesRepo, QObject* parent) :
+    IVehiclesService(parent),
+    vehiclesRepo(vehiclesRepo)
 {
 }
 
-Vehicle* VehiclesRepositorySql::vehicle(const QVariant& id) const
+Vehicle* VehiclesService::vehicle(const QVariant& id) const
 {
     QMutexLocker locker(&m_mutex);
     return m_vehicles.value(id, nullptr);
 }
 
-QVariantList VehiclesRepositorySql::vehicleIds() const
+QVariantList VehiclesService::vehicleIds() const
 {
     QMutexLocker locker(&m_mutex);
     return m_vehicles.keys();
 }
 
-QList<Vehicle*> VehiclesRepositorySql::vehicles() const
+QList<Vehicle*> VehiclesService::vehicles() const
 {
     QMutexLocker locker(&m_mutex);
     return m_vehicles.values();
 }
 
-void VehiclesRepositorySql::readAll()
+void VehiclesService::readAll()
 {
     QMutexLocker locker(&m_mutex);
 
-    for (const QVariant& vehicleId : m_vehiclesTable.selectIds())
+    for (const QVariant& vehicleId : vehiclesRepo->selectVehicleIds())
     {
         if (!m_vehicles.contains(vehicleId))
         {
@@ -47,12 +42,12 @@ void VehiclesRepositorySql::readAll()
     }
 }
 
-void VehiclesRepositorySql::removeVehicle(Vehicle* vehicle)
+void VehiclesService::removeVehicle(Vehicle* vehicle)
 {
     QMutexLocker locker(&m_mutex);
 
     if (!vehicle->id().isNull())
-        m_vehiclesTable.removeEntity(vehicle);
+        vehiclesRepo->remove(vehicle);
 
     m_vehicles.remove(vehicle->id());
 
@@ -60,18 +55,18 @@ void VehiclesRepositorySql::removeVehicle(Vehicle* vehicle)
     vehicle->deleteLater();
 }
 
-void VehiclesRepositorySql::restoreVehicle(Vehicle* vehicle)
+void VehiclesService::restoreVehicle(Vehicle* vehicle)
 {
     QMutexLocker locker(&m_mutex);
 
     if (vehicle->id().isNull())
         return;
 
-    m_vehiclesTable.readEntity(vehicle);
+    vehiclesRepo->read(vehicle);
     emit vehicleChanged(vehicle);
 }
 
-void VehiclesRepositorySql::saveVehicle(Vehicle* vehicle)
+void VehiclesService::saveVehicle(Vehicle* vehicle)
 {
     QMutexLocker locker(&m_mutex);
 
@@ -83,12 +78,12 @@ void VehiclesRepositorySql::saveVehicle(Vehicle* vehicle)
 
     if (m_vehicles.contains(vehicle->id()))
     {
-        m_vehiclesTable.updateEntity(vehicle);
+        vehiclesRepo->update(vehicle);
         emit vehicleChanged(vehicle);
     }
     else
     {
-        m_vehiclesTable.insertEntity(vehicle);
+        vehiclesRepo->insert(vehicle);
         m_vehicles.insert(vehicle->id(), vehicle);
         vehicle->moveToThread(this->thread());
         vehicle->setParent(this);
@@ -96,12 +91,11 @@ void VehiclesRepositorySql::saveVehicle(Vehicle* vehicle)
     }
 }
 
-Vehicle* VehiclesRepositorySql::readVehicle(const QVariant& id)
+Vehicle* VehiclesService::readVehicle(const QVariant& id)
 {
-    QVariantMap map = m_vehiclesTable.selectById(id);
-    QString typeName = map.value(props::type).toString();
+    Vehicle* vehicle = new Vehicle(Vehicle::Generic, QString(), id, this);
+    vehiclesRepo->read(vehicle);
 
-    Vehicle* vehicle = new Vehicle(map, this);
     m_vehicles.insert(id, vehicle);
     emit vehicleAdded(vehicle);
 

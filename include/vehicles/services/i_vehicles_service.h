@@ -1,19 +1,19 @@
-#ifndef I_VEHICLES_REPOSITORY_H
-#define I_VEHICLES_REPOSITORY_H
+#ifndef I_VEHICLES_SERVICE_H
+#define I_VEHICLES_SERVICE_H
 
 #include "i_service.h"
 #include "vehicle.h"
 
 namespace md::domain
 {
-class IVehiclesRepository
+class IVehiclesService
     : public QObject
     , public IService
 {
     Q_OBJECT
 
 public:
-    IVehiclesRepository(QObject* parent) : QObject(parent), IService()
+    IVehiclesService(QObject* parent) : QObject(parent), IService()
     {
     }
 
@@ -34,4 +34,4 @@ signals:
 };
 } // namespace md::domain
 
-#endif // I_VEHICLES_REPOSITORY_H
+#endif // I_VEHICLES_SERVICE_H

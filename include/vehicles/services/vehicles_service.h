@@ -1,20 +1,19 @@
-#ifndef VEHICLES_REPOSITORY_H
-#define VEHICLES_REPOSITORY_H
+#ifndef VEHICLES_SERVICE_H
+#define VEHICLES_SERVICE_H
 
-#include "entity_sql_table.h"
 #include "i_vehicles_repository.h"
+#include "i_vehicles_service.h"
 
-#include <QMap>
 #include <QMutex>
 
 namespace md::domain
 {
-class VehiclesRepositorySql : public IVehiclesRepository
+class VehiclesService : public IVehiclesService
 {
     Q_OBJECT
 
 public:
-    VehiclesRepositorySql(QSqlDatabase* database, QObject* parent = nullptr);
+    VehiclesService(IVehiclesRepository* vehiclesRepo, QObject* parent = nullptr);
 
     Vehicle* vehicle(const QVariant& id) const override;
     QVariantList vehicleIds() const override;
@@ -29,11 +28,11 @@ public slots:
 private:
     Vehicle* readVehicle(const QVariant& id);
 
-    data_source::EntitySqlTable m_vehiclesTable;
+    IVehiclesRepository* const vehiclesRepo;
     QMap<QVariant, Vehicle*> m_vehicles;
 
     mutable QMutex m_mutex;
 };
 } // namespace md::domain
 
-#endif // VEHICLES_REPOSITORY_H
+#endif // VEHICLES_SERVICE_H
