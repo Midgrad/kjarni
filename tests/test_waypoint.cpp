@@ -14,7 +14,7 @@ struct WaypointTestArgs
     QVariant id;
     Geodetic position;
     QVariantMap params;
-    const WaypointType* type;
+    const WaypointItemType* type;
 };
 
 class WaypointTest : public ::testing::TestWithParam<WaypointTestArgs>

@@ -7,11 +7,13 @@
 using namespace md::domain;
 
 WaypointItemType::WaypointItemType(const QString& id, const QString& name, const QString& shortName,
-                                   const QVector<const Parameter*>& parameters) :
+                                   const QVector<const Parameter*>& parameters,
+                                   const QVector<const WaypointItemType*>& childTypes) :
     id(id),
     name(name),
     shortName(shortName),
-    parameters(utils::listToMap<Parameter>(parameters))
+    parameters(utils::listToMap<Parameter>(parameters)),
+    childTypes(utils::listToMap<WaypointItemType>(childTypes))
 {
 }
 
@@ -36,4 +38,9 @@ QVariantMap WaypointItemType::defaultParameters() const
         map.insert(parameter->id, parameter->defaultValue);
     }
     return map;
+}
+
+const WaypointItemType* WaypointItemType::childType(const QString& id) const
+{
+    return childTypes.value(id, nullptr);
 }

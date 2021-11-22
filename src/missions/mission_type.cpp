@@ -3,7 +3,7 @@
 using namespace md::domain;
 
 MissionType::MissionType(const QString& id, const QString& name, const RouteType* routeType,
-                         const WaypointType* homePointType) :
+                         const WaypointItemType* homePointType) :
     id(id),
     name(name),
     routeType(routeType),

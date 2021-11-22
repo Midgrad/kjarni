@@ -7,13 +7,13 @@
 
 using namespace md::domain;
 
-Waypoint::Waypoint(const WaypointType* type, const QVariant& id, QObject* parent) :
+Waypoint::Waypoint(const WaypointItemType* type, const QVariant& id, QObject* parent) :
     WaypointItem(type, id, parent),
     m_type(type)
 {
 }
 
-Waypoint::Waypoint(const WaypointType* type, const QVariantMap& map, QObject* parent) :
+Waypoint::Waypoint(const WaypointItemType* type, const QVariantMap& map, QObject* parent) :
     WaypointItem(type, map, parent),
     m_type(type),
     m_calcData(map.value(props::calcData).toMap()),
@@ -39,7 +39,7 @@ void Waypoint::fromVariantMap(const QVariantMap& map)
     WaypointItem::fromVariantMap(map);
 }
 
-const WaypointType* Waypoint::type() const
+const WaypointItemType* Waypoint::type() const
 {
     return m_type;
 }
@@ -74,7 +74,7 @@ const QList<WaypointItem*>& Waypoint::items() const
     return m_items;
 }
 
-void Waypoint::setType(const WaypointType* type)
+void Waypoint::setType(const WaypointItemType* type)
 {
     if (m_type == type)
         return;
@@ -84,7 +84,7 @@ void Waypoint::setType(const WaypointType* type)
 
     for (WaypointItem* item : qAsConst(m_items))
     {
-        if (type->itemTypes.contains(item->type()->id))
+        if (type->childTypes.contains(item->type()->id))
             continue;
 
         this->removeItem(item);

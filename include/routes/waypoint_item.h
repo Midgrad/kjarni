@@ -33,6 +33,8 @@ signals:
 
 private:
     const WaypointItemType* m_type;
+    QVariantMap m_calcData;
+    QList<WaypointItem*> m_items;
 };
 } // namespace md::domain
 

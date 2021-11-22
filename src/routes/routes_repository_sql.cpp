@@ -68,7 +68,7 @@ void RoutesRepositorySql::registerRouteType(const RouteType* routeType)
 
     m_routeTypes.insert(routeType->id, routeType);
 
-    for (const WaypointType* wptType : routeType->waypointTypes)
+    for (const WaypointItemType* wptType : routeType->waypointTypes)
     {
         m_waypointTypes.insert(wptType->id, wptType);
     }
@@ -323,7 +323,7 @@ Waypoint* RoutesRepositorySql::readWaypoint(const QVariant& id)
     QVariantMap map = m_waypointsTable.selectById(id);
     QString typeId = map.value(props::type).toString();
 
-    const WaypointType* const type = m_waypointTypes.value(typeId);
+    const WaypointItemType* const type = m_waypointTypes.value(typeId);
     if (!type)
     {
         qWarning() << "Unknown waypoint type" << typeId;
@@ -345,12 +345,12 @@ Waypoint* RoutesRepositorySql::readWaypoint(const QVariant& id)
     return waypoint;
 }
 
-WaypointItem* RoutesRepositorySql::readItem(const QVariant& id, const WaypointType* wptType)
+WaypointItem* RoutesRepositorySql::readItem(const QVariant& id, const WaypointItemType* wptType)
 {
     QVariantMap map = m_waypointItemsTable.selectById(id);
     QString typeId = map.value(props::type).toString();
 
-    const WaypointItemType* const type = wptType->itemType(typeId);
+    const WaypointItemType* const type = wptType->childType(typeId);
     if (!type)
     {
         qWarning() << "Unknown waypoint item type" << typeId;

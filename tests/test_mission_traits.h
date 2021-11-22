@@ -18,13 +18,13 @@ const WaypointItemType changeAltitude{ "ch_speed", "Change alt", "CH ALT", { &al
 const WaypointItemType takePhoto{ "take_photo", "Take photo", "PHOTO", {} };
 
 // Waypoints
-const WaypointType waypoint = { "waypoint",
+const WaypointItemType waypoint = { "waypoint",
                                 "Waypoint",
                                 "WPT",
                                 { &route::relativeAlt, &passthrough },
                                 { &changeSpeed, &changeAltitude, &takePhoto } };
-const WaypointType circle = { "circle", "Circle", "CRL", { &route::relativeAlt, &radius }, {} };
-const WaypointType loop = {
+const WaypointItemType circle = { "circle", "Circle", "CRL", { &route::relativeAlt, &radius }, {} };
+const WaypointItemType loop = {
     "circle", "Circle", "CRL", { &route::relativeAlt, &radius }, { &changeAltitude }
 };
 

@@ -3,7 +3,7 @@
 
 #include "geodetic.h"
 #include "waypoint_item.h"
-#include "waypoint_type.h"
+#include "waypoint_item_type.h"
 
 namespace md::domain
 {
@@ -12,14 +12,14 @@ class Waypoint : public WaypointItem
     Q_OBJECT
 
 public:
-    Waypoint(const WaypointType* type, const QVariant& id = utils::generateId(),
+    Waypoint(const WaypointItemType* type, const QVariant& id = utils::generateId(),
              QObject* parent = nullptr);
-    Waypoint(const WaypointType* type, const QVariantMap& map, QObject* parent = nullptr);
+    Waypoint(const WaypointItemType* type, const QVariantMap& map, QObject* parent = nullptr);
 
     QVariantMap toVariantMap() const override;
     void fromVariantMap(const QVariantMap& map) override;
 
-    const WaypointType* type() const override;
+    const WaypointItemType* type() const override;
 
     QVariantMap calcData();
     const Geodetic& position() const;
@@ -30,7 +30,7 @@ public:
     const QList<WaypointItem*>& items() const;
 
 public slots:
-    void setType(const WaypointType* type);
+    void setType(const WaypointItemType* type);
 
     void setCalcData(const QVariantMap& calcData);
     void setPosition(const Geodetic& position);
@@ -45,7 +45,7 @@ signals:
     void itemRemoved(int index, WaypointItem* item);
 
 private:
-    const WaypointType* m_type;
+    const WaypointItemType* m_type;
     QVariantMap m_calcData;
     Geodetic m_position;
     QList<WaypointItem*> m_items;

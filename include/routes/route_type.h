@@ -1,7 +1,7 @@
 #ifndef ROUTE_TYPE_H
 #define ROUTE_TYPE_H
 
-#include "waypoint_type.h"
+#include "waypoint_item_type.h"
 
 namespace md::domain
 {
@@ -11,15 +11,15 @@ class RouteType
 
 public:
     RouteType(const QString& id, const QString& name,
-              const QVector<const WaypointType*>& waypointTypes);
+              const QVector<const WaypointItemType*>& waypointTypes);
 
     QVariantMap toVariantMap() const;
 
-    const WaypointType* waypointType(const QString& id) const;
+    const WaypointItemType* waypointType(const QString& id) const;
 
     const QString id;
     const QString name;
-    const QMap<QString, const WaypointType*> waypointTypes;
+    const QMap<QString, const WaypointItemType*> waypointTypes;
 };
 } // namespace md::domain
 

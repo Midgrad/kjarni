@@ -12,17 +12,20 @@ class WaypointItemType
 
 public:
     WaypointItemType(const QString& id, const QString& name, const QString& shortName,
-                     const QVector<const Parameter*>& parameters);
+                     const QVector<const Parameter*>& parameters,
+                     const QVector<const WaypointItemType*>& childTypes = {});
 
     QVariantMap toVariantMap() const;
 
     const Parameter* parameter(const QString& id) const;
     QVariantMap defaultParameters() const;
+    const WaypointItemType* childType(const QString& id) const;
 
     const QString id;
     const QString name;
     const QString shortName;
     const QMap<QString, const Parameter*> parameters;
+    const QMap<QString, const WaypointItemType*> childTypes;
 };
 } // namespace md::domain
 

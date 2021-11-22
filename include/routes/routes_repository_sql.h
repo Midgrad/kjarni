@@ -36,7 +36,7 @@ public slots:
 private:
     Route* readRoute(const QVariant& id);
     Waypoint* readWaypoint(const QVariant& id);
-    WaypointItem* readItem(const QVariant& id, const WaypointType* wptType);
+    WaypointItem* readItem(const QVariant& id, const WaypointItemType* wptType);
     void removeWaypoint(Waypoint* waypoint);
 
     data_source::EntitySqlTable m_routesTable;
@@ -45,7 +45,7 @@ private:
     data_source::SqlTable m_routeWaypointsTable;
 
     QMap<QString, const RouteType*> m_routeTypes;
-    QMap<QString, const WaypointType*> m_waypointTypes;
+    QMap<QString, const WaypointItemType*> m_waypointTypes;
     QMap<QVariant, Route*> m_routes;
     QMap<QVariant, Waypoint*> m_waypoints;
     QMultiMap<Route*, Waypoint*> m_routeWaypoints; // TODO: remove this
