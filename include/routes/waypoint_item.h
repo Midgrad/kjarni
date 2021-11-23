@@ -18,7 +18,13 @@ public:
     QVariantMap toVariantMap() const override;
     void fromVariantMap(const QVariantMap& map) override;
 
-    virtual const WaypointItemType* type() const;
+    const WaypointItemType* type() const;
+    QVariantMap calcData();
+
+    int count() const;
+    int index(WaypointItem* item) const;
+    WaypointItem* item(int index) const;
+    const QList<WaypointItem*>& items() const;
 
 public slots:
     void setType(const WaypointItemType* type);
@@ -27,6 +33,17 @@ public slots:
     void resetParameter(const QString& paramId);
     void resetParameters();
     void syncParameters();
+
+    void setCalcData(const QVariantMap& calcData);
+
+    void setItems(const QList<WaypointItem*>& items);
+    void addItem(WaypointItem* item);
+    void removeItem(WaypointItem* item);
+
+signals:
+    void itemAdded(int index, WaypointItem* item);
+    void itemChanged(int index, WaypointItem* item);
+    void itemRemoved(int index, WaypointItem* item);
 
 signals:
     void typeChanged();

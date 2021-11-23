@@ -30,14 +30,14 @@ public slots:
     virtual void removeRoute(Route* route) override;
     virtual void restoreRoute(Route* route) override;
     virtual void saveRoute(Route* route) override;
-    virtual void saveWaypoint(Route* route, Waypoint* waypoint) override;
-    virtual void restoreWaypoint(Waypoint* waypoint) override;
+    virtual void saveWaypoint(Route* route, WaypointItem* waypoint) override;
+    virtual void restoreWaypoint(WaypointItem* waypoint) override;
 
 private:
     Route* readRoute(const QVariant& id);
-    Waypoint* readWaypoint(const QVariant& id);
+    WaypointItem* readWaypoint(const QVariant& id);
     WaypointItem* readItem(const QVariant& id, const WaypointItemType* wptType);
-    void removeWaypoint(Waypoint* waypoint);
+    void removeWaypoint(WaypointItem* waypoint);
 
     data_source::EntitySqlTable m_routesTable;
     data_source::EntitySqlTable m_waypointsTable;
@@ -47,8 +47,8 @@ private:
     QMap<QString, const RouteType*> m_routeTypes;
     QMap<QString, const WaypointItemType*> m_waypointTypes;
     QMap<QVariant, Route*> m_routes;
-    QMap<QVariant, Waypoint*> m_waypoints;
-    QMultiMap<Route*, Waypoint*> m_routeWaypoints; // TODO: remove this
+    QMap<QVariant, WaypointItem*> m_waypoints;
+    QMultiMap<Route*, WaypointItem*> m_routeWaypoints; // TODO: remove this
 
     mutable QMutex m_mutex;
 };

@@ -16,7 +16,8 @@ public:
     {
         Bool,
         Int,
-        Real
+        Real,
+        LatLon
     };
 
     Parameter(const QString& id, const QString& name, Type type, const QVariant& defaultValue,
@@ -55,6 +56,7 @@ public:
 public slots:
     void setParameters(const QVariantMap& parameters);
     void setParameter(const QString& key, const QVariant& value);
+    // TODO: void setParameter(const Parameter* parameter, const QVariant& value);
     void removeParameters(const QStringList& keys);
     void removeParameter(const QString& key);
 

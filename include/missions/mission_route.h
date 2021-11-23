@@ -18,7 +18,7 @@ public:
 
     QVariantMap toVariantMap() const override;
 
-    Waypoint* homePoint() const;
+    WaypointItem* homePoint() const;
     Route* route() const;
     int currentItem() const;
 
@@ -38,7 +38,7 @@ signals:
     void switchCurrentItem(int item); // Goto item
 
 private:
-    Waypoint* const m_homePoint;
+    WaypointItem* const m_homePoint;
     Route* m_route = nullptr;
     int m_currentItem = -1;
 };

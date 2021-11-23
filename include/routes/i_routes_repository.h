@@ -31,8 +31,8 @@ public slots:
     virtual void removeRoute(Route* route) = 0;
     virtual void restoreRoute(Route* route) = 0;
     virtual void saveRoute(Route* route) = 0;
-    virtual void saveWaypoint(Route* route, Waypoint* waypoint) = 0;
-    virtual void restoreWaypoint(Waypoint* waypoint) = 0;
+    virtual void saveWaypoint(Route* route, WaypointItem* waypoint) = 0;
+    virtual void restoreWaypoint(WaypointItem* waypoint) = 0;
 
 signals:
     void routeTypesChanged();

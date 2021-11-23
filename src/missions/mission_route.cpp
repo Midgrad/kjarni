@@ -7,14 +7,14 @@ using namespace md::domain;
 MissionRoute::MissionRoute(const MissionType* type, const QVariant& id, const QString& name,
                            QObject* parent) :
     Entity(id, parent),
-    m_homePoint(new Waypoint(type->homePointType)),
+    m_homePoint(new WaypointItem(type->homePointType)),
     m_route(new Route(type->routeType, name))
 {
 }
 
 MissionRoute::MissionRoute(const MissionType* type, const QVariantMap& map, QObject* parent) :
     Entity(map, parent),
-    m_homePoint(new Waypoint(type->homePointType, map.value(props::home).toMap()))
+    m_homePoint(new WaypointItem(type->homePointType, map.value(props::home).toMap()))
 {
 }
 
@@ -30,7 +30,7 @@ QVariantMap MissionRoute::toVariantMap() const
     return map;
 }
 
-Waypoint* MissionRoute::homePoint() const
+WaypointItem* MissionRoute::homePoint() const
 {
     return m_homePoint;
 }
