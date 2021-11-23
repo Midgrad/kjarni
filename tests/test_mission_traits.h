@@ -13,24 +13,24 @@ const Parameter airspeed = { "airspeed", "Airspeed", Parameter::Int, 10, 0, 100 
 const Parameter passthrough = { "passthrough", "Passthrough", true };
 
 // WaypointItems
-const WaypointItemType changeSpeed{ "ch_speed", "Change speed", "CH SPD", { &airspeed } };
-const WaypointItemType changeAltitude{ "ch_speed", "Change alt", "CH ALT", { &altitude } };
-const WaypointItemType takePhoto{ "take_photo", "Take photo", "PHOTO", {} };
+const RouteItemType changeSpeed{ "ch_speed", "Change speed", "CH SPD", { &airspeed } };
+const RouteItemType changeAltitude{ "ch_speed", "Change alt", "CH ALT", { &altitude } };
+const RouteItemType takePhoto{ "take_photo", "Take photo", "PHOTO", {} };
 
 // Waypoints
-const WaypointItemType waypoint = { "waypoint",
+const RouteItemType waypoint = { "waypoint",
                                     "Waypoint",
                                     "WPT",
                                     { &route::latitude, &route::longitude, &route::altitude,
                                       &route::relativeAlt, &passthrough },
                                     { &changeSpeed, &changeAltitude, &takePhoto } };
-const WaypointItemType circle = { "circle",
+const RouteItemType circle = { "circle",
                                   "Circle",
                                   "CRL",
                                   { &route::latitude, &route::longitude, &route::altitude,
                                     &route::relativeAlt, &radius },
                                   {} };
-const WaypointItemType loop = { "circle",
+const RouteItemType loop = { "circle",
                                 "Circle",
                                 "CRL",
                                 { &route::latitude, &route::longitude, &route::altitude,

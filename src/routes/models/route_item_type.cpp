@@ -1,23 +1,23 @@
-#include "waypoint_item_type.h"
+#include "route_item_type.h"
 
 #include "route_traits.h"
 #include "utils.h"
-#include "waypoint_item.h"
+#include "route_item.h"
 
 using namespace md::domain;
 
-WaypointItemType::WaypointItemType(const QString& id, const QString& name, const QString& shortName,
+RouteItemType::RouteItemType(const QString& id, const QString& name, const QString& shortName,
                                    const QVector<const Parameter*>& parameters,
-                                   const QVector<const WaypointItemType*>& childTypes) :
+                                   const QVector<const RouteItemType*>& childTypes) :
     id(id),
     name(name),
     shortName(shortName),
     parameters(utils::listToMap<Parameter>(parameters)),
-    childTypes(utils::listToMap<WaypointItemType>(childTypes))
+    childTypes(utils::listToMap<RouteItemType>(childTypes))
 {
 }
 
-QVariantMap WaypointItemType::toVariantMap() const
+QVariantMap RouteItemType::toVariantMap() const
 {
     QVariantMap map;
     map.insert(props::id, id);
@@ -25,12 +25,12 @@ QVariantMap WaypointItemType::toVariantMap() const
     return map;
 }
 
-const Parameter* WaypointItemType::parameter(const QString& id) const
+const Parameter* RouteItemType::parameter(const QString& id) const
 {
     return this->parameters.value(id, nullptr);
 }
 
-QVariantMap WaypointItemType::defaultParameters() const
+QVariantMap RouteItemType::defaultParameters() const
 {
     QVariantMap map;
     for (const Parameter* parameter : parameters)
@@ -40,7 +40,7 @@ QVariantMap WaypointItemType::defaultParameters() const
     return map;
 }
 
-const WaypointItemType* WaypointItemType::childType(const QString& id) const
+const RouteItemType* RouteItemType::childType(const QString& id) const
 {
     return childTypes.value(id, nullptr);
 }

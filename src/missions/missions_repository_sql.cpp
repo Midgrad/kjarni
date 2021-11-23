@@ -14,7 +14,7 @@ constexpr char homeWaypoints[] = "home_waypoints";
 
 using namespace md::domain;
 
-MissionsRepositorySql::MissionsRepositorySql(IRoutesRepository* routes, QSqlDatabase* database,
+MissionsRepositorySql::MissionsRepositorySql(IRoutesService* routes, QSqlDatabase* database,
                                              QObject* parent) :
     IMissionsRepository(parent),
     m_routes(routes),

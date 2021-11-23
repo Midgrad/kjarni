@@ -2,7 +2,7 @@
 #define ROUTE_H
 
 #include "route_type.h"
-#include "waypoint_item.h"
+#include "route_item.h"
 
 namespace md::domain
 {
@@ -21,30 +21,30 @@ public:
     const RouteType* type() const;
 
     int waypointsCount() const;
-    int waypointIndex(WaypointItem* waypoint) const;
-    const QList<WaypointItem*>& waypoints() const;
-    WaypointItem* waypoint(int index) const;
+    int waypointIndex(RouteItem* waypoint) const;
+    const QList<RouteItem*>& waypoints() const;
+    RouteItem* waypoint(int index) const;
 
     int itemsCount() const;
-    QList<WaypointItem*> items() const;
-    WaypointItem* item(int index) const;
+    QList<RouteItem*> items() const;
+    RouteItem* item(int index) const;
 
 public slots:
-    void setWaypoints(const QList<WaypointItem*>& waypoints);
-    void addWaypoint(WaypointItem* waypoint);
-    void removeWaypoint(WaypointItem* waypoint);
+    void setWaypoints(const QList<RouteItem*>& waypoints);
+    void addWaypoint(RouteItem* waypoint);
+    void removeWaypoint(RouteItem* waypoint);
     void clear();
 
 signals:
-    void waypointAdded(int index, WaypointItem* waypoint);
-    void waypointChanged(int index, WaypointItem* waypoint);
-    void waypointRemoved(int index, WaypointItem* waypoint);
+    void waypointAdded(int index, RouteItem* waypoint);
+    void waypointChanged(int index, RouteItem* waypoint);
+    void waypointRemoved(int index, RouteItem* waypoint);
 
 private:
     void fromVariantMapImpl(const QVariantMap& map);
 
     const RouteType* const m_type;
-    QList<WaypointItem*> m_waypoints;
+    QList<RouteItem*> m_waypoints;
 };
 } // namespace md::domain
 

@@ -11,12 +11,12 @@ class MissionType
 
 public:
     MissionType(const QString& id, const QString& name, const RouteType* routeType,
-                const WaypointItemType* homePointType);
+                const RouteItemType* homePointType);
 
     const QString id;
     const QString name;
     const RouteType* routeType;
-    const WaypointItemType* homePointType;
+    const RouteItemType* homePointType;
 };
 
 } // namespace md::domain

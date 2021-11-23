@@ -7,14 +7,14 @@ using namespace md::domain;
 MissionRoute::MissionRoute(const MissionType* type, const QVariant& id, const QString& name,
                            QObject* parent) :
     Entity(id, parent),
-    m_homePoint(new WaypointItem(type->homePointType)),
+    m_homePoint(new RouteItem(type->homePointType)),
     m_route(new Route(type->routeType, name))
 {
 }
 
 MissionRoute::MissionRoute(const MissionType* type, const QVariantMap& map, QObject* parent) :
     Entity(map, parent),
-    m_homePoint(new WaypointItem(type->homePointType, map.value(props::home).toMap()))
+    m_homePoint(new RouteItem(type->homePointType, map.value(props::home).toMap()))
 {
 }
 
@@ -30,7 +30,7 @@ QVariantMap MissionRoute::toVariantMap() const
     return map;
 }
 
-WaypointItem* MissionRoute::homePoint() const
+RouteItem* MissionRoute::homePoint() const
 {
     return m_homePoint;
 }
@@ -50,7 +50,7 @@ int MissionRoute::count()
     return m_route ? m_route->itemsCount() + 1 : 1; // route items (wpt + payload) + home point
 }
 
-WaypointItem* MissionRoute::item(int index) const
+RouteItem* MissionRoute::item(int index) const
 {
     if (index == 0)
         return m_homePoint;
@@ -58,9 +58,9 @@ WaypointItem* MissionRoute::item(int index) const
     return m_route ? m_route->item(index - 1) : nullptr;
 }
 
-QList<WaypointItem*> MissionRoute::items() const
+QList<RouteItem*> MissionRoute::items() const
 {
-    QList<WaypointItem*> items;
+    QList<RouteItem*> items;
     items.append(m_homePoint);
 
     if (m_route)

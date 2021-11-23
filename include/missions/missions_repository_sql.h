@@ -3,7 +3,7 @@
 
 #include "entity_sql_table.h"
 #include "i_missions_repository.h"
-#include "i_routes_repository.h"
+#include "i_routes_service.h"
 
 #include <QMutex>
 
@@ -14,7 +14,7 @@ class MissionsRepositorySql : public IMissionsRepository
     Q_OBJECT
 
 public:
-    explicit MissionsRepositorySql(IRoutesRepository* routes, QSqlDatabase* database,
+    explicit MissionsRepositorySql(IRoutesService* routes, QSqlDatabase* database,
                                    QObject* parent = nullptr);
     ~MissionsRepositorySql() override;
 
@@ -37,7 +37,7 @@ public slots:
 private:
     Mission* readMission(const QVariant& id);
 
-    IRoutesRepository* const m_routes;
+    IRoutesService* const m_routes;
     data_source::EntitySqlTable m_missionsTable;
     data_source::EntitySqlTable m_waypointsTable;
     data_source::SqlTable m_homeWaypointsTable;

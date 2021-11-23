@@ -1,6 +1,7 @@
 #include "vehicles_repository_sql.h"
 
 #include <QDebug>
+
 namespace
 {
 constexpr char vehicles[] = "vehicles";

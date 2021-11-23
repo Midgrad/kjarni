@@ -18,13 +18,13 @@ public:
 
     QVariantMap toVariantMap() const override;
 
-    WaypointItem* homePoint() const;
+    RouteItem* homePoint() const;
     Route* route() const;
     int currentItem() const;
 
     int count();
-    WaypointItem* item(int index) const;
-    QList<WaypointItem*> items() const;
+    RouteItem* item(int index) const;
+    QList<RouteItem*> items() const;
 
 public slots:
     void assignRoute(Route* route);
@@ -38,7 +38,7 @@ signals:
     void switchCurrentItem(int item); // Goto item
 
 private:
-    WaypointItem* const m_homePoint;
+    RouteItem* const m_homePoint;
     Route* m_route = nullptr;
     int m_currentItem = -1;
 };

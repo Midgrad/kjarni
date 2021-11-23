@@ -5,7 +5,7 @@
 
 #include "test_mission_traits.h"
 #include "utils.h"
-#include "waypoint_item.h"
+#include "route_item.h"
 
 using namespace md::domain;
 
@@ -13,7 +13,7 @@ struct WaypointItemTestArgs
 {
     QVariant id;
     QVariantMap params;
-    const WaypointItemType* type;
+    const RouteItemType* type;
 };
 
 class WaypointItemTest : public ::testing::TestWithParam<WaypointItemTestArgs>
@@ -51,7 +51,7 @@ TEST_P(WaypointItemTest, testConstructFromMap)
     map.insert(props::id, args.id.toString());
     map.insert(props::params, QJsonValue::fromVariant(args.params));
 
-    WaypointItem waypoint(args.type, map);
+    RouteItem waypoint(args.type, map);
 
     EXPECT_EQ(waypoint.id(), args.id);
     EXPECT_EQ(waypoint.parameters(), args.params);
@@ -61,7 +61,7 @@ TEST_P(WaypointItemTest, testConstructFromMap)
 TEST_P(WaypointItemTest, testFromVariant)
 {
     WaypointItemTestArgs args = GetParam();
-    WaypointItem waypoint(args.type, args.id);
+    RouteItem waypoint(args.type, args.id);
 
     QVariantMap map;
     map.insert(props::params, QJsonValue::fromVariant(args.params));
@@ -74,7 +74,7 @@ TEST_P(WaypointItemTest, testToVariant)
 {
     WaypointItemTestArgs args = GetParam();
 
-    WaypointItem waypoint(args.type, args.id);
+    RouteItem waypoint(args.type, args.id);
     waypoint.setParameters(args.params);
 
     QVariantMap result = waypoint.toVariantMap();
@@ -88,7 +88,7 @@ TEST_P(WaypointItemTest, testToVariant)
 TEST_P(WaypointItemTest, testConstructDefaultParamsByType)
 {
     WaypointItemTestArgs args = GetParam();
-    WaypointItem waypointItem(args.type, args.id);
+    RouteItem waypointItem(args.type, args.id);
 
     auto wptParams = waypointItem.parameters();
     auto defaultParams = args.type->defaultParameters();
@@ -104,7 +104,7 @@ TEST_P(WaypointItemTest, testConstructDefaultParamsByType)
 TEST_P(WaypointItemTest, testResetParamToTypeDeafult)
 {
     WaypointItemTestArgs args = GetParam();
-    WaypointItem waypointItem(args.type, args.id);
+    RouteItem waypointItem(args.type, args.id);
 
     if (args.params.isEmpty())
         return;
@@ -130,7 +130,7 @@ TEST_P(WaypointItemTest, testResetParamToTypeDeafult)
 TEST_P(WaypointItemTest, testResetParamsToTypeDeafults)
 {
     WaypointItemTestArgs args = GetParam();
-    WaypointItem waypointItem(args.type, args.id);
+    RouteItem waypointItem(args.type, args.id);
     waypointItem.setParameters(args.params);
 
     EXPECT_NE(waypointItem.parameters(), args.type->defaultParameters());
@@ -151,7 +151,7 @@ TEST_P(WaypointItemTest, testResetParamsToTypeDeafults)
 TEST_P(WaypointItemTest, testSyncParams)
 {
     WaypointItemTestArgs args = GetParam();
-    WaypointItem waypointItem(args.type, args.id);
+    RouteItem waypointItem(args.type, args.id);
     waypointItem.setParameters(args.params);
 
     waypointItem.syncParameters();

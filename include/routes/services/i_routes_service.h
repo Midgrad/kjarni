@@ -1,19 +1,19 @@
-#ifndef I_ROUTES_REPOSITORY_H
-#define I_ROUTES_REPOSITORY_H
+#ifndef I_ROUTES_SERVICE_H
+#define I_ROUTES_SERVICE_H
 
 #include "i_service.h"
 #include "route.h"
 
 namespace md::domain
 {
-class IRoutesRepository
+class IRoutesService
     : public QObject
     , public IService
 {
     Q_OBJECT
 
 public:
-    IRoutesRepository(QObject* parent) : QObject(parent), IService()
+    IRoutesService(QObject* parent) : QObject(parent), IService()
     {
     }
 
@@ -31,8 +31,8 @@ public slots:
     virtual void removeRoute(Route* route) = 0;
     virtual void restoreRoute(Route* route) = 0;
     virtual void saveRoute(Route* route) = 0;
-    virtual void saveWaypoint(Route* route, WaypointItem* waypoint) = 0;
-    virtual void restoreWaypoint(WaypointItem* waypoint) = 0;
+    virtual void saveWaypoint(Route* route, RouteItem* waypoint) = 0;
+    virtual void restoreWaypoint(RouteItem* waypoint) = 0;
 
 signals:
     void routeTypesChanged();
@@ -43,4 +43,4 @@ signals:
 };
 } // namespace md::domain
 
-#endif // I_ROUTES_REPOSITORY_H
+#endif // I_ROUTES_SERVICE_H

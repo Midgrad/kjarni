@@ -84,7 +84,7 @@ TEST_F(RouteTest, testAddWaypoint)
     EXPECT_TRUE(route.waypointsCount() == 0);
     EXPECT_TRUE(route.itemsCount() == 0);
 
-    auto wpt = new WaypointItem(&test_mission::waypoint);
+    auto wpt = new RouteItem(&test_mission::waypoint);
     route.addWaypoint(wpt);
 
     ASSERT_TRUE(route.waypointsCount() == 1);
@@ -122,9 +122,9 @@ TEST_F(RouteTest, testSetWaypoints)
 
     ASSERT_EQ(route.waypointsCount(), 3);
 
-    QList<WaypointItem*> newWaypoints = route.waypoints();
+    QList<RouteItem*> newWaypoints = route.waypoints();
     newWaypoints.removeFirst();
-    auto newWpt = new WaypointItem(&test_mission::waypoint);
+    auto newWpt = new RouteItem(&test_mission::waypoint);
     newWaypoints.append(newWpt);
 
     route.setWaypoints(newWaypoints);
@@ -139,14 +139,14 @@ TEST_F(RouteTest, testAdd2WaypointAndItems)
     EXPECT_TRUE(route.waypointsCount() == 0);
     EXPECT_TRUE(route.itemsCount() == 0);
 
-    auto wpt1 = new WaypointItem(&test_mission::waypoint);
-    auto item11 = new WaypointItem(&test_mission::changeSpeed);
+    auto wpt1 = new RouteItem(&test_mission::waypoint);
+    auto item11 = new RouteItem(&test_mission::changeSpeed);
     wpt1->addItem(item11);
     route.addWaypoint(wpt1);
 
-    auto wpt2 = new WaypointItem(&test_mission::waypoint);
-    auto item21 = new WaypointItem(&test_mission::changeSpeed);
-    auto item22 = new WaypointItem(&test_mission::changeAltitude);
+    auto wpt2 = new RouteItem(&test_mission::waypoint);
+    auto item21 = new RouteItem(&test_mission::changeSpeed);
+    auto item22 = new RouteItem(&test_mission::changeAltitude);
     wpt2->addItem(item21);
     wpt2->addItem(item22);
     route.addWaypoint(wpt2);

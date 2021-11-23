@@ -1,20 +1,20 @@
-#ifndef ROUTES_REPOSITORY_SQL_H
-#define ROUTES_REPOSITORY_SQL_H
+#ifndef ROUTES_SERVICE_H
+#define ROUTES_SERVICE_H
 
 #include "entity_sql_table.h"
-#include "i_routes_repository.h"
+#include "i_routes_service.h"
 
 #include <QMutex>
 
 namespace md::domain
 {
-class RoutesRepositorySql : public IRoutesRepository
+class RoutesService : public IRoutesService
 {
     Q_OBJECT
 
 public:
-    explicit RoutesRepositorySql(QSqlDatabase* database, QObject* parent = nullptr);
-    ~RoutesRepositorySql() override;
+    explicit RoutesService(QSqlDatabase* database, QObject* parent = nullptr);
+    ~RoutesService() override;
 
     virtual Route* route(const QVariant& id) const override;
     virtual QVariantList routeIds() const override;
@@ -30,14 +30,14 @@ public slots:
     virtual void removeRoute(Route* route) override;
     virtual void restoreRoute(Route* route) override;
     virtual void saveRoute(Route* route) override;
-    virtual void saveWaypoint(Route* route, WaypointItem* waypoint) override;
-    virtual void restoreWaypoint(WaypointItem* waypoint) override;
+    virtual void saveWaypoint(Route* route, RouteItem* waypoint) override;
+    virtual void restoreWaypoint(RouteItem* waypoint) override;
 
 private:
     Route* readRoute(const QVariant& id);
-    WaypointItem* readWaypoint(const QVariant& id);
-    WaypointItem* readItem(const QVariant& id, const WaypointItemType* wptType);
-    void removeWaypoint(WaypointItem* waypoint);
+    RouteItem* readWaypoint(const QVariant& id);
+    RouteItem* readItem(const QVariant& id, const RouteItemType* wptType);
+    void removeWaypoint(RouteItem* waypoint);
 
     data_source::EntitySqlTable m_routesTable;
     data_source::EntitySqlTable m_waypointsTable;
@@ -45,13 +45,13 @@ private:
     data_source::SqlTable m_routeWaypointsTable;
 
     QMap<QString, const RouteType*> m_routeTypes;
-    QMap<QString, const WaypointItemType*> m_waypointTypes;
+    QMap<QString, const RouteItemType*> m_waypointTypes;
     QMap<QVariant, Route*> m_routes;
-    QMap<QVariant, WaypointItem*> m_waypoints;
-    QMultiMap<Route*, WaypointItem*> m_routeWaypoints; // TODO: remove this
+    QMap<QVariant, RouteItem*> m_waypoints;
+    QMultiMap<Route*, RouteItem*> m_routeWaypoints; // TODO: remove this
 
     mutable QMutex m_mutex;
 };
 } // namespace md::domain
 
-#endif // ROUTES_REPOSITORY_SQL_H
+#endif // ROUTES_SERVICE_H
