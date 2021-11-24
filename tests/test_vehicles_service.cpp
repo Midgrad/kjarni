@@ -13,10 +13,10 @@ class VehiclesRepositoryMock : public IVehiclesRepository
 public:
     MOCK_METHOD(QVariantList, selectVehicleIds, (), (override));
 
-    MOCK_METHOD(void, insert, (Vehicle * vehicle), (override));
-    MOCK_METHOD(void, read, (Vehicle * vehicle), (override));
-    MOCK_METHOD(void, update, (Vehicle * vehicle), (override));
-    MOCK_METHOD(void, remove, (Vehicle * vehicle), (override));
+    MOCK_METHOD(void, insert, (Vehicle*), (override));
+    MOCK_METHOD(void, read, (Vehicle*), (override));
+    MOCK_METHOD(void, update, (Vehicle*), (override));
+    MOCK_METHOD(void, remove, (Vehicle*), (override));
 };
 
 class VehicleServiceTest : public Test
@@ -75,11 +75,11 @@ TEST_F(VehicleServiceTest, testRestore)
 
 TEST_F(VehicleServiceTest, testRemove)
 {
-    QSignalSpy rmChanged(&service, &IVehiclesService::vehicleRemoved);
+    QSignalSpy spyRemove(&service, &IVehiclesService::vehicleRemoved);
 
     auto vehicle = new Vehicle(Vehicle::Generic, "Some vehicle");
 
     EXPECT_CALL(vehicles, remove(vehicle)).Times(1);
     service.removeVehicle(vehicle);
-    EXPECT_EQ(rmChanged.count(), 1);
+    EXPECT_EQ(spyRemove.count(), 1);
 }

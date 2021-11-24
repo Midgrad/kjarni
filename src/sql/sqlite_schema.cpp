@@ -47,51 +47,32 @@ void SqliteSchema::setup()
                "params TEXT, "
                "type STRING);");
 
-    query.exec("CREATE TABLE routes ("
-               "id UUID PRIMARY KEY NOT NULL, "
-               "name STRING, "
-               "params TEXT, "
-               "type STRING);");
-
-    query.exec("CREATE TABLE waypoints ("
-               "id UUID PRIMARY KEY NOT NULL, "
-               "name STRING, "
-               "params TEXT, "
-               "latitude REAL, "
-               "longitude REAL, "
-               "altitude REAL, "
-               "datum STRING, "
-               "confirmed INTEGER, "
-               "type STRING);");
-
-    query.exec("CREATE TABLE waypoint_items ("
-               "id UUID PRIMARY KEY NOT NULL, "
-               "name STRING, "
-               "params TEXT, "
-               "waypoint UUID, "
-               "type STRING);");
-
-    query.exec("CREATE TABLE route_waypoints ("
-               "waypoint UUID PRIMARY KEY NOT NULL, "
-               "route UUID, "
-               "FOREIGN KEY(waypoint) REFERENCES waypoints(id), "
-               "FOREIGN KEY(route) REFERENCES routes(id));");
-
-    query.exec("CREATE TABLE missions ("
+    query.exec("CREATE TABLE route_items ("
                "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
                "params TEXT, "
                "type STRING, "
+               "parent UUID);"); // parent can be other item, route or mission
+
+    query.exec("CREATE TABLE routes ("
+               "id UUID PRIMARY KEY NOT NULL, "
+               "name STRING, "
+               "type STRING);");
+
+    query.exec("CREATE TABLE missions ("
+               "id UUID PRIMARY KEY NOT NULL, "
+               "name STRING, "
+               "type STRING, "
                "route UUID, "
                "vehicle UUID, "
-               "FOREIGN KEY(route) REFERENCES routes(id), "
-               "FOREIGN KEY(vehicle) REFERENCES vehicles(id));");
+               "FOREIGN KEY(route) REFERENCES routes(id) ON DELETE CASCADE, "
+               "FOREIGN KEY(vehicle) REFERENCES vehicles(id) ON DELETE CASCADE);");
 
     query.exec("CREATE TABLE home_waypoints ("
-               "waypoint UUID PRIMARY KEY NOT NULL, "
+               "routeItem UUID PRIMARY KEY NOT NULL, "
                "mission UUID, "
-               "FOREIGN KEY(waypoint) REFERENCES waypoints(id), "
-               "FOREIGN KEY(mission) REFERENCES missions(id));");
+               "FOREIGN KEY(routeItem) REFERENCES route_items(id) ON DELETE CASCADE, "
+               "FOREIGN KEY(mission) REFERENCES missions(id) ON DELETE CASCADE);");
 
     query.exec("INSERT INTO schema_version (version) VALUES (\'17.14.00_09.11.2021\')");
 }

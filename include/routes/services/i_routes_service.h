@@ -23,16 +23,16 @@ public:
     virtual const RouteType* routeType(const QString& id) const = 0;
     virtual QList<const RouteType*> routeTypes() const = 0;
 
-    virtual void registerRouteType(const RouteType* wptType) = 0;
-    virtual void unregisterRouteType(const RouteType* wptType) = 0;
+    virtual void registerRouteType(const RouteType* routeType) = 0;
+    virtual void unregisterRouteType(const RouteType* routeType) = 0;
 
 public slots:
     virtual void readAll() = 0;
     virtual void removeRoute(Route* route) = 0;
     virtual void restoreRoute(Route* route) = 0;
     virtual void saveRoute(Route* route) = 0;
-    virtual void saveWaypoint(Route* route, RouteItem* waypoint) = 0;
-    virtual void restoreWaypoint(RouteItem* waypoint) = 0;
+    virtual void saveItem(Route* route, RouteItem* item) = 0;
+    virtual void restoreItem(Route* route, RouteItem* item) = 0;
 
 signals:
     void routeTypesChanged();

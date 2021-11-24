@@ -1,7 +1,8 @@
 #ifndef ROUTES_SERVICE_H
 #define ROUTES_SERVICE_H
 
-#include "entity_sql_table.h"
+#include "i_route_items_repository.h"
+#include "i_routes_repository.h"
 #include "i_routes_service.h"
 
 #include <QMutex>
@@ -13,8 +14,8 @@ class RoutesService : public IRoutesService
     Q_OBJECT
 
 public:
-    explicit RoutesService(QSqlDatabase* database, QObject* parent = nullptr);
-    ~RoutesService() override;
+    RoutesService(IRoutesRepository* routesRepo, IRouteItemsRepository* itemsRepo,
+                  QObject* parent = nullptr);
 
     virtual Route* route(const QVariant& id) const override;
     virtual QVariantList routeIds() const override;
@@ -30,25 +31,21 @@ public slots:
     virtual void removeRoute(Route* route) override;
     virtual void restoreRoute(Route* route) override;
     virtual void saveRoute(Route* route) override;
-    virtual void saveWaypoint(Route* route, RouteItem* waypoint) override;
-    virtual void restoreWaypoint(RouteItem* waypoint) override;
+    virtual void saveItem(Route* route, RouteItem* item) override;
+    virtual void restoreItem(Route* route, RouteItem* item) override;
 
 private:
     Route* readRoute(const QVariant& id);
-    RouteItem* readWaypoint(const QVariant& id);
-    RouteItem* readItem(const QVariant& id, const RouteItemType* wptType);
-    void removeWaypoint(RouteItem* waypoint);
+    RouteItem* readItem(const QVariant& id);
+    void saveItemImpl(RouteItem* item, const QVariant& parentId, QVariantList& itemIds);
+    void restoreItemImpl(RouteItem* item);
 
-    data_source::EntitySqlTable m_routesTable;
-    data_source::EntitySqlTable m_waypointsTable;
-    data_source::EntitySqlTable m_waypointItemsTable;
-    data_source::SqlTable m_routeWaypointsTable;
+    IRoutesRepository* const m_routesRepo;
+    IRouteItemsRepository* const m_itemsRepo;
 
     QMap<QString, const RouteType*> m_routeTypes;
-    QMap<QString, const RouteItemType*> m_waypointTypes;
+    QMap<QString, const RouteItemType*> m_itemTypes; // TODO: remove
     QMap<QVariant, Route*> m_routes;
-    QMap<QVariant, RouteItem*> m_waypoints;
-    QMultiMap<Route*, RouteItem*> m_routeWaypoints; // TODO: remove this
 
     mutable QMutex m_mutex;
 };

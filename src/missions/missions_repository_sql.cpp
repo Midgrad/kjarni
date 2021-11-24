@@ -101,8 +101,6 @@ void MissionsRepositorySql::readAll()
 {
     QMutexLocker locker(&m_mutex);
 
-    m_routes->readAll();
-
     for (const QVariant& missionId : m_missionsTable.selectIds())
     {
         if (!m_missions.contains(missionId))
@@ -181,7 +179,7 @@ void MissionsRepositorySql::saveMission(Mission* mission)
         m_waypointsTable.insertEntity(mission->route()->homePoint());
         m_missionsTable.insertEntity(mission);
         m_homeWaypointsTable.insert({ { props::mission, mission->id() },
-                                      { props::waypoint, mission->route()->homePoint()->id() } });
+                                      { props::routeItem, mission->route()->homePoint()->id() } });
 
         m_missions.insert(mission->id(), mission);
         emit missionAdded(mission);
@@ -202,7 +200,7 @@ Mission* MissionsRepositorySql::readMission(const QVariant& id)
 
     // Read home waypoint for mission
     QVariantList waypointIds = m_homeWaypointsTable.selectOne({ { props::mission, id } },
-                                                              props::waypoint);
+                                                              props::routeItem);
     if (waypointIds.length())
     {
         QVariant homeId = waypointIds.first();

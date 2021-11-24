@@ -5,27 +5,14 @@
 #include "route_traits.h"
 #include "utils.h"
 
-namespace
-{
-constexpr char routes[] = "routes";
-constexpr char waypoints[] = "waypoints";
-constexpr char m_waypointItemsTable[] = "waypoint_items";
-constexpr char routeWaypoints[] = "route_waypoints";
-} // namespace
-
 using namespace md::domain;
 
-RoutesService::RoutesService(QSqlDatabase* database, QObject* parent) :
+RoutesService::RoutesService(IRoutesRepository* routesRepo, IRouteItemsRepository* itemsRepo,
+                             QObject* parent) :
     IRoutesService(parent),
-    m_routesTable(database, ::routes),
-    m_waypointsTable(database, ::waypoints),
-    m_waypointItemsTable(database, ::m_waypointItemsTable),
-    m_routeWaypointsTable(database, ::routeWaypoints),
+    m_routesRepo(routesRepo),
+    m_itemsRepo(itemsRepo),
     m_mutex(QMutex::Recursive)
-{
-}
-
-RoutesService::~RoutesService()
 {
 }
 
@@ -66,11 +53,20 @@ void RoutesService::registerRouteType(const RouteType* routeType)
     if (m_routeTypes.contains(routeType->id))
         return;
 
+    // Route type
     m_routeTypes.insert(routeType->id, routeType);
 
-    for (const RouteItemType* wptType : routeType->waypointTypes)
+    for (const RouteItemType* itemType : routeType->itemTypes)
     {
-        m_waypointTypes.insert(wptType->id, wptType);
+        // Route item types
+        m_itemTypes.insert(itemType->id, itemType);
+
+        // Child item types
+        for (const RouteItemType* childItemType : itemType->childTypes)
+        {
+            if (!m_itemTypes.contains(childItemType->id))
+                m_itemTypes.insert(childItemType->id, childItemType);
+        }
     }
 
     emit routeTypesChanged();
@@ -83,12 +79,21 @@ void RoutesService::unregisterRouteType(const RouteType* routeType)
     if (!m_routeTypes.contains(routeType->id))
         return;
 
-    m_routeTypes.remove(routeType->id);
-
-    for (const RouteItemType* wptType : routeType->waypointTypes)
+    for (const RouteItemType* itemType : routeType->itemTypes)
     {
-        m_waypointTypes.remove(wptType->id);
+        // Child item types
+        for (const RouteItemType* childItemType : itemType->childTypes)
+        {
+            if (m_itemTypes.contains(childItemType->id))
+                m_itemTypes.remove(childItemType->id);
+        }
+
+        // Route item types
+        m_itemTypes.remove(itemType->id);
     }
+
+    // Route type
+    m_routeTypes.remove(routeType->id);
 
     emit routeTypesChanged();
 }
@@ -97,7 +102,7 @@ void RoutesService::readAll()
 {
     QMutexLocker locker(&m_mutex);
 
-    for (const QVariant& routeId : m_routesTable.selectIds())
+    for (const QVariant& routeId : m_routesRepo->selectRouteIds())
     {
         if (!m_routes.contains(routeId))
         {
@@ -110,27 +115,14 @@ void RoutesService::removeRoute(Route* route)
 {
     QMutexLocker locker(&m_mutex);
 
-    if (route->id().isNull())
-    {
-        qWarning() << "Can't remove route with no id" << route;
-        return;
-    }
+    // Delete items first
+    m_itemsRepo->removeByIds(m_itemsRepo->selectChildItemsIds(route->id()));
 
-    // Remove all route waypoints for route
-    m_routeWaypointsTable.removeByCondition({ props::route, route->id() });
-
-    // Remove stored waypoints for route, new points will be deleted by parent
-    for (RouteItem* waypoint : m_routeWaypoints.values(route))
-    {
-        this->removeWaypoint(waypoint);
-    }
-    m_routeWaypoints.remove(route);
-
-    // Remove route
-    m_routesTable.removeEntity(route);
+    // Delete route
+    m_routesRepo->remove(route);
     m_routes.remove(route->id());
-
     emit routeRemoved(route);
+
     route->deleteLater();
 }
 
@@ -138,32 +130,39 @@ void RoutesService::restoreRoute(Route* route)
 {
     QMutexLocker locker(&m_mutex);
 
-    if (route->id().isNull())
+    QVariantList itemIds = m_itemsRepo->selectChildItemsIds(route->id());
+    for (RouteItem* item : route->items())
     {
-        qWarning() << "Can't resore route with no id" << route;
-        return;
+        // Restore stored item
+        if (itemIds.contains(item->id()))
+        {
+            this->restoreItemImpl(item);
+            itemIds.removeOne(item->id());
+        }
+        // Remove newbie items
+        else
+        {
+            route->removeItem(item);
+        }
     }
 
-    // Restore waypoints and delete new points
-    auto remover = [](int, RouteItem* waypoint) {
-        waypoint->deleteLater();
-    };
-    connect(route, &Route::waypointRemoved, this, remover);
-    route->setWaypoints(m_waypoints.values());
-    disconnect(route, &Route::waypointRemoved, this, nullptr);
-
-    for (RouteItem* waypoint : route->waypoints())
+    // Read removed items
+    for (const QVariant& itemId : itemIds)
     {
-        this->restoreWaypoint(waypoint);
+        auto item = this->readItem(itemId);
+        if (item)
+            route->addItem(item); // TODO: valid index
     }
 
-    m_routesTable.readEntity(route);
+    // Finaly restore route
+    m_routesRepo->read(route);
     emit routeChanged(route);
 }
 
 void RoutesService::saveRoute(Route* route)
 {
     QMutexLocker locker(&m_mutex);
+    bool added;
 
     if (route->id().isNull())
     {
@@ -174,126 +173,57 @@ void RoutesService::saveRoute(Route* route)
     // Update or insert route
     if (m_routes.contains(route->id()))
     {
-        m_routesTable.updateEntity(route);
-        emit routeChanged(route);
+        m_routesRepo->update(route);
+        added = false;
     }
     else
     {
-        m_routesTable.insertEntity(route);
+        m_routesRepo->insert(route);
         m_routes.insert(route->id(), route);
 
         route->moveToThread(this->thread());
         route->setParent(this);
-
-        emit routeAdded(route);
+        added = true;
     }
 
-    // Remove deleted waypoints
-    for (RouteItem* waypoint : m_routeWaypoints.values(route))
+    // Update or insert items
+    QVariantList itemIds = m_itemsRepo->selectChildItemsIds(route->id());
+    for (RouteItem* item : route->items())
     {
-        if (route->waypointIndex(waypoint) > -1)
-            continue;
-
-        m_routeWaypointsTable.removeByConditions(
-            { { props::route, route->id() }, { props::waypoint, waypoint->id() } });
-        this->removeWaypoint(waypoint);
-        m_routeWaypoints.remove(route, waypoint);
-        waypoint->deleteLater();
+        this->saveItemImpl(item, route->id(), itemIds);
     }
 
-    // Update or insert waypoints
-    for (RouteItem* waypoint : route->waypoints())
-    {
-        this->saveWaypoint(route, waypoint);
-    }
+    // Delete removed items
+    if (!itemIds.isEmpty())
+        m_itemsRepo->removeByIds(itemIds);
+
+    added ? emit routeAdded(route) : emit routeChanged(route);
 }
 
-void RoutesService::saveWaypoint(Route* route, RouteItem* waypoint)
-{
-    QVariantList itemIds;
-
-    if (m_waypoints.contains(waypoint->id()))
-    {
-        m_waypointsTable.updateEntity(waypoint);
-
-        // Read items for waypoint
-        itemIds = m_waypointItemsTable.selectOne({ { props::waypoint, waypoint->id() } }, props::id);
-    }
-    else
-    {
-        m_waypointsTable.insertEntity(waypoint);
-        m_waypoints.insert(waypoint->id(), waypoint);
-    }
-
-    if (!m_routeWaypoints.contains(route, waypoint))
-    {
-        m_routeWaypoints.insert(route, waypoint);
-
-        m_routeWaypointsTable.insert(
-            { { props::route, route->id() }, { props::waypoint, waypoint->id() } });
-    }
-
-    // Insert or update wpt items
-    for (RouteItem* item : waypoint->items())
-    {
-        QVariantMap map = m_waypointItemsTable.entityToMap(item);
-        map.insert(props::waypoint, waypoint->id());
-
-        if (itemIds.contains(item->id()))
-        {
-            itemIds.removeOne(item->id());
-            m_waypointItemsTable.updateById(map, item->id());
-        }
-        else
-        {
-            m_waypointItemsTable.insert(map);
-        }
-    }
-
-    // Remove deleted items
-    for (const QVariant& id : qAsConst(itemIds))
-    {
-        m_waypointItemsTable.removeById(id);
-    }
-}
-
-void RoutesService::restoreWaypoint(RouteItem* waypoint)
+void RoutesService::saveItem(Route* route, RouteItem* item)
 {
     QMutexLocker locker(&m_mutex);
 
-    QVariantList itemIds = m_waypointItemsTable.selectOne({ { props::waypoint, waypoint->id() } },
-                                                          props::id);
-    // Re-read stored items and delete new items
-    for (RouteItem* item : waypoint->items())
-    {
-        if (itemIds.contains(item->id()))
-        {
-            m_waypointItemsTable.readEntity(item);
-            itemIds.removeOne(item->id());
-        }
-        else
-        {
-            waypoint->removeItem(item);
-            item->deleteLater();
-        }
-    }
+    QVariantList itemIds = m_itemsRepo->selectChildItemsIds(route->id());
+    this->saveItemImpl(item, route->id(), itemIds);
 
-    // Read deleted items for waypoint
-    for (const QVariant& itemId : itemIds)
-    {
-        auto item = this->readItem(itemId, waypoint->type());
-        if (item)
-            waypoint->addItem(item);
-    }
+    emit routeChanged(route);
+}
 
-    m_waypointsTable.readEntity(waypoint);
+void RoutesService::restoreItem(Route* route, RouteItem* item)
+{
+    QMutexLocker locker(&m_mutex);
+
+    QVariantList itemIds = m_itemsRepo->selectChildItemsIds(route->id());
+    this->restoreItemImpl(item);
+
+    emit routeChanged(route);
 }
 
 Route* RoutesService::readRoute(const QVariant& id)
 {
-    QVariantMap map = m_routesTable.selectById(id);
-    QString typeId = map.value(props::type).toString();
-
+    QVariantMap select = m_routesRepo->select(id);
+    QString typeId = select.value(props::type).toString();
     const RouteType* const type = m_routeTypes.value(typeId);
     if (!type)
     {
@@ -301,74 +231,100 @@ Route* RoutesService::readRoute(const QVariant& id)
         return nullptr;
     }
 
-    Route* route = new Route(type, map, this);
+    Route* route = new Route(type, select, this);
     m_routes.insert(id, route);
 
-    // Read waypoints for route
-    for (const QVariant& waypointId :
-         m_routeWaypointsTable.selectOne({ { props::route, route->id() } }, props::waypoint))
+    // Read items for route
+    for (const QVariant& itemId : m_itemsRepo->selectChildItemsIds(id))
     {
-        RouteItem* waypoint = m_waypoints.contains(waypointId) ? m_waypoints.value(waypointId)
-                                                               : this->readWaypoint(waypointId);
-        route->addWaypoint(waypoint);
-        m_routeWaypoints.insert(route, waypoint);
+        auto item = this->readItem(itemId);
+        if (item)
+            route->addItem(item);
     }
 
     emit routeAdded(route);
     return route;
 }
 
-RouteItem* RoutesService::readWaypoint(const QVariant& id)
+RouteItem* RoutesService::readItem(const QVariant& id)
 {
-    QVariantMap map = m_waypointsTable.selectById(id);
-    QString typeId = map.value(props::type).toString();
-
-    const RouteItemType* const type = m_waypointTypes.value(typeId);
+    QVariantMap select = m_itemsRepo->select(id);
+    QString typeId = select.value(props::type).toString();
+    const RouteItemType* const type = m_itemTypes.value(typeId);
     if (!type)
     {
-        qWarning() << "Unknown waypoint type" << typeId;
+        qWarning() << "Unknown route item type" << typeId;
         return nullptr;
     }
 
-    RouteItem* waypoint = new RouteItem(type, map);
-    m_waypoints.insert(id, waypoint);
+    // Read current item
+    RouteItem* item = new RouteItem(type, select);
 
-    // Read items for waypoint
-    for (const QVariant& itemId :
-         m_waypointItemsTable.selectOne({ { props::waypoint, id } }, props::id))
+    // Read child items
+    for (const QVariant& childId : m_itemsRepo->selectChildItemsIds(id))
     {
-        auto item = this->readItem(itemId, waypoint->type());
+        auto childItem = this->readItem(childId);
         if (item)
-            waypoint->addItem(item);
+            item->addItem(childItem);
     }
 
-    return waypoint;
+    return item;
 }
 
-RouteItem* RoutesService::readItem(const QVariant& id, const RouteItemType* wptType)
+void RoutesService::saveItemImpl(RouteItem* item, const QVariant& parentId, QVariantList& itemIds)
 {
-    QVariantMap map = m_waypointItemsTable.selectById(id);
-    QString typeId = map.value(props::type).toString();
-
-    const RouteItemType* const type = wptType->childType(typeId);
-    if (!type)
+    // Update stored item
+    if (itemIds.contains(item->id()))
     {
-        qWarning() << "Unknown waypoint item type" << typeId;
-        return nullptr;
+        m_itemsRepo->update(item, parentId);
+        itemIds.removeOne(item->id());
+    }
+    // Insert newbie items
+    else
+    {
+        m_itemsRepo->insert(item, parentId);
     }
 
-    return new RouteItem(type, map);
+    // Save child items
+    QVariantList childItemIds = m_itemsRepo->selectChildItemsIds(item->id());
+
+    // Save or update child items
+    for (RouteItem* childItem : item->items())
+    {
+        this->saveItemImpl(childItem, item->id(), childItemIds);
+    }
+
+    // Delete removed children
+    if (!childItemIds.isEmpty())
+        m_itemsRepo->removeByIds(childItemIds);
 }
 
-void RoutesService::removeWaypoint(RouteItem* waypoint)
+void RoutesService::restoreItemImpl(RouteItem* item)
 {
-    // Remove waypoint's items by id
-    for (const QVariant& itemId :
-         m_waypointItemsTable.selectOne({ { props::waypoint, waypoint->id() } }, props::id))
+    QVariantList itemIds = m_itemsRepo->selectChildItemsIds(item->id());
+    for (RouteItem* child : item->items())
     {
-        m_waypointItemsTable.removeById(itemId);
+        // Restore stored item
+        if (itemIds.contains(child->id()))
+        {
+            this->restoreItemImpl(child);
+            itemIds.removeOne(child->id());
+        }
+        // Remove newbie items
+        else
+        {
+            item->removeItem(child);
+        }
     }
 
-    m_waypointsTable.removeEntity(waypoint);
-    m_waypoints.remove(waypoint->id());
+    // Read removed items
+    for (const QVariant& itemId : itemIds)
+    {
+        auto child = this->readItem(itemId);
+        if (child)
+            item->addItem(child); // TODO: valid index
+    }
+
+    // Finaly restore item
+    m_itemsRepo->read(item);
 }

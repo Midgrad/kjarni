@@ -10,9 +10,9 @@ namespace md::domain
 {
 namespace props
 {
-constexpr char items[] = "items";
-constexpr char waypoints[] = "waypoints";
-constexpr char waypoint[] = "waypoint";
+constexpr char routeItems[] = "routeItems";
+constexpr char routeItem[] = "routeItem";
+constexpr char parent[] = "parent";
 constexpr char route[] = "route";
 constexpr char calcData[] = "calcData";
 

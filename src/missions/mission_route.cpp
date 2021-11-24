@@ -47,7 +47,7 @@ int MissionRoute::currentItem() const
 
 int MissionRoute::count()
 {
-    return m_route ? m_route->itemsCount() + 1 : 1; // route items (wpt + payload) + home point
+    return m_route ? m_route->count() + 1 : 1; // route items (wpt + payload) + home point
 }
 
 RouteItem* MissionRoute::item(int index) const
@@ -83,9 +83,9 @@ void MissionRoute::assignRoute(Route* route)
 
     if (m_route)
     {
-        connect(m_route, &Route::waypointAdded, this, &MissionRoute::itemsChanged);
-        connect(m_route, &Route::waypointChanged, this, &MissionRoute::itemsChanged);
-        connect(m_route, &Route::waypointRemoved, this, &MissionRoute::itemsChanged);
+        connect(m_route, &Route::itemAdded, this, &MissionRoute::itemsChanged);
+        connect(m_route, &Route::itemChanged, this, &MissionRoute::itemsChanged);
+        connect(m_route, &Route::itemRemoved, this, &MissionRoute::itemsChanged);
     }
 
     emit routeChanged(m_route);

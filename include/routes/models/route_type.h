@@ -11,15 +11,15 @@ class RouteType
 
 public:
     RouteType(const QString& id, const QString& name,
-              const QVector<const RouteItemType*>& waypointTypes);
+              const QVector<const RouteItemType*>& itemTypes);
 
     QVariantMap toVariantMap() const;
 
-    const RouteItemType* waypointType(const QString& id) const;
+    const RouteItemType* itemType(const QString& id) const;
 
     const QString id;
     const QString name;
-    const QMap<QString, const RouteItemType*> waypointTypes;
+    const QMap<QString, const RouteItemType*> itemTypes;
 };
 } // namespace md::domain
 

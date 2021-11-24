@@ -19,8 +19,6 @@ Route::Route(const RouteType* type, const QVariantMap& map, QObject* parent) :
     m_type(type)
 {
     Q_ASSERT(type);
-
-    this->fromVariantMapImpl(map);
 }
 
 QVariantMap Route::toVariantMap() const
@@ -34,8 +32,6 @@ QVariantMap Route::toVariantMap() const
 
 void Route::fromVariantMap(const QVariantMap& map)
 {
-    this->fromVariantMapImpl(map);
-
     Named::fromVariantMap(map);
 }
 
@@ -44,52 +40,40 @@ const RouteType* Route::type() const
     return m_type;
 }
 
-int Route::waypointsCount() const
+int Route::count() const
 {
-    return m_waypoints.count();
+    return m_items.count();
 }
 
-int Route::waypointIndex(RouteItem* waypoint) const
-{
-    return m_waypoints.indexOf(waypoint);
-}
-
-const QList<RouteItem*>& Route::waypoints() const
-{
-    return m_waypoints;
-}
-
-RouteItem* Route::waypoint(int index) const
-{
-    return m_waypoints.value(index, nullptr);
-}
-
-int Route::itemsCount() const
+int Route::totalCount() const
 {
     int count = 0;
-    for (RouteItem* waypoint : qAsConst(m_waypoints))
+    for (RouteItem* item : qAsConst(m_items))
     {
-        count += waypoint->count() + 1; // Calc self
+        count += item->count() + 1; // Calc self
     }
     return count;
 }
 
-QList<RouteItem*> Route::items() const
+int Route::index(RouteItem* item) const
 {
-    QList<RouteItem*> items;
-    for (RouteItem* waypoint : qAsConst(m_waypoints))
-    {
-        items.append(waypoint);
-        items += waypoint->items();
-    }
+    return m_items.indexOf(item);
+}
 
-    return items;
+const QList<RouteItem*>& Route::items() const
+{
+    return m_items;
 }
 
 RouteItem* Route::item(int index) const
 {
+    return m_items.value(index, nullptr);
+}
+
+RouteItem* Route::itemByFlatIndex(int index) const
+{
     int count = 0;
-    for (RouteItem* waypoint : qAsConst(m_waypoints))
+    for (RouteItem* waypoint : qAsConst(m_items))
     {
         if (count == index)
             return waypoint;
@@ -105,104 +89,64 @@ RouteItem* Route::item(int index) const
     return nullptr;
 }
 
-void Route::setWaypoints(const QList<RouteItem*>& waypoints)
+void Route::setItems(const QList<RouteItem*>& items)
 {
-    // Remove old waypoints (std::remove_if does not emit signals)
-    for (RouteItem* waypoint : qAsConst(m_waypoints))
+    // Remove old items (std::remove_if does not emit signals)
+    for (RouteItem* item : qAsConst(m_items))
     {
-        // Skip waypoint if we have it in new list
-        if (waypoints.contains(waypoint))
+        // Skip item if we have it in new list
+        if (items.contains(item))
             continue;
 
-        this->removeWaypoint(waypoint);
+        this->removeItem(item);
     }
 
-    // Add new waypoints to the end
-    for (RouteItem* waypoint : waypoints)
+    // Add new items to the end
+    for (RouteItem* item : items)
     {
-        this->addWaypoint(waypoint);
+        this->addItem(item);
     }
 }
 
-void Route::addWaypoint(RouteItem* waypoint)
+void Route::addItem(RouteItem* item)
 {
-    if (m_waypoints.contains(waypoint))
+    if (m_items.contains(item))
         return;
 
-    if (waypoint->thread() != this->thread())
-        waypoint->moveToThread(this->thread());
+    if (item->thread() != this->thread())
+        item->moveToThread(this->thread());
 
-    if (!waypoint->parent())
-        waypoint->setParent(this);
+    if (!item->parent())
+        item->setParent(this);
 
-    connect(waypoint, &RouteItem::changed, this, [waypoint, this]() {
-        emit waypointChanged(this->waypointIndex(waypoint), waypoint);
+    connect(item, &RouteItem::changed, this, [item, this]() {
+        emit itemChanged(this->index(item), item);
     });
 
-    m_waypoints.append(waypoint);
-    emit waypointAdded(m_waypoints.count() - 1, waypoint);
+    m_items.append(item);
+    emit itemAdded(m_items.count() - 1, item);
 }
 
-void Route::removeWaypoint(RouteItem* waypoint)
+void Route::removeItem(RouteItem* item)
 {
-    int index = m_waypoints.indexOf(waypoint);
-    // Remove but don't TODO: delete waypoint
+    int index = m_items.indexOf(item);
     if (index == -1)
         return;
 
-    if (waypoint->parent() == this)
-        waypoint->setParent(nullptr);
+    if (item->parent() == this)
+        item->setParent(nullptr);
 
-    disconnect(waypoint, nullptr, this, nullptr);
+    disconnect(item, nullptr, this, nullptr);
 
-    m_waypoints.removeOne(waypoint);
-    emit waypointRemoved(index, waypoint);
+    m_items.removeOne(item);
+    emit itemRemoved(index, item);
+    item->deleteLater();
 }
 
 void Route::clear()
 {
-    for (RouteItem* waypoint : m_waypoints)
+    for (RouteItem* item : qAsConst(m_items))
     {
-        this->removeWaypoint(waypoint);
-    }
-}
-
-void Route::fromVariantMapImpl(const QVariantMap& map)
-{
-    if (map.contains(props::waypoints))
-    {
-        QVariantList waypoints = map.value(props::waypoints).toList();
-        int counter = 0;
-        for (const QVariant& value : waypoints)
-        {
-            QVariantMap map = value.toMap();
-            QString typeName = map.value(props::type, tr("empty")).toString();
-            auto type = m_type->waypointType(typeName);
-            if (!type)
-            {
-                qWarning() << "No waypoint type" << typeName;
-                continue;
-            }
-
-            if (counter >= m_waypoints.count())
-            {
-                auto waypoint = new RouteItem(type, map);
-                waypoint->moveToThread(this->thread());
-                waypoint->setParent(this);
-
-                m_waypoints.append(waypoint);
-            }
-            else
-            {
-                m_waypoints[counter]->fromVariantMap(map);
-            }
-            counter++;
-        }
-
-        // Remove tail from old route
-        while (m_waypoints.count() > waypoints.count())
-        {
-            this->removeWaypoint(m_waypoints.last());
-        }
+        this->removeItem(item);
     }
 }

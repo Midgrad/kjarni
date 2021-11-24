@@ -7,7 +7,7 @@ using namespace md::domain;
 
 VehiclesService::VehiclesService(IVehiclesRepository* vehiclesRepo, QObject* parent) :
     IVehiclesService(parent),
-    vehiclesRepo(vehiclesRepo)
+    m_vehiclesRepo(vehiclesRepo)
 {
 }
 
@@ -33,7 +33,7 @@ void VehiclesService::readAll()
 {
     QMutexLocker locker(&m_mutex);
 
-    for (const QVariant& vehicleId : vehiclesRepo->selectVehicleIds())
+    for (const QVariant& vehicleId : m_vehiclesRepo->selectVehicleIds())
     {
         if (!m_vehicles.contains(vehicleId))
         {
@@ -46,7 +46,7 @@ void VehiclesService::removeVehicle(Vehicle* vehicle)
 {
     QMutexLocker locker(&m_mutex);
 
-    vehiclesRepo->remove(vehicle);
+    m_vehiclesRepo->remove(vehicle);
     m_vehicles.remove(vehicle->id());
 
     emit vehicleRemoved(vehicle);
@@ -57,7 +57,7 @@ void VehiclesService::restoreVehicle(Vehicle* vehicle)
 {
     QMutexLocker locker(&m_mutex);
 
-    vehiclesRepo->read(vehicle);
+    m_vehiclesRepo->read(vehicle);
     emit vehicleChanged(vehicle);
 }
 
@@ -67,12 +67,12 @@ void VehiclesService::saveVehicle(Vehicle* vehicle)
 
     if (m_vehicles.contains(vehicle->id()))
     {
-        vehiclesRepo->update(vehicle);
+        m_vehiclesRepo->update(vehicle);
         emit vehicleChanged(vehicle);
     }
     else
     {
-        vehiclesRepo->insert(vehicle);
+        m_vehiclesRepo->insert(vehicle);
         m_vehicles.insert(vehicle->id(), vehicle);
         vehicle->moveToThread(this->thread());
         vehicle->setParent(this);
@@ -83,7 +83,7 @@ void VehiclesService::saveVehicle(Vehicle* vehicle)
 Vehicle* VehiclesService::readVehicle(const QVariant& id)
 {
     Vehicle* vehicle = new Vehicle(Vehicle::Generic, QString(), id, this);
-    vehiclesRepo->read(vehicle);
+    m_vehiclesRepo->read(vehicle);
 
     m_vehicles.insert(id, vehicle);
     emit vehicleAdded(vehicle);

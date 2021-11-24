@@ -8,7 +8,7 @@
 
 namespace md::domain
 {
-class IPropertyTree
+class IPropertyTree // TODO: ITelemetryService
     : public QObject
     , public IService
 {

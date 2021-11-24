@@ -1,8 +1,8 @@
 #ifndef ROUTE_H
 #define ROUTE_H
 
-#include "route_type.h"
 #include "route_item.h"
+#include "route_type.h"
 
 namespace md::domain
 {
@@ -11,8 +11,8 @@ class Route : public Named
     Q_OBJECT
 
 public:
-    Route(const RouteType* type, const QString& name, const QVariant& id = utils::generateId(),
-          QObject* parent = nullptr);
+    Route(const RouteType* type, const QString& name = QString(),
+          const QVariant& id = utils::generateId(), QObject* parent = nullptr);
     Route(const RouteType* type, const QVariantMap& map, QObject* parent = nullptr);
 
     QVariantMap toVariantMap() const override;
@@ -20,31 +20,27 @@ public:
 
     const RouteType* type() const;
 
-    int waypointsCount() const;
-    int waypointIndex(RouteItem* waypoint) const;
-    const QList<RouteItem*>& waypoints() const;
-    RouteItem* waypoint(int index) const;
-
-    int itemsCount() const;
-    QList<RouteItem*> items() const;
+    int count() const;
+    int totalCount() const;
+    int index(RouteItem* item) const;
+    const QList<RouteItem*>& items() const;
     RouteItem* item(int index) const;
+    RouteItem* itemByFlatIndex(int index) const;
 
 public slots:
-    void setWaypoints(const QList<RouteItem*>& waypoints);
-    void addWaypoint(RouteItem* waypoint);
-    void removeWaypoint(RouteItem* waypoint);
+    void setItems(const QList<RouteItem*>& items);
+    void addItem(RouteItem* item);
+    void removeItem(RouteItem* item);
     void clear();
 
 signals:
-    void waypointAdded(int index, RouteItem* waypoint);
-    void waypointChanged(int index, RouteItem* waypoint);
-    void waypointRemoved(int index, RouteItem* waypoint);
+    void itemAdded(int index, RouteItem* item);
+    void itemChanged(int index, RouteItem* item);
+    void itemRemoved(int index, RouteItem* item);
 
 private:
-    void fromVariantMapImpl(const QVariantMap& map);
-
     const RouteType* const m_type;
-    QList<RouteItem*> m_waypoints;
+    QList<RouteItem*> m_items;
 };
 } // namespace md::domain
 

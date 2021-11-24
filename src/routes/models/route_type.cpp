@@ -6,10 +6,10 @@
 using namespace md::domain;
 
 RouteType::RouteType(const QString& id, const QString& name,
-                     const QVector<const RouteItemType*>& waypointTypes) :
+                     const QVector<const RouteItemType*>& itemTypes) :
     id(id),
     name(name),
-    waypointTypes(utils::listToMap<RouteItemType>(waypointTypes))
+    itemTypes(utils::listToMap<RouteItemType>(itemTypes))
 {
 }
 
@@ -21,7 +21,7 @@ QVariantMap RouteType::toVariantMap() const
     return map;
 }
 
-const RouteItemType* RouteType::waypointType(const QString& id) const
+const RouteItemType* RouteType::itemType(const QString& id) const
 {
-    return this->waypointTypes.value(id, nullptr);
+    return this->itemTypes.value(id, nullptr);
 }

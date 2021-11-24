@@ -28,7 +28,7 @@ public slots:
 private:
     Vehicle* readVehicle(const QVariant& id);
 
-    IVehiclesRepository* const vehiclesRepo;
+    IVehiclesRepository* const m_vehiclesRepo;
     QMap<QVariant, Vehicle*> m_vehicles;
 
     mutable QMutex m_mutex;
