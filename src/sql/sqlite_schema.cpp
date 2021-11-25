@@ -69,9 +69,9 @@ void SqliteSchema::setup()
                "FOREIGN KEY(vehicle) REFERENCES vehicles(id) ON DELETE CASCADE);");
 
     query.exec("CREATE TABLE home_waypoints ("
-               "routeItem UUID PRIMARY KEY NOT NULL, "
+               "item UUID PRIMARY KEY NOT NULL, "
                "mission UUID, "
-               "FOREIGN KEY(routeItem) REFERENCES route_items(id) ON DELETE CASCADE, "
+               "FOREIGN KEY(item) REFERENCES route_items(id) ON DELETE CASCADE, "
                "FOREIGN KEY(mission) REFERENCES missions(id) ON DELETE CASCADE);");
 
     query.exec("INSERT INTO schema_version (version) VALUES (\'17.14.00_09.11.2021\')");

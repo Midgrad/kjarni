@@ -179,7 +179,7 @@ void MissionsRepositorySql::saveMission(Mission* mission)
         m_waypointsTable.insertEntity(mission->route()->homePoint());
         m_missionsTable.insertEntity(mission);
         m_homeWaypointsTable.insert({ { props::mission, mission->id() },
-                                      { props::routeItem, mission->route()->homePoint()->id() } });
+                                      { props::item, mission->route()->homePoint()->id() } });
 
         m_missions.insert(mission->id(), mission);
         emit missionAdded(mission);
@@ -200,7 +200,7 @@ Mission* MissionsRepositorySql::readMission(const QVariant& id)
 
     // Read home waypoint for mission
     QVariantList waypointIds = m_homeWaypointsTable.selectOne({ { props::mission, id } },
-                                                              props::routeItem);
+                                                              props::item);
     if (waypointIds.length())
     {
         QVariant homeId = waypointIds.first();
