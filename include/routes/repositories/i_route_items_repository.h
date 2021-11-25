@@ -18,7 +18,7 @@ public:
     virtual void read(RouteItem* item) = 0;
     virtual void update(RouteItem* item, const QVariant& parentId) = 0;
     virtual void remove(RouteItem* item) = 0;
-    virtual void removeByIds(const QVariantList& ids) = 0;
+    virtual void removeById(const QVariant& id) = 0;
 };
 } // namespace md::domain
 

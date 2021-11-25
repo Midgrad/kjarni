@@ -17,28 +17,32 @@ public:
     RoutesService(IRoutesRepository* routesRepo, IRouteItemsRepository* itemsRepo,
                   QObject* parent = nullptr);
 
-    virtual Route* route(const QVariant& id) const override;
-    virtual QVariantList routeIds() const override;
-    virtual QList<Route*> routes() const override;
+    Route* route(const QVariant& id) const override;
+    QVariantList routeIds() const override;
+    QList<Route*> routes() const override;
     const RouteType* routeType(const QString& id) const override;
-    virtual QList<const RouteType*> routeTypes() const override;
+    QList<const RouteType*> routeTypes() const override;
 
-    virtual void registerRouteType(const RouteType* routeType) override;
-    virtual void unregisterRouteType(const RouteType* routeType) override;
+    void registerRouteType(const RouteType* routeType) override;
+    void unregisterRouteType(const RouteType* routeType) override;
+
+    // For tests
+    void addRoute(Route* route);
 
 public slots:
-    virtual void readAll() override;
-    virtual void removeRoute(Route* route) override;
-    virtual void restoreRoute(Route* route) override;
-    virtual void saveRoute(Route* route) override;
-    virtual void saveItem(Route* route, RouteItem* item) override;
-    virtual void restoreItem(Route* route, RouteItem* item) override;
+    void readAll() override;
+    void removeRoute(Route* route) override;
+    void restoreRoute(Route* route) override;
+    void saveRoute(Route* route) override;
+    void saveItem(Route* route, RouteItem* item) override;
+    void restoreItem(Route* route, RouteItem* item) override;
 
 private:
     Route* readRoute(const QVariant& id);
     RouteItem* readItem(const QVariant& id);
     void saveItemImpl(RouteItem* item, const QVariant& parentId, QVariantList& itemIds);
     void restoreItemImpl(RouteItem* item);
+    void removeItemsRecursive(const QVariantList& itemsIds);
 
     IRoutesRepository* const m_routesRepo;
     IRouteItemsRepository* const m_itemsRepo;

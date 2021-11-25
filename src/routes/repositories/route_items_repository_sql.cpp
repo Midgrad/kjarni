@@ -57,10 +57,7 @@ void RouteItemsRepositorySql::remove(domain::RouteItem* item)
     m_routeItemsTable.removeEntity(item);
 }
 
-void RouteItemsRepositorySql::removeByIds(const QVariantList& ids)
+void RouteItemsRepositorySql::removeById(const QVariant& id)
 {
-    for (const QVariant& id : ids)
-    {
-        m_routeItemsTable.removeById(id);
-    }
+    m_routeItemsTable.removeById(id);
 }

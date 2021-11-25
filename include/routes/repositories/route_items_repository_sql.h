@@ -18,7 +18,7 @@ public:
     void read(domain::RouteItem* item) override;
     void update(domain::RouteItem* item, const QVariant& parentId) override;
     void remove(domain::RouteItem* item) override;
-    void removeByIds(const QVariantList& ids) override;
+    void removeById(const QVariant& id) override;
 
 private:
     EntitySqlTable m_routeItemsTable;
