@@ -16,11 +16,6 @@ ModuleLoader::ModuleLoader(QObject* parent) : QObject(parent)
 
 ModuleLoader::~ModuleLoader()
 {
-    for (auto it = m_loadedModules.begin(); it != m_loadedModules.end(); ++it)
-    {
-        it.value()->done();
-        m_discoveredLoaders.value(it.key())->unload();
-    }
 }
 
 QStringList ModuleLoader::discoveredModules() const
@@ -44,6 +39,22 @@ QJsonObject ModuleLoader::moduleMetaData(const QString& moduleId) const
 IModule* ModuleLoader::module(const QString& moduleId) const
 {
     return m_loadedModules.value(moduleId, nullptr);
+}
+
+void ModuleLoader::discoverModules()
+{
+    QDir dir(::modulesPath);
+
+    for (const QString& moduleId : dir.entryList(QDir::Files))
+    {
+        if (m_discoveredLoaders.contains(moduleId))
+            continue;
+
+        QPluginLoader* loader = new QPluginLoader(dir.absoluteFilePath(moduleId), this);
+
+        m_discoveredLoaders[moduleId] = loader;
+        emit moduleDiscovered(moduleId);
+    }
 }
 
 void ModuleLoader::loadModule(const QString& moduleId)
@@ -114,18 +125,12 @@ void ModuleLoader::unloadModule(const QString& moduleId)
     }
 }
 
-void ModuleLoader::discoverModules()
+void ModuleLoader::unloadAllModules()
 {
-    QDir dir(::modulesPath);
-
-    for (const QString& moduleId : dir.entryList(QDir::Files))
+    for (auto it = m_loadedModules.begin(); it != m_loadedModules.end(); ++it)
     {
-        if (m_discoveredLoaders.contains(moduleId))
-            continue;
-
-        QPluginLoader* loader = new QPluginLoader(dir.absoluteFilePath(moduleId), this);
-
-        m_discoveredLoaders[moduleId] = loader;
-        emit moduleDiscovered(moduleId);
+        it.value()->done();
+        m_discoveredLoaders.value(it.key())->unload();
     }
+    m_loadedModules.clear();
 }

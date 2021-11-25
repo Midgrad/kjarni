@@ -21,11 +21,13 @@ public:
     QJsonObject moduleMetaData(const QString& moduleId) const;
     IModule* module(const QString& moduleId) const;
 
+public slots:
+    void discoverModules();
     void loadModule(const QString& moduleId);
     void loadModules(const QStringList& moduleIds);
     void loadModules();
     void unloadModule(const QString& moduleId);
-    void discoverModules();
+    void unloadAllModules();
 
 signals:
     void moduleDiscovered(QString moduleId);
