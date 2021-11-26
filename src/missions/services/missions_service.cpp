@@ -1,0 +1,194 @@
+#include "missions_service.h"
+
+#include <QDebug>
+
+#include "mission_traits.h"
+#include "utils.h"
+
+using namespace md::domain;
+
+MissionsService::MissionsService(IRoutesService* routes, IMissionsRepository* missionsRepo,
+                                 IRouteItemsRepository* itemsRepo, QObject* parent) :
+    IMissionsService(parent),
+    m_routes(routes),
+    m_missionsRepo(missionsRepo),
+    m_itemsRepo(itemsRepo),
+    m_mutex(QMutex::Recursive)
+{
+}
+
+Mission* MissionsService::mission(const QVariant& id) const
+{
+    QMutexLocker locker(&m_mutex);
+    return m_missions.value(id, nullptr);
+}
+
+Mission* MissionsService::missionForVehicle(const QVariant& vehicleId) const
+{
+    QMutexLocker locker(&m_mutex);
+    return this->mission(m_missionsRepo->selectMissionIdForVehicle(vehicleId));
+}
+
+QVariantList MissionsService::missionIds() const
+{
+    QMutexLocker locker(&m_mutex);
+    return m_missions.keys();
+}
+
+QList<Mission*> MissionsService::missions() const
+{
+    QMutexLocker locker(&m_mutex);
+    return m_missions.values();
+}
+
+const MissionType* MissionsService::missionType(const QString& id) const
+{
+    return m_missionTypes.value(id, nullptr);
+}
+
+QList<const MissionType*> MissionsService::missionTypes() const
+{
+    QMutexLocker locker(&m_mutex);
+    return m_missionTypes.values();
+}
+
+void MissionsService::registerMissionType(const MissionType* type)
+{
+    QMutexLocker locker(&m_mutex);
+
+    if (m_missionTypes.contains(type->id))
+        return;
+
+    m_missionTypes.insert(type->id, type);
+    m_routes->registerRouteType(type->routeType);
+
+    emit missionTypesChanged();
+}
+
+void MissionsService::unregisterMissionType(const MissionType* type)
+{
+    QMutexLocker locker(&m_mutex);
+
+    if (!m_missionTypes.contains(type->id))
+        return;
+
+    m_routes->unregisterRouteType(type->routeType);
+    m_missionTypes.remove(type->id);
+
+    emit missionTypesChanged();
+}
+
+void MissionsService::readAll()
+{
+    QMutexLocker locker(&m_mutex);
+
+    for (const QVariant& missionId : m_missionsRepo->selectMissionIds())
+    {
+        if (!m_missions.contains(missionId))
+        {
+            this->readMission(missionId);
+        }
+    }
+}
+
+void MissionsService::removeMission(Mission* mission)
+{
+    QMutexLocker locker(&m_mutex);
+
+    if (mission->id().isNull())
+    {
+        qWarning() << "Can't remove mission with no id" << mission;
+        return;
+    }
+
+    // Remove home point
+    m_itemsRepo->remove(mission->route()->homePoint());
+    // Remove mission
+    m_missionsRepo->remove(mission);
+    m_missions.remove(mission->id());
+
+    emit missionRemoved(mission);
+    mission->deleteLater();
+}
+
+void MissionsService::restoreMission(Mission* mission)
+{
+    QMutexLocker locker(&m_mutex);
+
+    if (mission->id().isNull())
+    {
+        qWarning() << "Can't resore mission with no id" << mission;
+        return;
+    }
+
+    // Restore mission
+    m_missionsRepo->read(mission);
+    // Restore home point
+    m_itemsRepo->read(mission->route()->homePoint());
+
+    emit missionChanged(mission);
+}
+
+void MissionsService::saveMission(Mission* mission)
+{
+    QMutexLocker locker(&m_mutex);
+
+    if (mission->id().isNull())
+    {
+        qWarning() << "Can't save mission with no id" << mission;
+        return;
+    }
+
+    if (mission->route()->route())
+        m_routes->saveRoute(mission->route()->route());
+
+    mission->moveToThread(this->thread());
+    mission->setParent(this);
+
+    if (m_missions.contains(mission->id()))
+    {
+        m_itemsRepo->update(mission->route()->homePoint(), mission->id());
+        m_missionsRepo->update(mission);
+
+        emit missionChanged(mission);
+    }
+    else
+    {
+        m_itemsRepo->insert(mission->route()->homePoint(), mission->id());
+        m_missionsRepo->insert(mission);
+
+        m_missions.insert(mission->id(), mission);
+        emit missionAdded(mission);
+    }
+}
+
+Mission* MissionsService::readMission(const QVariant& id)
+{
+    QVariantMap map = m_missionsRepo->select(id);
+    QString typeId = map.value(props::type).toString();
+
+    const MissionType* const type = m_missionTypes.value(typeId);
+    if (!type)
+    {
+        qWarning() << "Unknown mission type" << typeId;
+        return nullptr;
+    }
+
+    // Read home waypoint for mission
+    QVariantList waypointIds = m_itemsRepo->selectChildItemsIds(id);
+    if (waypointIds.length())
+    {
+        QVariant homeId = waypointIds.first();
+        QVariantMap homeMap = m_itemsRepo->select(homeId);
+        map[props::home] = homeMap;
+    }
+
+    Mission* mission = new Mission(type, map);
+    m_missions.insert(id, mission);
+    emit missionAdded(mission);
+
+    Route* route = m_routes->route(map.value(props::route));
+    mission->route()->assignRoute(route);
+
+    return mission;
+}

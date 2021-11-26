@@ -59,6 +59,7 @@ void SqliteSchema::setup()
                "name STRING, "
                "type STRING);");
 
+    // TODO: specialised mission route
     query.exec("CREATE TABLE missions ("
                "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
@@ -67,12 +68,6 @@ void SqliteSchema::setup()
                "vehicle UUID, "
                "FOREIGN KEY(route) REFERENCES routes(id) ON DELETE CASCADE, "
                "FOREIGN KEY(vehicle) REFERENCES vehicles(id) ON DELETE CASCADE);");
-
-    query.exec("CREATE TABLE home_waypoints ("
-               "item UUID PRIMARY KEY NOT NULL, "
-               "mission UUID, "
-               "FOREIGN KEY(item) REFERENCES route_items(id) ON DELETE CASCADE, "
-               "FOREIGN KEY(mission) REFERENCES missions(id) ON DELETE CASCADE);");
 
     query.exec("INSERT INTO schema_version (version) VALUES (\'17.14.00_09.11.2021\')");
 }

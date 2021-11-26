@@ -1,22 +1,22 @@
-#ifndef MISSIONS_REPOSITORY_H
-#define MISSIONS_REPOSITORY_H
+#ifndef MISSIONS_SERVICE_H
+#define MISSIONS_SERVICE_H
 
-#include "entity_sql_table.h"
 #include "i_missions_repository.h"
-#include "i_routes_service.h"
+#include "i_missions_service.h"
+#include "i_route_items_repository.h"
+#include "i_routes_service.h" // TODO: remove direct dependency
 
 #include <QMutex>
 
 namespace md::domain
 {
-class MissionsRepositorySql : public IMissionsRepository
+class MissionsService : public IMissionsService
 {
     Q_OBJECT
 
 public:
-    explicit MissionsRepositorySql(IRoutesService* routes, QSqlDatabase* database,
-                                   QObject* parent = nullptr);
-    ~MissionsRepositorySql() override;
+    explicit MissionsService(IRoutesService* routes, IMissionsRepository* missionsRepo,
+                             IRouteItemsRepository* itemsRepo, QObject* parent = nullptr);
 
     Mission* mission(const QVariant& id) const override;
     Mission* missionForVehicle(const QVariant& vehicleId) const override;
@@ -38,9 +38,8 @@ private:
     Mission* readMission(const QVariant& id);
 
     IRoutesService* const m_routes;
-    data_source::EntitySqlTable m_missionsTable;
-    data_source::EntitySqlTable m_waypointsTable;
-    data_source::SqlTable m_homeWaypointsTable;
+    IMissionsRepository* const m_missionsRepo;
+    IRouteItemsRepository* const m_itemsRepo;
 
     QMap<QString, const MissionType*> m_missionTypes;
     QMap<QVariant, Mission*> m_missions;
@@ -49,4 +48,4 @@ private:
 };
 } // namespace md::domain
 
-#endif // MISSIONS_REPOSITORY_H
+#endif // MISSIONS_SERVICE_H

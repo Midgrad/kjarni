@@ -2,8 +2,6 @@
 
 #include <QDebug>
 
-#include "route_traits.h"
-
 namespace
 {
 constexpr char routes[] = "routes";

@@ -7,7 +7,8 @@ using namespace md::domain;
 
 VehiclesService::VehiclesService(IVehiclesRepository* vehiclesRepo, QObject* parent) :
     IVehiclesService(parent),
-    m_vehiclesRepo(vehiclesRepo)
+    m_vehiclesRepo(vehiclesRepo),
+    m_mutex(QMutex::Recursive)
 {
 }
 
