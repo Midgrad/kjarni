@@ -1,45 +1,41 @@
 #ifndef MISSION_ROUTE_H
 #define MISSION_ROUTE_H
 
-#include "mission_type.h"
+#include "mission_route_item.h"
 #include "route.h"
 
 namespace md::domain
 {
-// TODO: MissionRouteItem
 class MissionRoute : public Entity
 {
     Q_OBJECT
 
 public:
-    MissionRoute(const MissionType* type, const QVariant& id, const QString& name,
-                 QObject* parent = nullptr);
-    MissionRoute(const MissionType* type, const QVariantMap& map, QObject* parent = nullptr);
+    MissionRoute(Route* underlyingRoute, QObject* parent = nullptr);
 
-    QVariantMap toVariantMap() const override;
+    Route* underlyingRoute() const;
 
-    RouteItem* homePoint() const;
-    Route* route() const;
+    int count() const;
+    QList<MissionRouteItem*> items() const;
+    MissionRouteItem* item(int index) const;
+
     int currentItem() const;
 
-    int count();
-    RouteItem* item(int index) const;
-    QList<RouteItem*> items() const;
-
 public slots:
-    void assignRoute(Route* route);
+    void addNewItem(RouteItem* item);
+    void clear();
+
     void setCurrentItem(int currentItem);
 
 signals:
-    void routeChanged(Route* route);
     void itemsChanged();
     void currentItemChanged(int index);
 
     void switchCurrentItem(int item); // Goto item
 
 private:
-    RouteItem* const m_homePoint;
-    Route* m_route = nullptr;
+    Route* const m_underlyingRoute;
+    QList<MissionRouteItem*> m_items;
     int m_currentItem = -1;
 };
 } // namespace md::domain

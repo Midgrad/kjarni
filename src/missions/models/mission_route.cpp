@@ -4,40 +4,49 @@
 
 using namespace md::domain;
 
-MissionRoute::MissionRoute(const MissionType* type, const QVariant& id, const QString& name,
-                           QObject* parent) :
-    Entity(id, parent),
-    m_homePoint(new RouteItem(type->homePointType)),
-    m_route(new Route(type->routeType, name))
+MissionRoute::MissionRoute(Route* underlyingRoute, QObject* parent) :
+    Entity(underlyingRoute->id(), parent),
+    m_underlyingRoute(underlyingRoute)
 {
-}
-
-MissionRoute::MissionRoute(const MissionType* type, const QVariantMap& map, QObject* parent) :
-    Entity(map, parent),
-    m_homePoint(new RouteItem(type->homePointType, map.value(props::home).toMap()))
-{
-}
-
-QVariantMap MissionRoute::toVariantMap() const
-{
-    QVariantMap map;
-    map.insert(props::home, m_homePoint->id());
-
-    if (m_route)
+    for (RouteItem* item : underlyingRoute->items())
     {
-        map.insert(props::route, m_route->id());
+        m_items.append(new MissionRouteItem(item, this));
     }
-    return map;
+
+    connect(underlyingRoute, &Route::itemChanged, this, &MissionRoute::itemsChanged);
+    connect(underlyingRoute, &Route::itemAdded, this, [this](int index, RouteItem* item) {
+        m_items.append(new MissionRouteItem(item, this));
+        emit itemsChanged();
+    });
+    connect(underlyingRoute, &Route::itemRemoved, this, [this](int index, RouteItem* item) {
+        m_items.erase(std::remove_if(m_items.begin(), m_items.end(),
+                                     [item](MissionRouteItem* missionItem) {
+                                         return missionItem->underlyingItem() == item;
+                                     }),
+                      m_items.end());
+
+        emit itemsChanged();
+    });
 }
 
-RouteItem* MissionRoute::homePoint() const
+Route* MissionRoute::underlyingRoute() const
 {
-    return m_homePoint;
+    return m_underlyingRoute;
 }
 
-Route* MissionRoute::route() const
+int MissionRoute::count() const
 {
-    return m_route;
+    return m_items.count();
+}
+
+QList<MissionRouteItem*> MissionRoute::items() const
+{
+    return m_items;
+}
+
+MissionRouteItem* MissionRoute::item(int index) const
+{
+    return m_items.value(index, nullptr);
 }
 
 int MissionRoute::currentItem() const
@@ -45,51 +54,9 @@ int MissionRoute::currentItem() const
     return m_currentItem;
 }
 
-int MissionRoute::count()
+void MissionRoute::addNewItem(RouteItem* item)
 {
-    return m_route ? m_route->count() + 1 : 1; // route items (wpt + payload) + home point
-}
-
-RouteItem* MissionRoute::item(int index) const
-{
-    if (index == 0)
-        return m_homePoint;
-
-    return m_route ? m_route->item(index - 1) : nullptr;
-}
-
-QList<RouteItem*> MissionRoute::items() const
-{
-    QList<RouteItem*> items;
-    items.append(m_homePoint);
-
-    if (m_route)
-        items.append(m_route->items());
-
-    return items;
-}
-
-void MissionRoute::assignRoute(Route* route)
-{
-    if (m_route == route)
-        return;
-
-    if (m_route)
-    {
-        disconnect(m_route, nullptr, this, nullptr);
-    }
-
-    m_route = route;
-
-    if (m_route)
-    {
-        connect(m_route, &Route::itemAdded, this, &MissionRoute::itemsChanged);
-        connect(m_route, &Route::itemChanged, this, &MissionRoute::itemsChanged);
-        connect(m_route, &Route::itemRemoved, this, &MissionRoute::itemsChanged);
-    }
-
-    emit routeChanged(m_route);
-    emit itemsChanged();
+    m_underlyingRoute->addItem(item);
 }
 
 void MissionRoute::setCurrentItem(int currentItem)
@@ -99,4 +66,9 @@ void MissionRoute::setCurrentItem(int currentItem)
 
     m_currentItem = currentItem;
     emit currentItemChanged(m_currentItem);
+}
+
+void MissionRoute::clear()
+{
+    m_underlyingRoute->clear();
 }

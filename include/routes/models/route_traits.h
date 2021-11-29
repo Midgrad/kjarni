@@ -15,10 +15,6 @@ constexpr char item[] = "item";
 constexpr char parent[] = "parent";
 constexpr char route[] = "route";
 constexpr char calcData[] = "calcData";
-
-constexpr char current[] = "current";
-constexpr char reached[] = "reached";
-constexpr char confirmed[] = "confirmed";
 } // namespace props
 
 namespace route
