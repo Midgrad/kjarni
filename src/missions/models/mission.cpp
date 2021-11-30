@@ -11,7 +11,6 @@ Mission::Mission(const MissionType* type, const QString& name, const QVariant& v
     Named(id, name, parent),
     m_type(type),
     m_vehicleId(vehicleId),
-    m_operation(new MissionOperation(this)),
     m_homePoint(new MissionRouteItem(new RouteItem(type->homePointType, utils::generateId(), this)))
 {
 }
@@ -20,7 +19,6 @@ Mission::Mission(const MissionType* type, const QVariantMap& map, QObject* paren
     Named(map, parent),
     m_type(type),
     m_vehicleId(map.value(props::vehicle)),
-    m_operation(new MissionOperation(this)),
     m_homePoint(new MissionRouteItem(
         new RouteItem(type->homePointType, map.value(props::home).toMap(), this)))
 {
@@ -46,19 +44,32 @@ QVariant Mission::vehicleId() const
     return m_vehicleId;
 }
 
-MissionOperation* Mission::operation() const
-{
-    return m_operation;
-}
-
 MissionRouteItem* Mission::homePoint() const
 {
     return m_homePoint;
 }
 
+MissionRouteItem* Mission::item(int index) const
+{
+    if (index == 0)
+        return m_homePoint;
+
+    return m_route ? m_route->item(index - 1) : nullptr;
+}
+
 MissionRoute* Mission::route() const
 {
     return m_route;
+}
+
+int Mission::count() const
+{
+    int count = 1; // for home point
+
+    if (m_route)
+        count += m_route->count();
+
+    return count;
 }
 
 void Mission::assignRoute(Route* route)
@@ -72,4 +83,10 @@ void Mission::assignRoute(Route* route)
         m_route = nullptr;
 
     emit routeChanged();
+}
+
+void Mission::clear()
+{
+    if (m_route)
+        m_route->clear();
 }

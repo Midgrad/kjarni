@@ -1,12 +1,12 @@
 #ifndef MISSION_H
 #define MISSION_H
 
-#include "mission_operation.h"
 #include "mission_route.h"
 #include "mission_type.h"
 
 namespace md::domain
 {
+// FIXME: constantinate route
 class Mission : public Named
 {
     Q_OBJECT
@@ -20,12 +20,14 @@ public:
 
     const MissionType* type() const;
     QVariant vehicleId() const;
-    MissionOperation* operation() const;
     MissionRouteItem* homePoint() const;
+    MissionRouteItem* item(int index) const;
     MissionRoute* route() const;
+    int count() const;
 
 public slots:
     void assignRoute(Route* route);
+    void clear();
 
 signals:
     void routeChanged();
@@ -33,7 +35,6 @@ signals:
 private:
     const MissionType* const m_type;
     const QVariant m_vehicleId;
-    MissionOperation* const m_operation; // TODO: mision operation to service
     MissionRouteItem* const m_homePoint;
     MissionRoute* m_route = nullptr;
 };

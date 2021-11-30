@@ -15,15 +15,19 @@ class MissionsService : public IMissionsService
     Q_OBJECT
 
 public:
-    explicit MissionsService(IRoutesService* routes, IMissionsRepository* missionsRepo,
-                             IRouteItemsRepository* itemsRepo, QObject* parent = nullptr);
+    MissionsService(IRoutesService* routes, IMissionsRepository* missionsRepo,
+                    IRouteItemsRepository* itemsRepo, QObject* parent = nullptr);
 
     Mission* mission(const QVariant& id) const override;
     Mission* missionForVehicle(const QVariant& vehicleId) const override;
     QVariantList missionIds() const override;
     QList<Mission*> missions() const override;
+    MissionOperation* operationForMission(Mission* mission) const override;
     const MissionType* missionType(const QString& id) const override;
     QList<const MissionType*> missionTypes() const override;
+
+    void startOperation(Mission* mission, MissionOperation::Type type) override;
+    void endOperation(MissionOperation* operation) override;
 
     void registerMissionType(const MissionType* type) override;
     void unregisterMissionType(const MissionType* type) override;
@@ -43,6 +47,7 @@ private:
 
     QMap<QString, const MissionType*> m_missionTypes;
     QMap<QVariant, Mission*> m_missions;
+    QMap<Mission*, MissionOperation*> m_operations;
 
     mutable QMutex m_mutex;
 };

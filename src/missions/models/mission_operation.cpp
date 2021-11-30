@@ -7,13 +7,27 @@
 
 using namespace md::domain;
 
-MissionOperation::MissionOperation(QObject* parent) : QObject(parent)
+MissionOperation::MissionOperation(Type type, Mission* mission, QObject* parent) :
+    Entity(mission->id(), parent),
+    m_type(type),
+    m_mission(mission)
 {
+    Q_ASSERT(mission);
 }
 
 MissionOperation::Type MissionOperation::type() const
 {
     return m_type;
+}
+
+Mission* MissionOperation::mission() const
+{
+    return m_mission;
+}
+
+MissionOperation::State MissionOperation::state() const
+{
+    return m_state;
 }
 
 int MissionOperation::progress() const
@@ -33,7 +47,7 @@ bool MissionOperation::isComplete() const
 
 QVariantMap MissionOperation::toVariantMap() const
 {
-    QVariantMap map;
+    QVariantMap map = Entity::toVariantMap();
     map[props::progress] = m_progress;
     map[props::total] = m_total;
     map[props::complete] = this->isComplete();
@@ -41,33 +55,12 @@ QVariantMap MissionOperation::toVariantMap() const
     return map;
 }
 
-void MissionOperation::startDownload(int total)
+void MissionOperation::setState(State state)
 {
-    m_type = Downloading;
-    m_total = total;
-    m_progress = 0;
-
-    emit changed();
-}
-
-void MissionOperation::startUpload(int total)
-{
-    m_type = Uploading;
-    m_total = total;
-    m_progress = 0;
-
-    emit changed();
-}
-
-void MissionOperation::stop()
-{
-    if (m_type == Idle)
+    if (m_state == state)
         return;
 
-    m_progress = 0;
-    m_total = 0;
-    m_type = Idle;
-
+    m_state = state;
     emit changed();
 }
 
@@ -77,13 +70,14 @@ void MissionOperation::setProgress(int progress)
         return;
 
     m_progress = progress;
+    emit changed();
+}
 
-    if (m_progress >= m_total)
-    {
-        m_progress = 0;
-        m_total = 0;
-        m_type = Idle;
-    }
+void MissionOperation::setTotal(int total)
+{
+    if (m_total == total)
+        return;
 
+    m_total = total;
     emit changed();
 }

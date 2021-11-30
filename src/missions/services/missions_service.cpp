@@ -41,6 +41,11 @@ QList<Mission*> MissionsService::missions() const
     return m_missions.values();
 }
 
+MissionOperation* MissionsService::operationForMission(Mission* mission) const
+{
+    return m_operations.value(mission, nullptr);
+}
+
 const MissionType* MissionsService::missionType(const QString& id) const
 {
     return m_missionTypes.value(id, nullptr);
@@ -50,6 +55,22 @@ QList<const MissionType*> MissionsService::missionTypes() const
 {
     QMutexLocker locker(&m_mutex);
     return m_missionTypes.values();
+}
+
+void MissionsService::startOperation(Mission* mission, MissionOperation::Type type)
+{
+    MissionOperation* operation = this->operationForMission(mission);
+    if (operation)
+        this->endOperation(operation);
+
+    operation = new MissionOperation(type, mission, this);
+    emit operationStarted(operation);
+}
+
+void MissionsService::endOperation(MissionOperation* operation)
+{
+    emit operationEnded(operation);
+    operation->deleteLater();
 }
 
 void MissionsService::registerMissionType(const MissionType* type)
@@ -100,6 +121,11 @@ void MissionsService::removeMission(Mission* mission)
         qWarning() << "Can't remove mission with no id" << mission;
         return;
     }
+
+    // Stop if we have mission operation
+    MissionOperation* operation = this->operationForMission(mission);
+    if (operation)
+        this->endOperation(operation);
 
     // Remove home point
     m_itemsRepo->remove(mission->homePoint()->underlyingItem());

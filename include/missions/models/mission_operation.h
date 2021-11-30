@@ -1,49 +1,49 @@
 #ifndef MISSION_OPERATION_H
 #define MISSION_OPERATION_H
 
-#include <QObject>
-#include <QVariantMap>
+#include "mission.h"
 
 namespace md::domain
 {
-class MissionOperation : public QObject
+class MissionOperation : public Entity
 {
     Q_OBJECT
 
 public:
     enum Type
     {
-        Idle,
-        Downloading,
-        Uploading
+        Download,
+        Upload,
+        Clear
     };
 
-    MissionOperation(QObject* parent);
+    enum State
+    {
+        InProgress,
+        Succeeded,
+        Failed
+    };
+
+    MissionOperation(Type type, Mission* mission, QObject* parent);
 
     Type type() const;
+    Mission* mission() const;
+    State state() const;
     int progress() const;
     int total() const;
 
     bool isComplete() const;
-    QVariantMap toVariantMap() const;
+    QVariantMap toVariantMap() const override;
 
 public slots:
-    void startDownload(int total);
-    void startUpload(int total);
-    void stop();
+    void setState(State state);
     void setProgress(int progress);
-
-signals:
-    void uploadItem(int index); // Waypoint to the vehicle
-    void upload();              // Full mission to the vehicle
-    void download();            // Full mission from the vehicle
-    void cancel();              // Downloading or uploading process
-    void clear();               // Clear mission onborad and in storage
-
-    void changed();
+    void setTotal(int total);
 
 private:
-    Type m_type = Idle;
+    const Type m_type;
+    Mission* const m_mission;
+    State m_state = InProgress;
     int m_progress = 0;
     int m_total = 0;
 
