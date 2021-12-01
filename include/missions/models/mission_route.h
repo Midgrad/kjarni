@@ -22,7 +22,7 @@ public:
     int currentItem() const;
 
 public slots:
-    void addNewItem(RouteItem* item);
+    void addNewItem(MissionRouteItem* item);
     void clear();
 
     void setCurrentItem(int currentItem);
@@ -30,8 +30,6 @@ public slots:
 signals:
     void itemsChanged();
     void currentItemChanged(int index);
-
-    void switchCurrentItem(int item); // Goto item
 
 private:
     Route* const m_underlyingRoute;

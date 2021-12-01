@@ -30,6 +30,8 @@ QVariantMap Mission::toVariantMap() const
 
     map.insert(props::type, m_type->id);
     map.insert(props::vehicle, m_vehicleId);
+    if (m_route)
+        map.insert(props::route, m_route->id());
 
     return map;
 }
@@ -57,6 +59,17 @@ MissionRouteItem* Mission::item(int index) const
     return m_route ? m_route->item(index - 1) : nullptr;
 }
 
+QList<MissionRouteItem*> Mission::items() const
+{
+    QList<MissionRouteItem*> items;
+
+    items.append(m_homePoint);
+    if (m_route)
+        items.append(m_route->items());
+
+    return items;
+}
+
 MissionRoute* Mission::route() const
 {
     return m_route;
@@ -78,11 +91,16 @@ void Mission::assignRoute(Route* route)
         m_route->deleteLater();
 
     if (route)
-        m_route = new MissionRoute(route, this);
+    {
+        m_route = new MissionRoute(route);
+        m_route->moveToThread(this->thread());
+        m_route->setParent(this);
+    }
     else
+    {
         m_route = nullptr;
-
-    emit routeChanged();
+    }
+    emit routeChanged(m_route);
 }
 
 void Mission::clear()

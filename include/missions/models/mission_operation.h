@@ -24,7 +24,7 @@ public:
         Failed
     };
 
-    MissionOperation(Type type, Mission* mission, QObject* parent);
+    MissionOperation(Type type, Mission* mission, QObject* parent = nullptr);
 
     Type type() const;
     Mission* mission() const;

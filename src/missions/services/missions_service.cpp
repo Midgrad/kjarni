@@ -59,16 +59,23 @@ QList<const MissionType*> MissionsService::missionTypes() const
 
 void MissionsService::startOperation(Mission* mission, MissionOperation::Type type)
 {
+    QMutexLocker locker(&m_mutex);
+
     MissionOperation* operation = this->operationForMission(mission);
     if (operation)
         this->endOperation(operation);
 
-    operation = new MissionOperation(type, mission, this);
+    operation = new MissionOperation(type, mission);
+    operation->moveToThread(this->thread());
+    operation->setParent(this);
+
     emit operationStarted(operation);
 }
 
 void MissionsService::endOperation(MissionOperation* operation)
 {
+    QMutexLocker locker(&m_mutex);
+
     emit operationEnded(operation);
     operation->deleteLater();
 }

@@ -6,7 +6,6 @@
 
 namespace md::domain
 {
-// FIXME: constantinate route
 class Mission : public Named
 {
     Q_OBJECT
@@ -22,6 +21,7 @@ public:
     QVariant vehicleId() const;
     MissionRouteItem* homePoint() const;
     MissionRouteItem* item(int index) const;
+    QList<MissionRouteItem*> items() const;
     MissionRoute* route() const;
     int count() const;
 
@@ -30,7 +30,9 @@ public slots:
     void clear();
 
 signals:
-    void routeChanged();
+    void routeChanged(MissionRoute* route);
+
+    void switchCurrentItem(int item); // Goto item
 
 private:
     const MissionType* const m_type;
