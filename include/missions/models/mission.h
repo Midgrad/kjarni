@@ -19,26 +19,16 @@ public:
 
     const MissionType* type() const;
     QVariant vehicleId() const;
-    MissionRouteItem* homePoint() const;
-    MissionRouteItem* item(int index) const;
-    QList<MissionRouteItem*> items() const;
     MissionRoute* route() const;
-    int count() const;
 
 public slots:
-    void assignRoute(Route* route);
     void clear();
-
-signals:
-    void routeChanged(MissionRoute* route);
-
-    void switchCurrentItem(int item); // Goto item
 
 private:
     const MissionType* const m_type;
+    MissionRoute* const m_route;
+
     const QVariant m_vehicleId;
-    MissionRouteItem* const m_homePoint;
-    MissionRoute* m_route = nullptr;
 };
 } // namespace md::domain
 

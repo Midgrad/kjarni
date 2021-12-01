@@ -4,9 +4,8 @@
 
 using namespace md::domain;
 
-MissionRouteItem::MissionRouteItem(RouteItem* underlyingItem, QObject* parent) :
-    Entity(underlyingItem->id(), parent),
-    m_underlyingItem(underlyingItem),
+MissionRouteItem::MissionRouteItem(const RouteItemType* type, const QVariant& id, QObject* parent) :
+    RouteItem(type, id, parent),
     m_current(false),
     m_reached(false),
     m_confirmed(false)
@@ -15,7 +14,7 @@ MissionRouteItem::MissionRouteItem(RouteItem* underlyingItem, QObject* parent) :
 
 QVariantMap MissionRouteItem::toVariantMap() const
 {
-    QVariantMap map = m_underlyingItem->toVariantMap();
+    QVariantMap map = RouteItem::toVariantMap();
 
     map[props::current] = m_current;
     map[props::reached] = m_reached;
@@ -30,12 +29,7 @@ void MissionRouteItem::fromVariantMap(const QVariantMap& map)
     m_reached = map.value(props::reached, m_reached).toBool();
     m_confirmed = map.value(props::confirmed, m_confirmed).toBool();
 
-    m_underlyingItem->fromVariantMap(map);
-}
-
-RouteItem* MissionRouteItem::underlyingItem() const
-{
-    return m_underlyingItem;
+    RouteItem::fromVariantMap(map);
 }
 
 bool MissionRouteItem::current() const

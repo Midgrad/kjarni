@@ -5,17 +5,16 @@
 
 namespace md::domain
 {
-class MissionRouteItem : public Entity
+class MissionRouteItem : public RouteItem
 {
     Q_OBJECT
 
 public:
-    MissionRouteItem(RouteItem* underlyingItem, QObject* parent = nullptr);
+    MissionRouteItem(const RouteItemType* type, const QVariant& id = utils::generateId(),
+                     QObject* parent = nullptr);
 
     QVariantMap toVariantMap() const override;
     void fromVariantMap(const QVariantMap& map) override;
-
-    RouteItem* underlyingItem() const;
 
     bool current() const;
     bool reached() const;
@@ -27,8 +26,6 @@ public slots:
     void setConfirmed(bool confirmed);
 
 private:
-    RouteItem* const m_underlyingItem;
-
     bool m_current;
     bool m_reached;
     bool m_confirmed;

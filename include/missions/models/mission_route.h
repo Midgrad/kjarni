@@ -2,6 +2,7 @@
 #define MISSION_ROUTE_H
 
 #include "mission_route_item.h"
+#include "mission_type.h"
 #include "route.h"
 
 namespace md::domain
@@ -11,18 +12,21 @@ class MissionRoute : public Entity
     Q_OBJECT
 
 public:
-    MissionRoute(Route* underlyingRoute, QObject* parent = nullptr);
-
-    Route* underlyingRoute() const;
+    MissionRoute(const MissionType* type, const QVariant& id, QObject* parent = nullptr);
+    MissionRoute(const MissionType* type, const QVariantMap& map, QObject* parent = nullptr);
 
     int count() const;
+    MissionRouteItem* homeItem() const;
     QList<MissionRouteItem*> items() const;
     MissionRouteItem* item(int index) const;
 
     int currentItem() const;
 
+    Route* toPlainRoute() const;
+
 public slots:
-    void addNewItem(MissionRouteItem* item);
+    void addItem(MissionRouteItem* item);
+    void removeItem(MissionRouteItem* item);
     void clear();
 
     void setCurrentItem(int currentItem);
@@ -31,8 +35,11 @@ signals:
     void itemsChanged();
     void currentItemChanged(int index);
 
+    void switchCurrentItem(int item); // Goto item
+
 private:
-    Route* const m_underlyingRoute;
+    const MissionType* const m_type;
+    MissionRouteItem* const m_home;
     QList<MissionRouteItem*> m_items;
     int m_currentItem = -1;
 };
