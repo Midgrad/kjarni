@@ -12,7 +12,7 @@ class Mission : public Named
 
 public:
     Mission(const MissionType* type, const QString& name, const QVariant& vehicleId,
-            const QVariant& id = utils::generateId(), QObject* parent = nullptr);
+            QObject* parent = nullptr);
     Mission(const MissionType* type, const QVariantMap& map, QObject* parent = nullptr);
 
     QVariantMap toVariantMap() const override;

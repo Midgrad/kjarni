@@ -20,6 +20,9 @@ public:
     bool reached() const;
     bool confirmed() const;
 
+    void copyTo(RouteItem* item);
+    void copyFrom(RouteItem* item);
+
 public slots:
     void setCurrent(bool current);
     void setReached(bool reached);

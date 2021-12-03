@@ -11,13 +11,6 @@ MissionRoute::MissionRoute(const MissionType* type, const QVariant& id, QObject*
 {
 }
 
-MissionRoute::MissionRoute(const MissionType* type, const QVariantMap& map, QObject* parent) :
-    Entity(map, parent),
-    m_type(type),
-    m_home(new MissionRouteItem(type->homePointType, map.value(props::home), this))
-{
-}
-
 int MissionRoute::count() const
 {
     return m_items.count() + 1; // One for home
@@ -51,16 +44,42 @@ int MissionRoute::currentItem() const
     return m_currentItem;
 }
 
-Route* MissionRoute::toPlainRoute() const
+void MissionRoute::copyTo(Route* route)
 {
-    // FIXME: temp crutch
-
-    Route* route = new Route(m_type->routeType, "TEST", this->id());
-    for (MissionRouteItem* item : m_items)
+    for (int i = 0; i < m_items.count(); ++i)
     {
-        route->addItem(item);
+        MissionRouteItem* src = m_items[i];
+        RouteItem* dest;
+        if (i < route->count())
+        {
+            dest = route->item(i);
+        }
+        else
+        {
+            dest = new RouteItem(src->type(), src->id());
+            route->addItem(dest);
+        }
+        src->copyTo(dest);
     }
-    return route;
+}
+
+void MissionRoute::copyFrom(Route* route)
+{
+    for (int i = 0; i < route->count(); ++i)
+    {
+        RouteItem* src = route->item(i);
+        MissionRouteItem* dest;
+        if (i < m_items.count())
+        {
+            dest = m_items.value(i);
+        }
+        else
+        {
+            dest = new MissionRouteItem(src->type(), src->id());
+            m_items.append(dest);
+        }
+        dest->copyFrom(src);
+    }
 }
 
 void MissionRoute::addItem(MissionRouteItem* item)

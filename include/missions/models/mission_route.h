@@ -7,13 +7,12 @@
 
 namespace md::domain
 {
-class MissionRoute : public Entity
+class MissionRoute : public Entity // TODO: IRoute
 {
     Q_OBJECT
 
 public:
     MissionRoute(const MissionType* type, const QVariant& id, QObject* parent = nullptr);
-    MissionRoute(const MissionType* type, const QVariantMap& map, QObject* parent = nullptr);
 
     int count() const;
     MissionRouteItem* homeItem() const;
@@ -22,7 +21,8 @@ public:
 
     int currentItem() const;
 
-    Route* toPlainRoute() const;
+    void copyTo(Route* route);
+    void copyFrom(Route* route);
 
 public slots:
     void addItem(MissionRouteItem* item);

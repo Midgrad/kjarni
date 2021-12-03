@@ -47,6 +47,16 @@ bool MissionRouteItem::confirmed() const
     return m_confirmed;
 }
 
+void MissionRouteItem::copyTo(RouteItem* item)
+{
+    item->fromVariantMap(this->toVariantMap());
+}
+
+void MissionRouteItem::copyFrom(RouteItem* item)
+{
+    this->fromVariantMap(item->toVariantMap());
+}
+
 void MissionRouteItem::setCurrent(bool current)
 {
     if (m_current == current)

@@ -123,12 +123,6 @@ void MissionsService::removeMission(Mission* mission)
 {
     QMutexLocker locker(&m_mutex);
 
-    if (mission->id().isNull())
-    {
-        qWarning() << "Can't remove mission with no id" << mission;
-        return;
-    }
-
     // Stop if we have mission operation
     MissionOperation* operation = this->operationForMission(mission);
     if (operation)
@@ -149,12 +143,6 @@ void MissionsService::restoreMission(Mission* mission)
 {
     QMutexLocker locker(&m_mutex);
 
-    if (mission->id().isNull())
-    {
-        qWarning() << "Can't resore mission with no id" << mission;
-        return;
-    }
-
     // Restore mission
     m_missionsRepo->read(mission);
 
@@ -168,18 +156,20 @@ void MissionsService::saveMission(Mission* mission)
 {
     QMutexLocker locker(&m_mutex);
 
-    if (mission->id().isNull())
-    {
-        qWarning() << "Can't save mission with no id" << mission;
-        return;
-    }
-
-    if (mission->route())
-        m_routes->saveRoute(mission->route()->toPlainRoute());
-
+    // Threads nd parents
     mission->moveToThread(this->thread());
     mission->setParent(this);
 
+    // Save mission route to routes
+    Route* route = m_routes->route(mission->route()->id());
+    if (!route)
+    {
+        route = new Route(mission->type()->routeType, mission->name(), mission->route()->id());
+    }
+    mission->route()->copyTo(route);
+    m_routes->saveRoute(route);
+
+    // Finaly save mission
     if (m_missions.contains(mission->id()))
     {
         m_itemsRepo->update(mission->route()->homeItem(), mission->id());
@@ -222,8 +212,9 @@ Mission* MissionsService::readMission(const QVariant& id)
     m_missions.insert(id, mission);
     emit missionAdded(mission);
 
-    //    Route* route = m_routes->route(map.value(props::route));
-    //    mission->assignRoute(route);
+    Route* route = m_routes->route(map.value(props::route));
+    if (route)
+        mission->route()->copyFrom(route);
 
     return mission;
 }
