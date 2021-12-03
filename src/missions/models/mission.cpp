@@ -10,16 +10,16 @@ Mission::Mission(const MissionType* type, const QString& name, const QVariant& v
                  QObject* parent) :
     Named(utils::generateId(), name, parent),
     m_type(type),
-    m_route(new MissionRoute(type, utils::generateId(), this)),
-    m_vehicleId(vehicleId)
+    m_vehicleId(vehicleId),
+    m_home(new RouteItem(type->homePointType, type->homePointType->name))
 {
 }
 
 Mission::Mission(const MissionType* type, const QVariantMap& map, QObject* parent) :
     Named(map, parent),
     m_type(type),
-    m_route(new MissionRoute(type, map.value(props::route).toMap(), this)),
-    m_vehicleId(map.value(props::vehicle))
+    m_vehicleId(map.value(props::vehicle)),
+    m_home(new RouteItem(type->homePointType, map.value(props::home).toMap(), this))
 {
 }
 
@@ -44,9 +44,37 @@ QVariant Mission::vehicleId() const
     return m_vehicleId;
 }
 
-MissionRoute* Mission::route() const
+RouteItem* Mission::home() const
+{
+    return m_home;
+}
+
+Route* Mission::route() const
 {
     return m_route;
+}
+
+int Mission::currentItem() const
+{
+    return m_currentItem;
+}
+
+void Mission::assignRoute(Route* route)
+{
+    if (m_route == route)
+        return;
+
+    m_route = route;
+    emit routeChanged();
+}
+
+void Mission::setCurrentItem(int currentItem)
+{
+    if (m_currentItem == currentItem)
+        return;
+
+    m_currentItem = currentItem;
+    emit currentItemChanged();
 }
 
 void Mission::clear()
