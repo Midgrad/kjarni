@@ -22,17 +22,21 @@ public:
 
     RouteItem* home() const;
     Route* route() const;
+    RouteItem* item(int index);
+    int count() const;
 
     int currentItem() const;
 
 public slots:
     void assignRoute(Route* route);
     void setCurrentItem(int currentItem);
+    void setReached(int index);
     void clear();
 
 signals:
-    void routeChanged();
-    void currentItemChanged();
+    void routeChanged(Route* route);
+    void currentItemChanged(int index);
+    void itemReached(int index);
 
     void switchCurrentItem(int item); // Goto item
 
