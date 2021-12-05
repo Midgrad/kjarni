@@ -7,7 +7,6 @@
 
 namespace md::domain
 {
-// TODO: IConvertable
 class Geodetic
 {
 public:

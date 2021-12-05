@@ -49,7 +49,7 @@ void RouteItemsRepositorySql::update(domain::RouteItem* item, const QVariant& pa
     if (!parentId.isNull())
         map.insert(domain::props::parent, parentId);
 
-    m_routeItemsTable.updateById(map, item->id());
+    m_routeItemsTable.updateById(map, item->id);
 }
 
 void RouteItemsRepositorySql::remove(domain::RouteItem* item)

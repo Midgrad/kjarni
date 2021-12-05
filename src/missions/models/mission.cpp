@@ -7,19 +7,20 @@
 using namespace md::domain;
 
 Mission::Mission(const MissionType* type, const QString& name, const QVariant& vehicleId,
-                 QObject* parent) :
-    Named(utils::generateId(), name, parent),
-    m_type(type),
-    m_vehicleId(vehicleId),
-    m_home(new RouteItem(type->homePointType, type->homePointType->name))
+                 const QVariant& id, QObject* parent) :
+    Named(id, name, parent),
+    type(type),
+    vehicleId(vehicleId),
+    home(new RouteItem(type->homePointType, type->homePointType->name)),
+    route(nullptr, [this]() {
+        emit routeChanged(route);
+    })
 {
 }
 
 Mission::Mission(const MissionType* type, const QVariantMap& map, QObject* parent) :
-    Named(map, parent),
-    m_type(type),
-    m_vehicleId(map.value(props::vehicle)),
-    m_home(new RouteItem(type->homePointType, map.value(props::home).toMap(), this))
+    Mission(type, map.value(props::name).toString(), map.value(props::vehicle),
+            map.value(props::id), parent)
 {
 }
 
@@ -27,89 +28,67 @@ QVariantMap Mission::toVariantMap() const
 {
     QVariantMap map = Named::toVariantMap();
 
-    map.insert(props::type, m_type->id);
-    map.insert(props::vehicle, m_vehicleId);
-    map.insert(props::route, m_route->id());
+    map.insert(props::type, type.get()->id);
+    map.insert(props::vehicle, vehicleId);
+    map.insert(props::route, route.get()->id);
 
     return map;
-}
-
-const MissionType* Mission::type() const
-{
-    return m_type;
-}
-
-QVariant Mission::vehicleId() const
-{
-    return m_vehicleId;
-}
-
-RouteItem* Mission::home() const
-{
-    return m_home;
-}
-
-Route* Mission::route() const
-{
-    return m_route;
 }
 
 RouteItem* Mission::item(int index)
 {
     if (index == 0)
-        return m_home;
-    if (index > 0 && m_route && m_route->count() > index - 1) // +1 for home
-        return m_route->item(index - 1);
+        return home;
+
+    if (index > 0 && route && route()->count() > index - 1) // +1 for home
+        return route()->item(index - 1);
     return nullptr;
 }
 
 int Mission::count() const
 {
-    return m_route ? m_route->count() + 1 : 1;
+    return route ? route.get()->count() + 1 : 1;
 }
 
 int Mission::currentItem() const
 {
-    return m_currentItem;
+    if (m_currentItem == home)
+        return 0;
+    if (route)
+    {
+        int index = route.get()->index(m_currentItem);
+        if (index > -1)
+            return index + 1;
+    }
+    return -1;
 }
 
-void Mission::assignRoute(Route* route)
+void Mission::setCurrentItem(int index)
 {
-    if (m_route == route)
+    if (this->currentItem() == index)
         return;
 
-    m_route = route;
-    emit routeChanged(route);
-}
+    if (m_currentItem)
+        m_currentItem->current = false;
 
-void Mission::setCurrentItem(int currentItem)
-{
-    if (m_currentItem == currentItem)
-        return;
+    m_currentItem = this->item(index);
 
-    RouteItem* item = this->item(m_currentItem);
-    if (item)
-        item->setCurrent(false);
+    if (m_currentItem)
+        m_currentItem->current = true;
 
-    m_currentItem = currentItem;
-
-    item = this->item(currentItem);
-    if (item)
-        item->setCurrent(true);
-
-    emit currentItemChanged(currentItem);
+    emit currentItemChanged(index);
 }
 
 void Mission::setReached(int index)
 {
     RouteItem* item = this->item(index);
     if (item)
-        item->setReached(true);
+        item->reached = true;
 
     emit itemReached(index);
 }
 
 void Mission::clear()
 {
-    m_route->clear();
+    route()->clear();
 }

@@ -11,17 +11,21 @@ class RouteItem : public Parametrised
     Q_OBJECT
 
 public:
+    RouteItem(const RouteItemType* type, const QVariant& id, const QString& name,
+              QVariantMap params, const QVariantMap& calcData, bool current, bool reached,
+              QObject* parent);
     RouteItem(const RouteItemType* type, const QVariant& id = utils::generateId(),
-              QObject* parent = nullptr);
+              const QVariantMap& calcData = QVariantMap(), QObject* parent = nullptr);
     RouteItem(const RouteItemType* type, const QVariantMap& map, QObject* parent = nullptr);
+
+    utils::Property<QVariantMap> calcData;
+    utils::Property<bool> current;
+    utils::Property<bool> reached;
 
     QVariantMap toVariantMap() const override;
     void fromVariantMap(const QVariantMap& map) override;
 
     const RouteItemType* type() const;
-    QVariantMap calcData();
-    bool isCurrent() const;
-    bool isReached() const;
 
     int count() const;
     int index(RouteItem* item) const;
@@ -35,10 +39,6 @@ public slots:
     void resetParameter(const QString& paramId);
     void resetParameters();
     void syncParameters();
-
-    void setCalcData(const QVariantMap& calcData);
-    void setCurrent(bool current);
-    void setReached(bool reached);
 
     void setItems(const QList<RouteItem*>& items);
     void addItem(RouteItem* item);
@@ -54,9 +54,6 @@ signals:
 
 private:
     const RouteItemType* m_type;
-    QVariantMap m_calcData;
-    bool m_current = false;
-    bool m_reached = false;
 
     QList<RouteItem*> m_items;
 };

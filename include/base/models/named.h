@@ -12,18 +12,11 @@ class Named : public Entity
 public:
     Named(const QVariant& id = utils::generateId(), const QString& name = QString(),
           QObject* parent = nullptr);
-    Named(const QVariantMap& map, QObject* parent = nullptr);
+
+    utils::Property<QString> name;
 
     QVariantMap toVariantMap() const override;
     void fromVariantMap(const QVariantMap& map) override;
-
-    QString name() const;
-
-public slots:
-    void setName(const QString& name);
-
-private:
-    QString m_name;
 };
 } // namespace md::domain
 

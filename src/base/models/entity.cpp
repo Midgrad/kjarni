@@ -2,12 +2,7 @@
 
 using namespace md::domain;
 
-Entity::Entity(const QVariant& id, QObject* parent) : QObject(parent), m_id(id)
-{
-}
-
-Entity::Entity(const QVariantMap& map, QObject* parent) :
-    Entity(map.value(props::id, utils::generateId()), parent)
+Entity::Entity(const QVariant& id, QObject* parent) : QObject(parent), id(id)
 {
 }
 
@@ -15,15 +10,10 @@ Entity::~Entity()
 {
 }
 
-QVariant Entity::id() const
-{
-    return m_id;
-}
-
 QVariantMap Entity::toVariantMap() const
 {
     QVariantMap map;
-    map.insert(props::id, m_id.toString());
+    map.insert(props::id, id);
     return map;
 }
 

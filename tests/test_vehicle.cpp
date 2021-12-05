@@ -39,9 +39,9 @@ TEST_P(VehicleTest, testConstructFromMap)
 
     Vehicle vehicle(map);
 
-    EXPECT_EQ(vehicle.id(), args.id);
-    EXPECT_EQ(vehicle.name(), args.name);
-    EXPECT_EQ(vehicle.type(), args.type);
+    EXPECT_EQ(vehicle.id, args.id);
+    EXPECT_EQ(vehicle.name, args.name);
+    EXPECT_EQ(vehicle.type, args.type);
     EXPECT_EQ(vehicle.parameters(), args.params);
 }
 
@@ -57,8 +57,8 @@ TEST_P(VehicleTest, testFromVariant)
     map.insert(props::type, QVariant::fromValue(args.type).toString());
 
     vehicle.fromVariantMap(map);
-    EXPECT_EQ(vehicle.name(), args.name);
-    EXPECT_EQ(vehicle.type(), args.type);
+    EXPECT_EQ(vehicle.name, args.name);
+    EXPECT_EQ(vehicle.type, args.type);
     EXPECT_EQ(vehicle.parameters(), args.params);
 }
 
@@ -70,7 +70,7 @@ TEST_P(VehicleTest, testToVariant)
     vehicle.setParameters(GetParam().params);
 
     QVariantMap map;
-    map.insert(props::id, vehicle.id());
+    map.insert(props::id, vehicle.id);
     map.insert(props::name, args.name);
     map.insert(props::params, args.params);
     map.insert(props::type, QVariant::fromValue(args.type).toString());

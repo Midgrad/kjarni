@@ -24,6 +24,11 @@ public:
         return this->get();
     }
 
+    const T& operator()()
+    {
+        return this->get();
+    }
+
 protected:
     T m_value;
 };

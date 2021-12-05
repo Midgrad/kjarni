@@ -5,6 +5,7 @@
 #include <QVariantMap>
 
 #include "kjarni_traits.h"
+#include "magic_property.hpp"
 #include "utils.h"
 
 namespace md::domain
@@ -18,16 +19,13 @@ public:
     Entity(const QVariantMap& map, QObject* parent = nullptr);
     virtual ~Entity();
 
-    QVariant id() const;
+    utils::ConstProperty<QVariant> id;
 
     virtual QVariantMap toVariantMap() const;
     virtual void fromVariantMap(const QVariantMap& map);
 
 signals:
     void changed();
-
-private:
-    const QVariant m_id;
 };
 } // namespace md::domain
 

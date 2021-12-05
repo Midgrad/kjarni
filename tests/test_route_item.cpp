@@ -53,7 +53,7 @@ TEST_P(RouteItemTest, testConstructFromMap)
 
     RouteItem item(args.type, map);
 
-    EXPECT_EQ(item.id(), args.id);
+    EXPECT_EQ(item.id, args.id);
     EXPECT_EQ(item.parameters(), args.params);
     EXPECT_EQ(item.type(), args.type);
 }

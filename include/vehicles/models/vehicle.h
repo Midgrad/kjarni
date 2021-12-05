@@ -23,19 +23,13 @@ public:
     };
 
     Vehicle(Type type, const QString& name, const QVariant& id = utils::generateId(),
-            QObject* parent = nullptr);
+            const QVariantMap& parameters = QVariantMap(), QObject* parent = nullptr);
     Vehicle(const QVariantMap& map, QObject* parent = nullptr);
+
+    utils::Property<Type> type;
 
     QVariantMap toVariantMap() const override;
     void fromVariantMap(const QVariantMap& map) override;
-
-    Type type() const;
-
-public slots:
-    void setType(Type type);
-
-private:
-    Type m_type;
 
     Q_ENUM(Type)
 };

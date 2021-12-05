@@ -14,43 +14,30 @@ Vehicle::Type typeFromVariant(const QVariant& value)
 }
 } // namespace
 
-Vehicle::Vehicle(Type type, const QString& name, const QVariant& id, QObject* parent) :
-    Parametrised(id, name, QVariantMap(), parent),
-    m_type(type)
+Vehicle::Vehicle(Type type, const QString& name, const QVariant& id, const QVariantMap& parameters,
+                 QObject* parent) :
+    Parametrised(id, name, parameters, parent),
+    type(type, std::bind(&Entity::changed, this))
 {
 }
 
 Vehicle::Vehicle(const QVariantMap& map, QObject* parent) :
-    Parametrised(map, parent),
-    m_type(::typeFromVariant(map.value(props::type)))
+    Vehicle(::typeFromVariant(map.value(props::type)), map.value(props::name).toString(),
+            map.value(props::id), map.value(props::params).toMap(), parent)
 {
 }
 
 QVariantMap Vehicle::toVariantMap() const
 {
     QVariantMap map = Parametrised::toVariantMap();
-    map.insert(props::type, QVariant::fromValue(m_type).toString());
+    map.insert(props::type, QVariant::fromValue(type.get()).toString());
     return map;
 }
 
 void Vehicle::fromVariantMap(const QVariantMap& map)
 {
     if (map.contains(props::type))
-        m_type = ::typeFromVariant(map.value(props::type));
+        type = ::typeFromVariant(map.value(props::type));
 
     Parametrised::fromVariantMap(map);
-}
-
-Vehicle::Type Vehicle::type() const
-{
-    return m_type;
-}
-
-void Vehicle::setType(Type type)
-{
-    if (m_type == type)
-        return;
-
-    m_type = type;
-    emit changed();
 }

@@ -101,7 +101,7 @@ void RoutesService::unregisterRouteType(const RouteType* routeType)
 void RoutesService::addRoute(Route* route)
 {
     route->setParent(this);
-    m_routes.insert(route->id(), route);
+    m_routes.insert(route->id, route);
 }
 
 void RoutesService::readAll()
@@ -122,11 +122,11 @@ void RoutesService::removeRoute(Route* route)
     QMutexLocker locker(&m_mutex);
 
     // Delete items first
-    this->removeItemsRecursive(m_itemsRepo->selectChildItemsIds(route->id()));
+    this->removeItemsRecursive(m_itemsRepo->selectChildItemsIds(route->id));
 
     // Delete route
     m_routesRepo->remove(route);
-    m_routes.remove(route->id());
+    m_routes.remove(route->id);
     emit routeRemoved(route);
 
     route->deleteLater();
@@ -136,14 +136,14 @@ void RoutesService::restoreRoute(Route* route)
 {
     QMutexLocker locker(&m_mutex);
 
-    QVariantList itemIds = m_itemsRepo->selectChildItemsIds(route->id());
+    QVariantList itemIds = m_itemsRepo->selectChildItemsIds(route->id);
     for (RouteItem* item : route->items())
     {
         // Restore stored item
-        if (itemIds.contains(item->id()))
+        if (itemIds.contains(item->id))
         {
             this->restoreItemImpl(item);
-            itemIds.removeOne(item->id());
+            itemIds.removeOne(item->id);
         }
         // Remove newbie items
         else
@@ -171,7 +171,7 @@ void RoutesService::saveRoute(Route* route)
     bool added;
 
     // Update or insert route
-    if (m_routes.contains(route->id()))
+    if (m_routes.contains(route->id))
     {
         m_routesRepo->update(route);
         added = false;
@@ -179,7 +179,7 @@ void RoutesService::saveRoute(Route* route)
     else
     {
         m_routesRepo->insert(route);
-        m_routes.insert(route->id(), route);
+        m_routes.insert(route->id, route);
 
         route->moveToThread(this->thread());
         route->setParent(this);
@@ -187,10 +187,10 @@ void RoutesService::saveRoute(Route* route)
     }
 
     // Update or insert items
-    QVariantList itemIds = m_itemsRepo->selectChildItemsIds(route->id());
+    QVariantList itemIds = m_itemsRepo->selectChildItemsIds(route->id);
     for (RouteItem* item : route->items())
     {
-        this->saveItemImpl(item, route->id(), itemIds);
+        this->saveItemImpl(item, route->id, itemIds);
     }
 
     // Delete removed items
@@ -203,8 +203,8 @@ void RoutesService::saveItem(Route* route, RouteItem* item)
 {
     QMutexLocker locker(&m_mutex);
 
-    QVariantList itemIds = m_itemsRepo->selectChildItemsIds(route->id());
-    this->saveItemImpl(item, route->id(), itemIds);
+    QVariantList itemIds = m_itemsRepo->selectChildItemsIds(route->id);
+    this->saveItemImpl(item, route->id, itemIds);
 
     emit routeChanged(route);
 }
@@ -271,10 +271,10 @@ RouteItem* RoutesService::readItem(const QVariant& id)
 void RoutesService::saveItemImpl(RouteItem* item, const QVariant& parentId, QVariantList& itemIds)
 {
     // Update stored item
-    if (itemIds.contains(item->id()))
+    if (itemIds.contains(item->id))
     {
         m_itemsRepo->update(item, parentId);
-        itemIds.removeOne(item->id());
+        itemIds.removeOne(item->id);
     }
     // Insert newbie items
     else
@@ -283,12 +283,12 @@ void RoutesService::saveItemImpl(RouteItem* item, const QVariant& parentId, QVar
     }
 
     // Save child items
-    QVariantList childItemIds = m_itemsRepo->selectChildItemsIds(item->id());
+    QVariantList childItemIds = m_itemsRepo->selectChildItemsIds(item->id);
 
     // Save or update child items
     for (RouteItem* childItem : item->items())
     {
-        this->saveItemImpl(childItem, item->id(), childItemIds);
+        this->saveItemImpl(childItem, item->id, childItemIds);
     }
 
     // Delete removed children
@@ -297,14 +297,14 @@ void RoutesService::saveItemImpl(RouteItem* item, const QVariant& parentId, QVar
 
 void RoutesService::restoreItemImpl(RouteItem* item)
 {
-    QVariantList itemIds = m_itemsRepo->selectChildItemsIds(item->id());
+    QVariantList itemIds = m_itemsRepo->selectChildItemsIds(item->id);
     for (RouteItem* child : item->items())
     {
         // Restore stored item
-        if (itemIds.contains(child->id()))
+        if (itemIds.contains(child->id))
         {
             this->restoreItemImpl(child);
-            itemIds.removeOne(child->id());
+            itemIds.removeOne(child->id);
         }
         // Remove newbie items
         else

@@ -20,6 +20,11 @@ QVariantList VehiclesRepositorySql::selectVehicleIds()
     return m_vehiclesTable.selectIds();
 }
 
+QVariantMap VehiclesRepositorySql::select(const QVariant& vehicleId)
+{
+    return m_vehiclesTable.selectById(vehicleId);
+}
+
 void VehiclesRepositorySql::insert(domain::Vehicle* vehicle)
 {
     m_vehiclesTable.insertEntity(vehicle);

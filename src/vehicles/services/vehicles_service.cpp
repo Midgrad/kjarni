@@ -48,7 +48,7 @@ void VehiclesService::removeVehicle(Vehicle* vehicle)
     QMutexLocker locker(&m_mutex);
 
     m_vehiclesRepo->remove(vehicle);
-    m_vehicles.remove(vehicle->id());
+    m_vehicles.remove(vehicle->id);
 
     emit vehicleRemoved(vehicle);
     vehicle->deleteLater();
@@ -66,7 +66,7 @@ void VehiclesService::saveVehicle(Vehicle* vehicle)
 {
     QMutexLocker locker(&m_mutex);
 
-    if (m_vehicles.contains(vehicle->id()))
+    if (m_vehicles.contains(vehicle->id))
     {
         m_vehiclesRepo->update(vehicle);
         emit vehicleChanged(vehicle);
@@ -74,7 +74,7 @@ void VehiclesService::saveVehicle(Vehicle* vehicle)
     else
     {
         m_vehiclesRepo->insert(vehicle);
-        m_vehicles.insert(vehicle->id(), vehicle);
+        m_vehicles.insert(vehicle->id, vehicle);
         vehicle->moveToThread(this->thread());
         vehicle->setParent(this);
         emit vehicleAdded(vehicle);
@@ -83,8 +83,8 @@ void VehiclesService::saveVehicle(Vehicle* vehicle)
 
 Vehicle* VehiclesService::readVehicle(const QVariant& id)
 {
-    Vehicle* vehicle = new Vehicle(Vehicle::Generic, QString(), id, this);
-    m_vehiclesRepo->read(vehicle);
+    QVariantMap map = m_vehiclesRepo->select(id);
+    Vehicle* vehicle = new Vehicle(map, this);
 
     m_vehicles.insert(id, vehicle);
     emit vehicleAdded(vehicle);

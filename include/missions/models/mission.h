@@ -12,25 +12,23 @@ class Mission : public Named
 
 public:
     Mission(const MissionType* type, const QString& name, const QVariant& vehicleId,
-            QObject* parent = nullptr);
+            const QVariant& id = utils::generateId(), QObject* parent = nullptr);
     Mission(const MissionType* type, const QVariantMap& map, QObject* parent = nullptr);
+
+    utils::ConstProperty<MissionType const*> type;
+    utils::ConstProperty<QVariant> vehicleId;
+    utils::ConstProperty<RouteItem*> home;
+    utils::Property<Route*> route;
 
     QVariantMap toVariantMap() const override;
 
-    const MissionType* type() const;
-    QVariant vehicleId() const;
-
-    RouteItem* home() const;
-    Route* route() const;
     RouteItem* item(int index);
     int count() const;
-
     int currentItem() const;
 
 public slots:
-    void assignRoute(Route* route);
-    void setCurrentItem(int currentItem);
     void setReached(int index);
+    void setCurrentItem(int index);
     void clear();
 
 signals:
@@ -41,13 +39,7 @@ signals:
     void switchCurrentItem(int item); // Goto item
 
 private:
-    const MissionType* const m_type;
-    const QVariant m_vehicleId;
-
-    int m_currentItem = -1;
-
-    RouteItem* const m_home;
-    Route* m_route;
+    RouteItem* m_currentItem = nullptr;
 };
 } // namespace md::domain
 

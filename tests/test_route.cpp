@@ -35,8 +35,8 @@ TEST_F(RouteTest, testConstructFromMap)
 
     Route route(&test_mission::routeType, map);
 
-    EXPECT_EQ(route.id(), map.value(props::id));
-    EXPECT_EQ(route.name(), map.value(props::name));
+    EXPECT_EQ(route.id, map.value(props::id));
+    EXPECT_EQ(route.name, map.value(props::name).toString());
 }
 
 TEST_F(RouteTest, testFromVariant)
@@ -48,7 +48,7 @@ TEST_F(RouteTest, testFromVariant)
 
     route.fromVariantMap(map);
 
-    EXPECT_EQ(route.name(), map.value(props::name));
+    EXPECT_EQ(route.name, map.value(props::name).toString());
 }
 
 TEST_F(RouteTest, testAddWaypoint)

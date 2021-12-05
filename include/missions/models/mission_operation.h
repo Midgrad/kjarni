@@ -26,26 +26,14 @@ public:
 
     MissionOperation(Type type, Mission* mission, QObject* parent = nullptr);
 
-    Type type() const;
-    Mission* mission() const;
-    State state() const;
-    int progress() const;
-    int total() const;
+    utils::ConstProperty<Type> type;
+    utils::ConstProperty<Mission*> mission;
+    utils::Property<State> state;
+    utils::Property<int> progress;
+    utils::Property<int> total;
 
     bool isComplete() const;
     QVariantMap toVariantMap() const override;
-
-public slots:
-    void setState(State state);
-    void setProgress(int progress);
-    void setTotal(int total);
-
-private:
-    const Type m_type;
-    Mission* const m_mission;
-    State m_state = InProgress;
-    int m_progress = 0;
-    int m_total = 0;
 
     Q_ENUM(Type);
 };

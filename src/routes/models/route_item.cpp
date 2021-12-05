@@ -6,34 +6,47 @@
 
 using namespace md::domain;
 
-RouteItem::RouteItem(const RouteItemType* type, const QVariant& id, QObject* parent) :
-    Parametrised(id, type->shortName, type->defaultParameters(), parent),
+RouteItem::RouteItem(const RouteItemType* type, const QVariant& id, const QString& name,
+                     QVariantMap params, const QVariantMap& calcData, bool current, bool reached,
+                     QObject* parent) :
+    Parametrised(id, name, params, parent),
+    calcData(calcData, std::bind(&Entity::changed, this)),
+    current(current, std::bind(&Entity::changed, this)),
+    reached(reached, std::bind(&Entity::changed, this)),
     m_type(type)
+{
+    Q_ASSERT(type);
+}
+
+RouteItem::RouteItem(const RouteItemType* type, const QVariant& id, const QVariantMap& calcData,
+                     QObject* parent) :
+    RouteItem(type, id, type->shortName, calcData, type->defaultParameters(), false, false, parent)
 {
 }
 
 RouteItem::RouteItem(const RouteItemType* type, const QVariantMap& map, QObject* parent) :
-    Parametrised(map, parent),
-    m_type(type),
-    m_calcData(map.value(props::calcData).toMap())
+    RouteItem(type, map.value(props::id), map.value(props::name).toString(),
+              map.value(props::params).toMap(), map.value(props::calcData).toMap(),
+              map.value(props::current).toBool(), map.value(props::reached).toBool(), parent)
 {
-    Q_ASSERT(type);
 }
 
 QVariantMap RouteItem::toVariantMap() const
 {
     QVariantMap map = Parametrised::toVariantMap();
     map.insert(props::type, m_type->id);
-    map.insert(props::calcData, m_calcData);
-    map.insert(props::current, m_current);
-    map.insert(props::reached, m_reached);
+    map.insert(props::calcData, calcData.get());
+    map.insert(props::current, current.get());
+    map.insert(props::reached, reached.get());
 
     return map;
 }
 
 void RouteItem::fromVariantMap(const QVariantMap& map)
 {
-    m_calcData = map.value(props::calcData, m_calcData).toMap();
+    calcData = map.value(props::calcData, calcData.get()).toMap();
+    current = map.value(props::current, current.get()).toBool();
+    reached = map.value(props::reached, reached.get()).toBool();
 
     Parametrised::fromVariantMap(map);
 }
@@ -41,21 +54,6 @@ void RouteItem::fromVariantMap(const QVariantMap& map)
 const RouteItemType* RouteItem::type() const
 {
     return m_type;
-}
-
-QVariantMap RouteItem::calcData()
-{
-    return m_calcData;
-}
-
-bool RouteItem::isCurrent() const
-{
-    return m_current;
-}
-
-bool RouteItem::isReached() const
-{
-    return m_reached;
 }
 
 int RouteItem::count() const
@@ -87,7 +85,7 @@ void RouteItem::setType(const RouteItemType* type)
 
     m_type = type;
 
-    this->setName(type->shortName);
+    name = type->shortName;
     this->syncParameters();
 
     // Remove untyped children
@@ -144,33 +142,6 @@ void RouteItem::syncParameters()
     }
 
     this->setParameters(parameters);
-}
-
-void RouteItem::setCalcData(const QVariantMap& calcData)
-{
-    if (m_calcData == calcData)
-        return;
-
-    m_calcData = calcData;
-    emit changed();
-}
-
-void RouteItem::setCurrent(bool current)
-{
-    if (m_current == current)
-        return;
-
-    m_current = current;
-    emit changed();
-}
-
-void RouteItem::setReached(bool reached)
-{
-    if (m_reached == reached)
-        return;
-
-    m_reached = reached;
-    emit changed();
 }
 
 void RouteItem::setItems(const QList<RouteItem*>& items)

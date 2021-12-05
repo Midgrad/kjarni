@@ -72,8 +72,8 @@ TEST_P(BaseModelsTest, testConstructFromMap)
 
     Parametrised entity(map);
 
-    EXPECT_EQ(entity.id(), args.id);
-    EXPECT_EQ(entity.name(), args.name);
+    EXPECT_EQ(entity.id, args.id);
+    EXPECT_EQ(entity.name, args.name);
     EXPECT_EQ(entity.parameters(), args.params);
 }
 
@@ -87,8 +87,8 @@ TEST_P(BaseModelsTest, testFromVariant)
     map.insert(props::params, QJsonValue::fromVariant(args.params));
 
     entity.fromVariantMap(map);
-    EXPECT_EQ(entity.id(), args.id);
-    EXPECT_EQ(entity.name(), args.name);
+    EXPECT_EQ(entity.id, args.id);
+    EXPECT_EQ(entity.name, args.name);
     EXPECT_EQ(entity.parameters(), args.params);
 }
 

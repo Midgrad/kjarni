@@ -15,10 +15,8 @@ Route::Route(const RouteType* type, const QString& name, const QVariant& id, QOb
 }
 
 Route::Route(const RouteType* type, const QVariantMap& map, QObject* parent) :
-    Named(map, parent),
-    m_type(type)
+    Route(type, map.value(props::name).toString(), map.value(props::id), parent)
 {
-    Q_ASSERT(type);
 }
 
 QVariantMap Route::toVariantMap() const

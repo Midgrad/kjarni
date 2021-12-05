@@ -50,17 +50,17 @@ void EntitySqlTable::insertEntity(domain::Entity* entity)
 
 void EntitySqlTable::readEntity(domain::Entity* entity)
 {
-    entity->fromVariantMap(this->selectById(entity->id()));
+    entity->fromVariantMap(this->selectById(entity->id));
 }
 
 void EntitySqlTable::updateEntity(domain::Entity* entity)
 {
-    this->updateById(this->entityToMap(entity), entity->id());
+    this->updateById(this->entityToMap(entity), entity->id);
 }
 
 void EntitySqlTable::removeEntity(domain::Entity* entity)
 {
-    this->removeById(entity->id());
+    this->removeById(entity->id);
 }
 
 QVariantMap EntitySqlTable::entityToMap(domain::Entity* entity)

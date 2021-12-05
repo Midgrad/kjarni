@@ -12,6 +12,7 @@ public:
     virtual ~IVehiclesRepository() = default;
 
     virtual QVariantList selectVehicleIds() = 0;
+    virtual QVariantMap select(const QVariant& vehicleId) = 0;
 
     virtual void insert(Vehicle* vehicle) = 0;
     virtual void read(Vehicle* vehicle) = 0;

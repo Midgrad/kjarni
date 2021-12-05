@@ -12,6 +12,7 @@ class VehiclesRepositoryMock : public IVehiclesRepository
 {
 public:
     MOCK_METHOD(QVariantList, selectVehicleIds, (), (override));
+    MOCK_METHOD(QVariantMap, select, (const QVariant&), (override));
 
     MOCK_METHOD(void, insert, (Vehicle*), (override));
     MOCK_METHOD(void, read, (Vehicle*), (override));
@@ -35,7 +36,7 @@ TEST_F(VehicleServiceTest, testReadAll)
     QSignalSpy spyAdded(&service, &IVehiclesService::vehicleAdded);
 
     EXPECT_CALL(vehicles, selectVehicleIds()).WillOnce(Return(QVariantList({ "vehicle 1", 2345 })));
-    EXPECT_CALL(vehicles, read(_)).Times(2);
+    EXPECT_CALL(vehicles, select(_)).WillRepeatedly(Return(QVariantMap()));
 
     service.readAll();
 

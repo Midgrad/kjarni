@@ -12,6 +12,7 @@ public:
     VehiclesRepositorySql(QSqlDatabase* database);
 
     QVariantList selectVehicleIds() override;
+    QVariantMap select(const QVariant& vehicleId) override;
 
     void insert(domain::Vehicle* vehicle) override;
     void read(domain::Vehicle* vehicle) override;
