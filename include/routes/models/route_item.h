@@ -20,6 +20,8 @@ public:
 
     const RouteItemType* type() const;
     QVariantMap calcData();
+    bool isCurrent() const;
+    bool isReached() const;
 
     int count() const;
     int index(RouteItem* item) const;
@@ -35,6 +37,8 @@ public slots:
     void syncParameters();
 
     void setCalcData(const QVariantMap& calcData);
+    void setCurrent(bool current);
+    void setReached(bool reached);
 
     void setItems(const QList<RouteItem*>& items);
     void addItem(RouteItem* item);
@@ -51,6 +55,9 @@ signals:
 private:
     const RouteItemType* m_type;
     QVariantMap m_calcData;
+    bool m_current = false;
+    bool m_reached = false;
+
     QList<RouteItem*> m_items;
 };
 } // namespace md::domain

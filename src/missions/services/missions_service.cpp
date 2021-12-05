@@ -129,7 +129,7 @@ void MissionsService::removeMission(Mission* mission)
         this->endOperation(operation);
 
     // Remove home point
-    m_itemsRepo->remove(mission->route()->homeItem());
+    m_itemsRepo->remove(mission->home());
 
     // Remove mission
     m_missionsRepo->remove(mission);
@@ -147,7 +147,7 @@ void MissionsService::restoreMission(Mission* mission)
     m_missionsRepo->read(mission);
 
     // Restore home point
-    m_itemsRepo->read(mission->route()->homeItem());
+    m_itemsRepo->read(mission->home());
 
     emit missionChanged(mission);
 }
@@ -160,26 +160,21 @@ void MissionsService::saveMission(Mission* mission)
     mission->moveToThread(this->thread());
     mission->setParent(this);
 
-    // Save mission route to routes
-    Route* route = m_routes->route(mission->route()->id());
-    if (!route)
-    {
-        route = new Route(mission->type()->routeType, mission->name(), mission->route()->id());
-    }
-    mission->route()->copyTo(route);
-    m_routes->saveRoute(route);
+    // Save mission route
+    if (mission->route())
+        m_routes->saveRoute(mission->route());
 
     // Finaly save mission
     if (m_missions.contains(mission->id()))
     {
-        m_itemsRepo->update(mission->route()->homeItem(), mission->id());
+        m_itemsRepo->update(mission->home(), mission->id());
         m_missionsRepo->update(mission);
 
         emit missionChanged(mission);
     }
     else
     {
-        m_itemsRepo->insert(mission->route()->homeItem(), mission->id());
+        m_itemsRepo->insert(mission->home(), mission->id());
         m_missionsRepo->insert(mission);
 
         m_missions.insert(mission->id(), mission);
@@ -214,7 +209,7 @@ Mission* MissionsService::readMission(const QVariant& id)
 
     Route* route = m_routes->route(map.value(props::route));
     if (route)
-        mission->route()->copyFrom(route);
+        mission->assignRoute(route);
 
     return mission;
 }

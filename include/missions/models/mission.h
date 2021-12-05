@@ -1,8 +1,8 @@
 #ifndef MISSION_H
 #define MISSION_H
 
-#include "mission_route.h"
 #include "mission_type.h"
+#include "route.h"
 
 namespace md::domain
 {
@@ -19,16 +19,35 @@ public:
 
     const MissionType* type() const;
     QVariant vehicleId() const;
-    MissionRoute* route() const;
+
+    RouteItem* home() const;
+    Route* route() const;
+    RouteItem* item(int index);
+    int count() const;
+
+    int currentItem() const;
 
 public slots:
+    void assignRoute(Route* route);
+    void setCurrentItem(int currentItem);
+    void setReached(int index);
     void clear();
+
+signals:
+    void routeChanged(Route* route);
+    void currentItemChanged(int index);
+    void itemReached(int index);
+
+    void switchCurrentItem(int item); // Goto item
 
 private:
     const MissionType* const m_type;
-    MissionRoute* const m_route;
-
     const QVariant m_vehicleId;
+
+    int m_currentItem = -1;
+
+    RouteItem* const m_home;
+    Route* m_route;
 };
 } // namespace md::domain
 

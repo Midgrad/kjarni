@@ -25,6 +25,9 @@ QVariantMap RouteItem::toVariantMap() const
     QVariantMap map = Parametrised::toVariantMap();
     map.insert(props::type, m_type->id);
     map.insert(props::calcData, m_calcData);
+    map.insert(props::current, m_current);
+    map.insert(props::reached, m_reached);
+
     return map;
 }
 
@@ -43,6 +46,16 @@ const RouteItemType* RouteItem::type() const
 QVariantMap RouteItem::calcData()
 {
     return m_calcData;
+}
+
+bool RouteItem::isCurrent() const
+{
+    return m_current;
+}
+
+bool RouteItem::isReached() const
+{
+    return m_reached;
 }
 
 int RouteItem::count() const
@@ -139,6 +152,24 @@ void RouteItem::setCalcData(const QVariantMap& calcData)
         return;
 
     m_calcData = calcData;
+    emit changed();
+}
+
+void RouteItem::setCurrent(bool current)
+{
+    if (m_current == current)
+        return;
+
+    m_current = current;
+    emit changed();
+}
+
+void RouteItem::setReached(bool reached)
+{
+    if (m_reached == reached)
+        return;
+
+    m_reached = reached;
     emit changed();
 }
 

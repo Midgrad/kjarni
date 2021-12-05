@@ -15,10 +15,6 @@ constexpr char home[] = "home";
 constexpr char complete[] = "complete";
 constexpr char progress[] = "progress";
 constexpr char total[] = "total";
-
-constexpr char current[] = "current";
-constexpr char reached[] = "reached";
-constexpr char confirmed[] = "confirmed";
 } // namespace props
 } // namespace md::domain
 
