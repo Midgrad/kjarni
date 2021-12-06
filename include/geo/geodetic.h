@@ -4,6 +4,7 @@
 #include <QVariantMap>
 
 #include "geo_traits.h"
+#include "magic_property.hpp"
 
 namespace md::domain
 {
@@ -15,10 +16,10 @@ public:
     Geodetic(const QVariantMap& map);
     Geodetic();
 
-    double latitude() const;
-    double longitude() const;
-    float altitude() const;
-    QString datum() const;
+    utils::ConstProperty<double> latitude;
+    utils::ConstProperty<double> longitude;
+    utils::ConstProperty<float> altitude;
+    utils::ConstProperty<QString> datum;
 
     QVariantMap toVariantMap() const;
     bool isValidPosition() const;
@@ -29,12 +30,6 @@ public:
 
     Geodetic& operator=(const Geodetic& other);
     friend bool operator==(const Geodetic& first, const Geodetic& second);
-
-private:
-    double m_latitude;
-    double m_longitude;
-    float m_altitude;
-    QString m_datum;
 };
 
 bool operator==(const Geodetic& first, const Geodetic& second);

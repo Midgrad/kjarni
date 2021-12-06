@@ -56,7 +56,7 @@ public:
 public slots:
     void setParameters(const QVariantMap& parameters);
     void setParameter(const QString& key, const QVariant& value);
-    // TODO: void setParameter(const Parameter* parameter, const QVariant& value);
+    void setParameter(const Parameter* parameter, const QVariant& value);
     void removeParameters(const QStringList& keys);
     void removeParameter(const QString& key);
 

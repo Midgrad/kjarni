@@ -103,6 +103,11 @@ void Parametrised::setParameter(const QString& key, const QVariant& value)
     emit changed();
 }
 
+void Parametrised::setParameter(const Parameter* parameter, const QVariant& value)
+{
+    this->setParameter(parameter->id, value);
+}
+
 void Parametrised::removeParameters(const QStringList& keys)
 {
     bool changedFlag = false;

@@ -17,7 +17,7 @@ class Entity : public QObject
 public:
     Entity(const QVariant& id = utils::generateId(), QObject* parent = nullptr);
     Entity(const QVariantMap& map, QObject* parent = nullptr);
-    virtual ~Entity();
+    ~Entity() override;
 
     utils::ConstProperty<QVariant> id;
 

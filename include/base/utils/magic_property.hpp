@@ -4,6 +4,8 @@
 #include <functional>
 #include <type_traits>
 
+#include <QVariant>
+
 namespace md::utils
 {
 template<typename T>
@@ -24,7 +26,7 @@ public:
         return this->get();
     }
 
-    const T& operator()()
+    const T& operator()() const
     {
         return this->get();
     }
