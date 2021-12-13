@@ -11,13 +11,13 @@ Named::Named(const QVariant& id, const QString& name, QObject* parent) :
 QVariantMap Named::toVariantMap() const
 {
     QVariantMap map = Entity::toVariantMap();
-    map.insert(props::name, name.get());
+    map.insert(props::name, this->name());
     return map;
 }
 
 void Named::fromVariantMap(const QVariantMap& map)
 {
-    name = map.value(props::name, name.get()).toString();
+    name = map.value(props::name, this->name()).toString();
     Entity::fromVariantMap(map);
 
     emit changed();

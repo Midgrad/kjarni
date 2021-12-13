@@ -30,7 +30,7 @@ Vehicle::Vehicle(const QVariantMap& map, QObject* parent) :
 QVariantMap Vehicle::toVariantMap() const
 {
     QVariantMap map = Parametrised::toVariantMap();
-    map.insert(props::type, QVariant::fromValue(type.get()).toString());
+    map.insert(props::type, QVariant::fromValue(this->type()).toString());
     return map;
 }
 

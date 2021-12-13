@@ -26,9 +26,9 @@ bool MissionOperation::isComplete() const
 QVariantMap MissionOperation::toVariantMap() const
 {
     QVariantMap map = Entity::toVariantMap();
-    map[props::progress] = progress.get();
-    map[props::total] = total.get();
+    map[props::progress] = this->progress();
+    map[props::total] = this->total();
     map[props::complete] = this->isComplete();
-    map[props::type] = QVariant::fromValue(type.get()).toString();
+    map[props::type] = QVariant::fromValue(this->type()).toString();
     return map;
 }

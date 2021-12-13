@@ -28,9 +28,9 @@ QVariantMap Mission::toVariantMap() const
 {
     QVariantMap map = Named::toVariantMap();
 
-    map.insert(props::type, type.get()->id);
-    map.insert(props::vehicle, vehicleId);
-    map.insert(props::route, route.get()->id);
+    map.insert(props::type, this->type()->id);
+    map.insert(props::vehicle, this->vehicleId());
+    map.insert(props::route, this->route()->id);
 
     return map;
 }
@@ -40,23 +40,24 @@ RouteItem* Mission::item(int index)
     if (index == 0)
         return home;
 
-    if (index > 0 && route && route()->count() > index - 1) // +1 for home
-        return route()->item(index - 1);
+    if (index > 0 && this->route && this->route()->count() > index - 1) // +1 for home
+        return this->route()->item(index - 1);
     return nullptr;
 }
 
 int Mission::count() const
 {
-    return route ? route.get()->count() + 1 : 1;
+    return this->route ? this->route()->count() + 1 : 1;
 }
 
 int Mission::currentItem() const
 {
     if (m_currentItem == home)
         return 0;
+
     if (route)
     {
-        int index = route.get()->index(m_currentItem);
+        int index = this->route()->index(m_currentItem);
         if (index > -1)
             return index + 1;
     }

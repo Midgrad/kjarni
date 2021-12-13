@@ -144,28 +144,28 @@ TEST_F(RouteServiceTest, testInsertRoute)
 
     // Insert route
     EXPECT_CALL(routes, insert(route)).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(route->id.get())).WillOnce(Return(QVariantList({})));
+    EXPECT_CALL(items, selectChildItemsIds(route->id())).WillOnce(Return(QVariantList({})));
 
     // Insert wpt1
-    EXPECT_CALL(items, insert(wpt1, route->id.get())).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(wpt1->id.get())).WillOnce(Return(QVariantList({})));
+    EXPECT_CALL(items, insert(wpt1, route->id())).Times(1);
+    EXPECT_CALL(items, selectChildItemsIds(wpt1->id())).WillOnce(Return(QVariantList({})));
 
     // Insert wpt2
-    EXPECT_CALL(items, insert(wpt2, route->id.get())).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(wpt2->id.get())).WillOnce(Return(QVariantList({})));
+    EXPECT_CALL(items, insert(wpt2, route->id())).Times(1);
+    EXPECT_CALL(items, selectChildItemsIds(wpt2->id())).WillOnce(Return(QVariantList({})));
     // Insert pld21
-    EXPECT_CALL(items, insert(pld21, wpt2->id.get())).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(pld21->id.get())).WillOnce(Return(QVariantList({})));
+    EXPECT_CALL(items, insert(pld21, wpt2->id())).Times(1);
+    EXPECT_CALL(items, selectChildItemsIds(pld21->id())).WillOnce(Return(QVariantList({})));
 
     // Insert wpt3
-    EXPECT_CALL(items, insert(wpt3, route->id.get())).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(wpt3->id.get())).WillOnce(Return(QVariantList({})));
+    EXPECT_CALL(items, insert(wpt3, route->id())).Times(1);
+    EXPECT_CALL(items, selectChildItemsIds(wpt3->id())).WillOnce(Return(QVariantList({})));
     // Insert pld31
-    EXPECT_CALL(items, insert(pld31, wpt3->id.get())).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(pld31->id.get())).WillOnce(Return(QVariantList({})));
+    EXPECT_CALL(items, insert(pld31, wpt3->id())).Times(1);
+    EXPECT_CALL(items, selectChildItemsIds(pld31->id())).WillOnce(Return(QVariantList({})));
     // Insert pld32
-    EXPECT_CALL(items, insert(pld32, wpt3->id.get())).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(pld32->id.get())).WillOnce(Return(QVariantList({})));
+    EXPECT_CALL(items, insert(pld32, wpt3->id())).Times(1);
+    EXPECT_CALL(items, selectChildItemsIds(pld32->id())).WillOnce(Return(QVariantList({})));
 
     service.saveRoute(route);
 
@@ -202,32 +202,31 @@ TEST_F(RouteServiceTest, testUpdateRoute)
 
     // Update route
     EXPECT_CALL(routes, update(route)).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(route->id.get()))
+    EXPECT_CALL(items, selectChildItemsIds(route->id()))
         .WillOnce(Return(QVariantList({ wpt1->id, wpt2->id, wpt3->id })));
 
     // Update wpt2
-    EXPECT_CALL(items, update(wpt2, route->id.get())).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(wpt2->id.get()))
-        .WillOnce(Return(QVariantList({ pld21->id })));
+    EXPECT_CALL(items, update(wpt2, route->id())).Times(1);
+    EXPECT_CALL(items, selectChildItemsIds(wpt2->id())).WillOnce(Return(QVariantList({ pld21->id })));
     // Remove pld21
-    EXPECT_CALL(items, selectChildItemsIds(pld21->id.get())).WillRepeatedly(Return(QVariantList({})));
-    EXPECT_CALL(items, removeById(pld21->id.get())).Times(1);
+    EXPECT_CALL(items, selectChildItemsIds(pld21->id())).WillRepeatedly(Return(QVariantList({})));
+    EXPECT_CALL(items, removeById(pld21->id())).Times(1);
 
     // Insert wpt4
-    EXPECT_CALL(items, insert(wpt4, route->id.get())).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(wpt4->id.get())).WillRepeatedly(Return(QVariantList({})));
+    EXPECT_CALL(items, insert(wpt4, route->id())).Times(1);
+    EXPECT_CALL(items, selectChildItemsIds(wpt4->id())).WillRepeatedly(Return(QVariantList({})));
 
     // Remove wpt1
-    EXPECT_CALL(items, selectChildItemsIds(wpt1->id.get())).WillRepeatedly(Return(QVariantList({})));
-    EXPECT_CALL(items, removeById(wpt1->id.get())).Times(1);
+    EXPECT_CALL(items, selectChildItemsIds(wpt1->id())).WillRepeatedly(Return(QVariantList({})));
+    EXPECT_CALL(items, removeById(wpt1->id())).Times(1);
 
     // Remove wpt3
-    EXPECT_CALL(items, selectChildItemsIds(wpt3->id.get()))
+    EXPECT_CALL(items, selectChildItemsIds(wpt3->id()))
         .WillRepeatedly(Return(QVariantList({ pld31->id })));
-    EXPECT_CALL(items, removeById(wpt3->id.get())).Times(1);
+    EXPECT_CALL(items, removeById(wpt3->id())).Times(1);
     // Remove pld31
-    EXPECT_CALL(items, selectChildItemsIds(pld31->id.get())).WillRepeatedly(Return(QVariantList({})));
-    EXPECT_CALL(items, removeById(pld31->id.get())).Times(1);
+    EXPECT_CALL(items, selectChildItemsIds(pld31->id())).WillRepeatedly(Return(QVariantList({})));
+    EXPECT_CALL(items, removeById(pld31->id())).Times(1);
 
     service.saveRoute(route);
 
@@ -262,33 +261,32 @@ TEST_F(RouteServiceTest, testRestoreRoute)
 
     // Read route
     EXPECT_CALL(routes, read(route)).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(route->id.get()))
+    EXPECT_CALL(items, selectChildItemsIds(route->id()))
         .WillOnce(Return(QVariantList({ wpt1->id, wpt2->id, wpt3->id })));
 
     // Read wpt2
     EXPECT_CALL(items, read(wpt2)).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(wpt2->id.get()))
-        .WillOnce(Return(QVariantList({ pld21->id })));
+    EXPECT_CALL(items, selectChildItemsIds(wpt2->id())).WillOnce(Return(QVariantList({ pld21->id })));
     // Select pld21
-    EXPECT_CALL(items, selectChildItemsIds(pld21->id.get())).WillRepeatedly(Return(QVariantList({})));
-    EXPECT_CALL(items, select(pld21->id.get()))
+    EXPECT_CALL(items, selectChildItemsIds(pld21->id())).WillRepeatedly(Return(QVariantList({})));
+    EXPECT_CALL(items, select(pld21->id()))
         .WillOnce(Return(QVariantMap({ { props::type, test_mission::changeAltitude.id } })));
 
     // wpt4 will just be removed form the route
 
     // Select wpt1
-    EXPECT_CALL(items, selectChildItemsIds(wpt1->id.get())).WillRepeatedly(Return(QVariantList({})));
-    EXPECT_CALL(items, select(wpt1->id.get()))
+    EXPECT_CALL(items, selectChildItemsIds(wpt1->id())).WillRepeatedly(Return(QVariantList({})));
+    EXPECT_CALL(items, select(wpt1->id()))
         .WillOnce(Return(QVariantMap({ { props::type, test_mission::waypoint.id } })));
 
     // Select wpt3
-    EXPECT_CALL(items, selectChildItemsIds(wpt3->id.get()))
+    EXPECT_CALL(items, selectChildItemsIds(wpt3->id()))
         .WillRepeatedly(Return(QVariantList({ pld31->id })));
-    EXPECT_CALL(items, select(wpt3->id.get()))
+    EXPECT_CALL(items, select(wpt3->id()))
         .WillOnce(Return(QVariantMap({ { props::type, test_mission::waypoint.id } })));
     // Select pld31
-    EXPECT_CALL(items, selectChildItemsIds(pld31->id.get())).WillRepeatedly(Return(QVariantList({})));
-    EXPECT_CALL(items, select(pld31->id.get()))
+    EXPECT_CALL(items, selectChildItemsIds(pld31->id())).WillRepeatedly(Return(QVariantList({})));
+    EXPECT_CALL(items, select(pld31->id()))
         .WillOnce(Return(QVariantMap({ { props::type, test_mission::changeSpeed.id } })));
 
     service.restoreRoute(route);
@@ -326,22 +324,22 @@ TEST_F(RouteServiceTest, testRemoveRoute)
 
     // Remove route
     EXPECT_CALL(routes, remove(route)).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(route->id.get()))
+    EXPECT_CALL(items, selectChildItemsIds(route->id()))
         .WillOnce(Return(QVariantList({ wpt1->id, wpt2->id, wpt3->id })));
 
     // Remove wpt1
-    EXPECT_CALL(items, selectChildItemsIds(wpt1->id.get())).WillRepeatedly(Return(QVariantList({})));
-    EXPECT_CALL(items, removeById(wpt1->id.get())).Times(1);
+    EXPECT_CALL(items, selectChildItemsIds(wpt1->id())).WillRepeatedly(Return(QVariantList({})));
+    EXPECT_CALL(items, removeById(wpt1->id())).Times(1);
     // Remove wpt2
-    EXPECT_CALL(items, selectChildItemsIds(wpt2->id.get())).WillRepeatedly(Return(QVariantList({})));
-    EXPECT_CALL(items, removeById(wpt2->id.get())).Times(1);
+    EXPECT_CALL(items, selectChildItemsIds(wpt2->id())).WillRepeatedly(Return(QVariantList({})));
+    EXPECT_CALL(items, removeById(wpt2->id())).Times(1);
     // Remove wpt3
-    EXPECT_CALL(items, selectChildItemsIds(wpt3->id.get()))
+    EXPECT_CALL(items, selectChildItemsIds(wpt3->id()))
         .WillRepeatedly(Return(QVariantList({ pld31->id })));
-    EXPECT_CALL(items, removeById(wpt3->id.get())).Times(1);
+    EXPECT_CALL(items, removeById(wpt3->id())).Times(1);
     // Remove pld31
-    EXPECT_CALL(items, selectChildItemsIds(pld31->id.get())).WillRepeatedly(Return(QVariantList({})));
-    EXPECT_CALL(items, removeById(pld31->id.get())).Times(1);
+    EXPECT_CALL(items, selectChildItemsIds(pld31->id())).WillRepeatedly(Return(QVariantList({})));
+    EXPECT_CALL(items, removeById(pld31->id())).Times(1);
 
     service.removeRoute(route);
 
@@ -368,21 +366,19 @@ TEST_F(RouteServiceTest, testUpdateRouteItem)
     wpt->addItem(pld2);
 
     // Check route
-    EXPECT_CALL(items, selectChildItemsIds(route->id.get()))
-        .WillOnce(Return(QVariantList({ wpt->id })));
+    EXPECT_CALL(items, selectChildItemsIds(route->id())).WillOnce(Return(QVariantList({ wpt->id })));
 
     // Update wpt
-    EXPECT_CALL(items, update(wpt, route->id.get())).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(wpt->id.get()))
-        .WillOnce(Return(QVariantList({ pld1->id })));
+    EXPECT_CALL(items, update(wpt, route->id())).Times(1);
+    EXPECT_CALL(items, selectChildItemsIds(wpt->id())).WillOnce(Return(QVariantList({ pld1->id })));
 
     // Remove pld1
-    EXPECT_CALL(items, selectChildItemsIds(pld1->id.get())).WillRepeatedly(Return(QVariantList({})));
-    EXPECT_CALL(items, removeById(pld1->id.get())).Times(1);
+    EXPECT_CALL(items, selectChildItemsIds(pld1->id())).WillRepeatedly(Return(QVariantList({})));
+    EXPECT_CALL(items, removeById(pld1->id())).Times(1);
 
     // Insert pld2
-    EXPECT_CALL(items, insert(pld2, wpt->id.get())).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(pld2->id.get())).WillOnce(Return(QVariantList({})));
+    EXPECT_CALL(items, insert(pld2, wpt->id())).Times(1);
+    EXPECT_CALL(items, selectChildItemsIds(pld2->id())).WillOnce(Return(QVariantList({})));
 
     service.saveItem(route, wpt);
 
@@ -409,12 +405,11 @@ TEST_F(RouteServiceTest, testRestoreRouteItem)
 
     // Read wpt
     EXPECT_CALL(items, read(wpt)).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(wpt->id.get()))
-        .WillOnce(Return(QVariantList({ pld1->id })));
+    EXPECT_CALL(items, selectChildItemsIds(wpt->id())).WillOnce(Return(QVariantList({ pld1->id })));
 
     // Select pld1
-    EXPECT_CALL(items, selectChildItemsIds(pld1->id.get())).WillRepeatedly(Return(QVariantList({})));
-    EXPECT_CALL(items, select(pld1->id.get()))
+    EXPECT_CALL(items, selectChildItemsIds(pld1->id())).WillRepeatedly(Return(QVariantList({})));
+    EXPECT_CALL(items, select(pld1->id()))
         .WillOnce(Return(QVariantMap({ { props::type, test_mission::changeSpeed.id } })));
 
     // pld2 will just be removed form the wpt
