@@ -29,7 +29,7 @@ INSTANTIATE_TEST_SUITE_P(
         RouteItemTestArgs({ md::utils::generateId(),
                             {},
                             { { route::relativeAlt.id, false },
-                              { test_mission::passthrough.id, true } },
+                              { test_mission::passthrough.id, false } },
                             &test_mission::waypoint }),
         RouteItemTestArgs({ md::utils::generateId(),
                             { { geo::latitude, 54.196783 },
