@@ -43,16 +43,6 @@ int Route::count() const
     return m_items.count();
 }
 
-int Route::totalCount() const
-{
-    int count = 0;
-    for (RouteItem* item : qAsConst(m_items))
-    {
-        count += item->count() + 1; // Calc self
-    }
-    return count;
-}
-
 int Route::index(RouteItem* item) const
 {
     return m_items.indexOf(item);
@@ -66,25 +56,6 @@ const QList<RouteItem*>& Route::items() const
 RouteItem* Route::item(int index) const
 {
     return m_items.value(index, nullptr);
-}
-
-RouteItem* Route::itemByFlatIndex(int index) const
-{
-    int count = 0;
-    for (RouteItem* waypoint : qAsConst(m_items))
-    {
-        if (count == index)
-            return waypoint;
-
-        count++;
-        for (RouteItem* item : waypoint->items())
-        {
-            if (count == index)
-                return item;
-            count++;
-        }
-    }
-    return nullptr;
 }
 
 void Route::setItems(const QList<RouteItem*>& items)

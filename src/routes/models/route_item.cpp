@@ -56,26 +56,6 @@ const RouteItemType* RouteItem::type() const
     return m_type;
 }
 
-int RouteItem::count() const
-{
-    return m_items.count();
-}
-
-int RouteItem::index(RouteItem* item) const
-{
-    return m_items.indexOf(item);
-}
-
-RouteItem* RouteItem::item(int index) const
-{
-    return m_items.value(index, nullptr);
-}
-
-const QList<RouteItem*>& RouteItem::items() const
-{
-    return m_items;
-}
-
 void RouteItem::setType(const RouteItemType* type)
 {
     Q_ASSERT(type);
@@ -87,15 +67,6 @@ void RouteItem::setType(const RouteItemType* type)
 
     name = type->shortName;
     this->syncParameters();
-
-    // Remove untyped children
-    for (RouteItem* item : qAsConst(m_items))
-    {
-        if (type->childTypes.contains(item->type()->id))
-            continue;
-
-        this->removeItem(item);
-    }
 }
 
 void RouteItem::setAndCheckParameter(const QString& paramId, const QVariant& value)
@@ -142,61 +113,4 @@ void RouteItem::syncParameters()
     }
 
     this->setParameters(parameters);
-}
-
-void RouteItem::setItems(const QList<RouteItem*>& items)
-{
-    // Remove old items (std::remove_if does not emit signals)
-    for (RouteItem* item : qAsConst(m_items))
-    {
-        // Skip item if we have it in new list
-        if (items.contains(item))
-            continue;
-
-        this->removeItem(item);
-    }
-
-    // Add new items to the end
-    for (RouteItem* item : items)
-    {
-        this->addItem(item);
-    }
-}
-
-void RouteItem::addItem(RouteItem* item)
-{
-    if (m_items.contains(item))
-        return;
-
-    if (item->thread() != this->thread())
-        item->moveToThread(this->thread());
-
-    if (!item->parent())
-        item->setParent(this);
-
-    connect(item, &RouteItem::changed, this, [item, this]() {
-        emit itemChanged(this->index(item), item);
-        emit changed();
-    });
-
-    m_items.append(item);
-    emit itemAdded(m_items.count() - 1, item);
-    emit changed();
-}
-
-void RouteItem::removeItem(RouteItem* item)
-{
-    int index = m_items.indexOf(item);
-    // Remove but don't delete item
-    if (index == -1)
-        return;
-
-    if (item->parent() == this)
-        item->setParent(nullptr);
-
-    disconnect(item, nullptr, this, nullptr);
-
-    m_items.removeOne(item);
-    emit itemRemoved(index, item);
-    emit changed();
 }

@@ -12,20 +12,17 @@ class RouteItemType
 
 public:
     RouteItemType(const QString& id, const QString& name, const QString& shortName,
-                  const QVector<const Parameter*>& parameters,
-                  const QVector<const RouteItemType*>& childTypes = {});
+                  const QVector<const Parameter*>& parameters);
 
     QVariantMap toVariantMap() const;
 
     const Parameter* parameter(const QString& id) const;
     QVariantMap defaultParameters() const;
-    const RouteItemType* childType(const QString& id) const;
 
     const QString id;
     const QString name;
     const QString shortName;
     const QMap<QString, const Parameter*> parameters;
-    const QMap<QString, const RouteItemType*> childTypes;
 };
 } // namespace md::domain
 

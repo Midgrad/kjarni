@@ -21,11 +21,9 @@ public:
     const RouteType* type() const;
 
     int count() const;
-    int totalCount() const;
     int index(RouteItem* item) const;
     const QList<RouteItem*>& items() const;
     RouteItem* item(int index) const;
-    RouteItem* itemByFlatIndex(int index) const;
 
 public slots:
     void setItems(const QList<RouteItem*>& items);

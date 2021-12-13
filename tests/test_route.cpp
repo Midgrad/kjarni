@@ -56,13 +56,11 @@ TEST_F(RouteTest, testAddWaypoint)
     Route route(&test_mission::routeType, "Route");
 
     EXPECT_TRUE(route.count() == 0);
-    EXPECT_TRUE(route.totalCount() == 0);
 
     auto wpt = new RouteItem(&test_mission::waypoint);
     route.addItem(wpt);
 
     ASSERT_TRUE(route.count() == 1);
-    EXPECT_TRUE(route.totalCount() == 1);
     EXPECT_EQ(route.item(0), wpt);
 }
 
@@ -106,34 +104,4 @@ TEST_F(RouteTest, testSetWaypoints)
     route.setItems(newWaypoints);
 
     EXPECT_EQ(route.items(), newWaypoints);
-}
-
-TEST_F(RouteTest, testAdd2WaypointAndItems)
-{
-    Route route(&test_mission::routeType, "Route");
-
-    EXPECT_TRUE(route.count() == 0);
-    EXPECT_TRUE(route.totalCount() == 0);
-
-    auto wpt1 = new RouteItem(&test_mission::waypoint);
-    auto item11 = new RouteItem(&test_mission::changeSpeed);
-    wpt1->addItem(item11);
-    route.addItem(wpt1);
-
-    auto wpt2 = new RouteItem(&test_mission::waypoint);
-    auto item21 = new RouteItem(&test_mission::changeSpeed);
-    auto item22 = new RouteItem(&test_mission::changeAltitude);
-    wpt2->addItem(item21);
-    wpt2->addItem(item22);
-    route.addItem(wpt2);
-
-    ASSERT_TRUE(route.count() == 2);
-    ASSERT_TRUE(route.totalCount() == 5);
-    EXPECT_EQ(route.item(0), wpt1);
-    EXPECT_EQ(route.item(1), wpt2);
-    EXPECT_EQ(route.itemByFlatIndex(0), wpt1);
-    EXPECT_EQ(route.itemByFlatIndex(1), item11);
-    EXPECT_EQ(route.itemByFlatIndex(2), wpt2);
-    EXPECT_EQ(route.itemByFlatIndex(3), item21);
-    EXPECT_EQ(route.itemByFlatIndex(4), item22);
 }

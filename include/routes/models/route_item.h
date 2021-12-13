@@ -28,11 +28,6 @@ public:
 
     const RouteItemType* type() const;
 
-    int count() const;
-    int index(RouteItem* item) const;
-    RouteItem* item(int index) const;
-    const QList<RouteItem*>& items() const;
-
 public slots:
     void setType(const RouteItemType* type);
 
@@ -41,22 +36,11 @@ public slots:
     void resetParameters();
     void syncParameters();
 
-    void setItems(const QList<RouteItem*>& items);
-    void addItem(RouteItem* item);
-    void removeItem(RouteItem* item);
-
-signals:
-    void itemAdded(int index, RouteItem* item);
-    void itemChanged(int index, RouteItem* item);
-    void itemRemoved(int index, RouteItem* item);
-
 signals:
     void typeChanged();
 
 private:
     const RouteItemType* m_type;
-
-    QList<RouteItem*> m_items;
 };
 } // namespace md::domain
 

@@ -40,9 +40,9 @@ public slots:
 private:
     Route* readRoute(const QVariant& id);
     RouteItem* readItem(const QVariant& id);
-    void saveItemImpl(RouteItem* item, const QVariant& parentId, QVariantList& itemIds);
+    void saveItemImpl(RouteItem* item, const QVariant& parentId, const QVariantList& itemIds);
     void restoreItemImpl(RouteItem* item);
-    void removeItemsRecursive(const QVariantList& itemsIds);
+    void removeItems(const QVariantList& itemsIds);
 
     IRoutesRepository* const m_routesRepo;
     IRouteItemsRepository* const m_itemsRepo;

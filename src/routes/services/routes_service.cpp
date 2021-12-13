@@ -56,17 +56,10 @@ void RoutesService::registerRouteType(const RouteType* routeType)
     // Route type
     m_routeTypes.insert(routeType->id, routeType);
 
+    // Route item types
     for (const RouteItemType* itemType : routeType->itemTypes)
     {
-        // Route item types
         m_itemTypes.insert(itemType->id, itemType);
-
-        // Child item types
-        for (const RouteItemType* childItemType : itemType->childTypes)
-        {
-            if (!m_itemTypes.contains(childItemType->id))
-                m_itemTypes.insert(childItemType->id, childItemType);
-        }
     }
 
     emit routeTypesChanged();
@@ -79,16 +72,9 @@ void RoutesService::unregisterRouteType(const RouteType* routeType)
     if (!m_routeTypes.contains(routeType->id))
         return;
 
+    // Route item types
     for (const RouteItemType* itemType : routeType->itemTypes)
     {
-        // Child item types
-        for (const RouteItemType* childItemType : itemType->childTypes)
-        {
-            if (m_itemTypes.contains(childItemType->id))
-                m_itemTypes.remove(childItemType->id);
-        }
-
-        // Route item types
         m_itemTypes.remove(itemType->id);
     }
 
@@ -122,7 +108,7 @@ void RoutesService::removeRoute(Route* route)
     QMutexLocker locker(&m_mutex);
 
     // Delete items first
-    this->removeItemsRecursive(m_itemsRepo->selectChildItemsIds(route->id));
+    this->removeItems(m_itemsRepo->selectChildItemsIds(route->id));
 
     // Delete route
     m_routesRepo->remove(route);
@@ -191,10 +177,11 @@ void RoutesService::saveRoute(Route* route)
     for (RouteItem* item : route->items())
     {
         this->saveItemImpl(item, route->id, itemIds);
+        itemIds.removeOne(item->id);
     }
 
     // Delete removed items
-    this->removeItemsRecursive(itemIds);
+    this->removeItems(itemIds);
 
     added ? emit routeAdded(route) : emit routeChanged(route);
 }
@@ -203,8 +190,7 @@ void RoutesService::saveItem(Route* route, RouteItem* item)
 {
     QMutexLocker locker(&m_mutex);
 
-    QVariantList itemIds = m_itemsRepo->selectChildItemsIds(route->id);
-    this->saveItemImpl(item, route->id, itemIds);
+    this->saveItemImpl(item, route->id, m_itemsRepo->selectChildItemsIds(route->id));
 
     emit routeChanged(route);
 }
@@ -255,81 +241,33 @@ RouteItem* RoutesService::readItem(const QVariant& id)
     }
 
     // Read current item
-    RouteItem* item = new RouteItem(type, select);
-
-    // Read child items
-    for (const QVariant& childId : m_itemsRepo->selectChildItemsIds(id))
-    {
-        auto childItem = this->readItem(childId);
-        if (item)
-            item->addItem(childItem);
-    }
-
-    return item;
+    return new RouteItem(type, select);
 }
 
-void RoutesService::saveItemImpl(RouteItem* item, const QVariant& parentId, QVariantList& itemIds)
+void RoutesService::saveItemImpl(RouteItem* item, const QVariant& parentId,
+                                 const QVariantList& itemIds)
 {
     // Update stored item
     if (itemIds.contains(item->id))
     {
         m_itemsRepo->update(item, parentId);
-        itemIds.removeOne(item->id);
     }
     // Insert newbie items
     else
     {
         m_itemsRepo->insert(item, parentId);
     }
-
-    // Save child items
-    QVariantList childItemIds = m_itemsRepo->selectChildItemsIds(item->id);
-
-    // Save or update child items
-    for (RouteItem* childItem : item->items())
-    {
-        this->saveItemImpl(childItem, item->id, childItemIds);
-    }
-
-    // Delete removed children
-    this->removeItemsRecursive(childItemIds);
 }
 
 void RoutesService::restoreItemImpl(RouteItem* item)
 {
-    QVariantList itemIds = m_itemsRepo->selectChildItemsIds(item->id);
-    for (RouteItem* child : item->items())
-    {
-        // Restore stored item
-        if (itemIds.contains(child->id))
-        {
-            this->restoreItemImpl(child);
-            itemIds.removeOne(child->id);
-        }
-        // Remove newbie items
-        else
-        {
-            item->removeItem(child);
-        }
-    }
-
-    // Read removed items
-    for (const QVariant& itemId : itemIds)
-    {
-        auto child = this->readItem(itemId);
-        if (child)
-            item->addItem(child); // TODO: valid index
-    }
-
-    // Finaly restore item
     m_itemsRepo->read(item);
 }
 
-void RoutesService::removeItemsRecursive(const QVariantList& itemsIds)
+void RoutesService::removeItems(const QVariantList& itemsIds)
 {
     for (const QVariant& itemId : itemsIds)
     {
-        this->removeItemsRecursive(m_itemsRepo->selectChildItemsIds(itemId));
         m_itemsRepo->removeById(itemId);
     }
 }

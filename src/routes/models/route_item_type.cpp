@@ -1,19 +1,17 @@
 #include "route_item_type.h"
 
+#include "route_item.h"
 #include "route_traits.h"
 #include "utils.h"
-#include "route_item.h"
 
 using namespace md::domain;
 
 RouteItemType::RouteItemType(const QString& id, const QString& name, const QString& shortName,
-                                   const QVector<const Parameter*>& parameters,
-                                   const QVector<const RouteItemType*>& childTypes) :
+                             const QVector<const Parameter*>& parameters) :
     id(id),
     name(name),
     shortName(shortName),
-    parameters(utils::listToMap<Parameter>(parameters)),
-    childTypes(utils::listToMap<RouteItemType>(childTypes))
+    parameters(utils::listToMap<Parameter>(parameters))
 {
 }
 
@@ -38,9 +36,4 @@ QVariantMap RouteItemType::defaultParameters() const
         map.insert(parameter->id, parameter->defaultValue);
     }
     return map;
-}
-
-const RouteItemType* RouteItemType::childType(const QString& id) const
-{
-    return childTypes.value(id, nullptr);
 }

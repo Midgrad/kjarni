@@ -12,24 +12,22 @@ const Parameter altitude = { "altitude", "Altitude",         Parameter::Real,
 const Parameter airspeed = { "airspeed", "Airspeed", Parameter::Int, 10, 0, 100 };
 const Parameter passthrough = { "passthrough", "Passthrough", true };
 
-// WaypointItems
+// Route Items
 const RouteItemType changeSpeed{ "ch_speed", "Change speed", "CH SPD", { &airspeed } };
 const RouteItemType changeAltitude{ "ch_speed", "Change alt", "CH ALT", { &altitude } };
 const RouteItemType takePhoto{ "take_photo", "Take photo", "PHOTO", {} };
 
-// Waypoints
-const RouteItemType waypoint = { "waypoint",
-                                 "Waypoint",
-                                 "WPT",
-                                 { &route::relativeAlt, &passthrough },
-                                 { &changeSpeed, &changeAltitude, &takePhoto } };
-const RouteItemType circle = { "circle", "Circle", "CRL", { &route::relativeAlt, &radius }, {} };
-const RouteItemType loop = {
-    "circle", "Circle", "CRL", { &route::relativeAlt, &radius }, { &changeAltitude }
+const RouteItemType waypoint = {
+    "waypoint", "Waypoint", "WPT", { &route::relativeAlt, &passthrough }
 };
+const RouteItemType circle = { "circle", "Circle", "CRL", { &route::relativeAlt, &radius } };
+const RouteItemType loop = { "circle", "Circle", "CRL", { &route::relativeAlt, &radius } };
 
 // Routes
-const RouteType routeType = { "test_route", "Test Route", { &waypoint, &circle, &loop } };
+const RouteType routeType = { "test_route",
+                              "Test Route",
+                              { &waypoint, &circle, &loop, &changeSpeed, &changeAltitude,
+                                &takePhoto } };
 
 // Mission
 const MissionType missionType = { "test_mission", "Test Mission", &routeType, &waypoint };
