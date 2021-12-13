@@ -29,20 +29,20 @@ Geodetic::Geodetic() :
 
 QVariantMap Geodetic::toVariantMap() const
 {
-    return QVariantMap{ { geo::latitude, latitude.get() },
-                        { geo::longitude, longitude.get() },
-                        { geo::altitude, altitude.get() },
-                        { geo::datum, datum.get() } };
+    return QVariantMap{ { geo::latitude, this->latitude() },
+                        { geo::longitude, this->longitude() },
+                        { geo::altitude, this->altitude() },
+                        { geo::datum, this->datum() } };
 }
 
 bool Geodetic::isValidPosition() const
 {
-    return !std::isnan(latitude) && !std::isnan(longitude);
+    return !std::isnan(this->latitude()) && !std::isnan(this->longitude());
 }
 
 bool Geodetic::isValidAltitude() const
 {
-    return !std::isnan(altitude);
+    return !std::isnan(this->altitude());
 }
 
 bool Geodetic::isValid() const
@@ -52,15 +52,16 @@ bool Geodetic::isValid() const
 
 Geodetic Geodetic::offsetted(double dLatitude, double dLongitude, float dAltitude) const
 {
-    return Geodetic(latitude + dLatitude, longitude + dLongitude, altitude + dAltitude, datum);
+    return Geodetic(this->latitude() + dLatitude, this->longitude() + dLongitude,
+                    this->altitude() + dAltitude, datum);
 }
 
 Geodetic& Geodetic::operator=(const Geodetic& other)
 {
-    latitude = other.latitude;
-    longitude = other.longitude;
-    altitude = other.altitude;
-    datum = other.datum;
+    this->latitude = other.latitude;
+    this->longitude = other.longitude;
+    this->altitude = other.altitude;
+    this->datum = other.datum;
 
     return *this;
 }

@@ -19,23 +19,14 @@ const RouteItemType takePhoto{ "take_photo", "Take photo", "PHOTO", {} };
 
 // Waypoints
 const RouteItemType waypoint = { "waypoint",
-                                    "Waypoint",
-                                    "WPT",
-                                    { &route::latitude, &route::longitude, &route::altitude,
-                                      &route::relativeAlt, &passthrough },
-                                    { &changeSpeed, &changeAltitude, &takePhoto } };
-const RouteItemType circle = { "circle",
-                                  "Circle",
-                                  "CRL",
-                                  { &route::latitude, &route::longitude, &route::altitude,
-                                    &route::relativeAlt, &radius },
-                                  {} };
-const RouteItemType loop = { "circle",
-                                "Circle",
-                                "CRL",
-                                { &route::latitude, &route::longitude, &route::altitude,
-                                  &route::relativeAlt, &radius },
-                                { &changeAltitude } };
+                                 "Waypoint",
+                                 "WPT",
+                                 { &route::relativeAlt, &passthrough },
+                                 { &changeSpeed, &changeAltitude, &takePhoto } };
+const RouteItemType circle = { "circle", "Circle", "CRL", { &route::relativeAlt, &radius }, {} };
+const RouteItemType loop = {
+    "circle", "Circle", "CRL", { &route::relativeAlt, &radius }, { &changeAltitude }
+};
 
 // Routes
 const RouteType routeType = { "test_route", "Test Route", { &waypoint, &circle, &loop } };

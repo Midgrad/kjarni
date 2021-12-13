@@ -50,6 +50,7 @@ void SqliteSchema::setup()
     query.exec("CREATE TABLE route_items ("
                "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
+               "position TEXT, "
                "params TEXT, "
                "type STRING, "
                "parent UUID);"); // parent can be other item, route or mission

@@ -7,9 +7,10 @@
 using namespace md::domain;
 
 RouteItem::RouteItem(const RouteItemType* type, const QVariant& id, const QString& name,
-                     QVariantMap params, const QVariantMap& calcData, bool current, bool reached,
-                     QObject* parent) :
+                     QVariantMap params, const Geodetic& position, const QVariantMap& calcData,
+                     bool current, bool reached, QObject* parent) :
     Parametrised(id, name, params, parent),
+    position(position, std::bind(&Entity::changed, this)),
     calcData(calcData, std::bind(&Entity::changed, this)),
     current(current, std::bind(&Entity::changed, this)),
     reached(reached, std::bind(&Entity::changed, this)),
@@ -18,35 +19,34 @@ RouteItem::RouteItem(const RouteItemType* type, const QVariant& id, const QStrin
     Q_ASSERT(type);
 }
 
-RouteItem::RouteItem(const RouteItemType* type, const QVariant& id, const QVariantMap& calcData,
-                     QObject* parent) :
-    RouteItem(type, id, type->shortName, calcData, type->defaultParameters(), false, false, parent)
-{
-}
-
 RouteItem::RouteItem(const RouteItemType* type, const QVariantMap& map, QObject* parent) :
     RouteItem(type, map.value(props::id), map.value(props::name).toString(),
-              map.value(props::params).toMap(), map.value(props::calcData).toMap(),
-              map.value(props::current).toBool(), map.value(props::reached).toBool(), parent)
+              map.value(props::params).toMap(), map.value(props::position).toMap(),
+              map.value(props::calcData).toMap(), map.value(props::current).toBool(),
+              map.value(props::reached).toBool(), parent)
 {
 }
 
 QVariantMap RouteItem::toVariantMap() const
 {
     QVariantMap map = Parametrised::toVariantMap();
+
     map.insert(props::type, m_type->id);
-    map.insert(props::calcData, calcData.get());
-    map.insert(props::current, current.get());
-    map.insert(props::reached, reached.get());
+
+    map.insert(props::position, this->position().toVariantMap());
+    map.insert(props::calcData, this->calcData());
+    map.insert(props::current, this->current());
+    map.insert(props::reached, this->reached());
 
     return map;
 }
 
 void RouteItem::fromVariantMap(const QVariantMap& map)
 {
-    calcData = map.value(props::calcData, calcData.get()).toMap();
-    current = map.value(props::current, current.get()).toBool();
-    reached = map.value(props::reached, reached.get()).toBool();
+    position = map.value(props::position, this->position().toVariantMap()).toMap();
+    calcData = map.value(props::calcData, this->calcData()).toMap();
+    current = map.value(props::current, this->current()).toBool();
+    reached = map.value(props::reached, this->reached()).toBool();
 
     Parametrised::fromVariantMap(map);
 }

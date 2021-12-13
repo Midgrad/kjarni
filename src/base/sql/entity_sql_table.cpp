@@ -4,6 +4,23 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+namespace
+{
+QVariantMap fromJson(const QVariant& content)
+{
+    QJsonDocument doc = QJsonDocument::fromJson(content.toByteArray());
+    return doc.object().toVariantMap();
+}
+
+QByteArray toJson(const QVariant& content)
+{
+    QJsonObject json = QJsonObject::fromVariantMap(content.toMap());
+    QJsonDocument doc(json);
+    return doc.toJson();
+}
+
+} // namespace
+
 using namespace md::data_source;
 
 EntitySqlTable::EntitySqlTable(QSqlDatabase* database, const QString& tableName) :
@@ -26,9 +43,11 @@ QVariantMap EntitySqlTable::selectById(const QVariant& id, const QString& column
     QVariantMap map = select.first();
     if (map.contains(domain::props::params))
     {
-        QJsonDocument doc = QJsonDocument::fromJson(map.value(domain::props::params).toByteArray());
-        QVariantMap params = doc.object().toVariantMap();
-        map[domain::props::params] = params;
+        map[domain::props::params] = ::fromJson(map.value(domain::props::params));
+    }
+    if (map.contains(domain::props::position))
+    {
+        map[domain::props::position] = ::fromJson(map.value(domain::props::position));
     }
     return map;
 }
@@ -69,9 +88,11 @@ QVariantMap EntitySqlTable::entityToMap(domain::Entity* entity)
 
     if (map.contains(domain::props::params))
     {
-        QJsonObject json = QJsonObject::fromVariantMap(map.value(domain::props::params).toMap());
-        QJsonDocument doc(json);
-        map[domain::props::params] = doc.toJson();
+        map[domain::props::params] = ::toJson(map.value(domain::props::params));
+    }
+    if (map.contains(domain::props::position))
+    {
+        map[domain::props::position] = ::toJson(map.value(domain::props::position));
     }
     return map;
 }
