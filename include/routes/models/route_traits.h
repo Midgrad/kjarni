@@ -28,9 +28,6 @@ constexpr float maxDistance = 1000000.0;
 constexpr float maxRadius = 1000000.0;
 constexpr int maxTime = 100000; // 86400 sec in a day
 
-// TODO: remove relative alt
-const Parameter relativeAlt = { "relative_alt", TR_ROUTE("Rel.alt."), false };
-
 const Parameter distance = {
     "distance", TR_ROUTE("Distance"), Parameter::Real, 0.0, 0.0, maxDistance, 1
 };

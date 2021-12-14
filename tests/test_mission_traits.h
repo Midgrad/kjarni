@@ -17,11 +17,9 @@ const RouteItemType changeSpeed{ "ch_speed", "Change speed", "CH SPD", { &airspe
 const RouteItemType changeAltitude{ "ch_speed", "Change alt", "CH ALT", { &altitude } };
 const RouteItemType takePhoto{ "take_photo", "Take photo", "PHOTO", {} };
 
-const RouteItemType waypoint = {
-    "waypoint", "Waypoint", "WPT", { &route::relativeAlt, &passthrough }
-};
-const RouteItemType circle = { "circle", "Circle", "CRL", { &route::relativeAlt, &radius } };
-const RouteItemType loop = { "circle", "Circle", "CRL", { &route::relativeAlt, &radius } };
+const RouteItemType waypoint = { "waypoint", "Waypoint", "WPT", { &passthrough } };
+const RouteItemType circle = { "circle", "Circle", "CRL", { &radius } };
+const RouteItemType loop = { "circle", "Circle", "CRL", { &radius } };
 
 // Routes
 const RouteType routeType = { "test_route",

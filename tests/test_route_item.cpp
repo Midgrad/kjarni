@@ -25,24 +25,22 @@ public:
 
 INSTANTIATE_TEST_SUITE_P(
     instantiation, RouteItemTest,
-    ::testing::Values(
-        RouteItemTestArgs({ md::utils::generateId(),
-                            {},
-                            { { route::relativeAlt.id, false },
-                              { test_mission::passthrough.id, false } },
-                            &test_mission::waypoint }),
-        RouteItemTestArgs({ md::utils::generateId(),
-                            { { geo::latitude, 54.196783 },
-                              { geo::longitude, -23.59275 },
-                              { geo::altitude, 550 } },
-                            { { route::relativeAlt.id, true }, { test_mission::radius.id, 650 } },
-                            &test_mission::circle }),
-        RouteItemTestArgs({ md::utils::generateId(),
-                            { { geo::latitude, -62.10348 },
-                              { geo::longitude, 138.74623 },
-                              { geo::altitude, 550 } },
-                            { { route::relativeAlt.id, true }, { test_mission::radius.id, 350 } },
-                            &test_mission::loop })));
+    ::testing::Values(RouteItemTestArgs({ md::utils::generateId(),
+                                          {},
+                                          { { test_mission::passthrough.id, false } },
+                                          &test_mission::waypoint }),
+                      RouteItemTestArgs({ md::utils::generateId(),
+                                          { { geo::latitude, 54.196783 },
+                                            { geo::longitude, -23.59275 },
+                                            { geo::altitude, 550 } },
+                                          { { test_mission::radius.id, 650 } },
+                                          &test_mission::circle }),
+                      RouteItemTestArgs({ md::utils::generateId(),
+                                          { { geo::latitude, -62.10348 },
+                                            { geo::longitude, 138.74623 },
+                                            { geo::altitude, 550 } },
+                                          { { test_mission::radius.id, 350 } },
+                                          &test_mission::loop })));
 
 TEST_P(RouteItemTest, testConstructFromMap)
 {
