@@ -23,8 +23,10 @@ QByteArray toJson(const QVariant& content)
 
 using namespace md::data_source;
 
-EntitySqlTable::EntitySqlTable(QSqlDatabase* database, const QString& tableName) :
-    SqlTable(database, tableName)
+EntitySqlTable::EntitySqlTable(QSqlDatabase* database, const QString& tableName,
+                               const QStringList& jsonProperties) :
+    SqlTable(database, tableName),
+    m_jsonProperties(jsonProperties)
 {
 }
 
@@ -41,14 +43,14 @@ QVariantMap EntitySqlTable::selectById(const QVariant& id, const QString& column
         return QVariantMap();
 
     QVariantMap map = select.first();
-    if (map.contains(domain::props::params))
+    for (const QString& property : m_jsonProperties)
     {
-        map[domain::props::params] = ::fromJson(map.value(domain::props::params));
+        if (map.contains(property))
+        {
+            map[property] = ::fromJson(map.value(property));
+        }
     }
-    if (map.contains(domain::props::position))
-    {
-        map[domain::props::position] = ::fromJson(map.value(domain::props::position));
-    }
+
     return map;
 }
 
@@ -86,13 +88,12 @@ QVariantMap EntitySqlTable::entityToMap(domain::Entity* entity)
 {
     QVariantMap map = entity->toVariantMap();
 
-    if (map.contains(domain::props::params))
+    for (const QString& property : m_jsonProperties)
     {
-        map[domain::props::params] = ::toJson(map.value(domain::props::params));
-    }
-    if (map.contains(domain::props::position))
-    {
-        map[domain::props::position] = ::toJson(map.value(domain::props::position));
+        if (map.contains(property))
+        {
+            map[property] = ::toJson(map.value(property));
+        }
     }
     return map;
 }

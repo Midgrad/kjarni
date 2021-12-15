@@ -13,7 +13,8 @@ using namespace md::data_source;
 
 RouteItemsRepositorySql::RouteItemsRepositorySql(QSqlDatabase* database) :
     domain::IRouteItemsRepository(),
-    m_routeItemsTable(database, ::routeItems)
+    m_routeItemsTable(database, ::routeItems,
+                      { domain::props::params, domain::props::position, domain::props::calcData })
 {
 }
 

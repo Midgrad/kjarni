@@ -16,7 +16,8 @@ const QString id = "id";
 class EntitySqlTable : public SqlTable
 {
 public:
-    EntitySqlTable(QSqlDatabase* database, const QString& tableName);
+    EntitySqlTable(QSqlDatabase* database, const QString& tableName,
+                   const QStringList& jsonProperties = {});
 
     QVariantList selectIds(const ConditionMap& conditions = ConditionMap(),
                            const QString& column = sql::id);
@@ -31,6 +32,9 @@ public:
     void removeEntity(domain::Entity* entity);
 
     QVariantMap entityToMap(domain::Entity* entity);
+
+private:
+    const QStringList m_jsonProperties;
 };
 
 } // namespace data_source

@@ -11,7 +11,7 @@ using namespace md::data_source;
 
 VehiclesRepositorySql::VehiclesRepositorySql(QSqlDatabase* database) :
     IVehiclesRepository(),
-    m_vehiclesTable(database, ::vehicles)
+    m_vehiclesTable(database, ::vehicles, { domain::props::params })
 {
 }
 
