@@ -15,6 +15,8 @@ public:
           const QVariant& id = utils::generateId(), QObject* parent = nullptr);
     Route(const RouteType* type, const QVariantMap& map, QObject* parent = nullptr);
 
+    utils::Property<QString> block;
+
     QVariantMap toVariantMap() const override;
     void fromVariantMap(const QVariantMap& map) override;
 

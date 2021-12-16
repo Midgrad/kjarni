@@ -18,15 +18,16 @@ public:
     utils::ConstProperty<MissionType const*> type;
     utils::ConstProperty<QVariant> vehicleId;
     utils::ConstProperty<RouteItem*> home;
-    utils::Property<Route*> route;
 
     QVariantMap toVariantMap() const override;
 
+    Route* route() const;
     RouteItem* item(int index);
     int count() const;
     int currentItem() const;
 
 public slots:
+    void assignRoute(Route* route);
     void setReached(int index);
     void setCurrentItem(int index);
     void clear();
@@ -39,6 +40,7 @@ signals:
     void switchCurrentItem(int item); // Goto item
 
 private:
+    Route* m_route = nullptr;
     RouteItem* m_currentItem = nullptr;
 };
 } // namespace md::domain

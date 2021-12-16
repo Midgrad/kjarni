@@ -9,6 +9,7 @@ using namespace md::domain;
 
 Route::Route(const RouteType* type, const QString& name, const QVariant& id, QObject* parent) :
     Named(id, name, parent),
+    block(QString(), std::bind(&Entity::changed, this)),
     m_type(type)
 {
     Q_ASSERT(type);
@@ -24,6 +25,7 @@ QVariantMap Route::toVariantMap() const
     QVariantMap map = Named::toVariantMap();
 
     map.insert(props::type, m_type->id);
+    map.insert(props::block, this->block());
 
     return map;
 }

@@ -31,10 +31,7 @@ QVariant MissionsRepositorySql::selectMissionIdForVehicle(const QVariant& vehicl
 {
     auto select = m_missionsTable.selectOne({ { domain::props::vehicle, vehicleId } },
                                             domain::props::id);
-    if (select.isEmpty())
-        return QVariant();
-
-    return select.first();
+    return select.isEmpty() ? QVariant() : select.first();
 }
 
 void MissionsRepositorySql::insert(domain::Mission* mission)

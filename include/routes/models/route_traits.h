@@ -15,6 +15,7 @@ constexpr char item[] = "item";
 constexpr char parent[] = "parent";
 constexpr char route[] = "route";
 constexpr char calcData[] = "calcData";
+constexpr char block[] = "block";
 
 constexpr char current[] = "current";
 constexpr char reached[] = "reached";

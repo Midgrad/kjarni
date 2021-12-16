@@ -161,8 +161,8 @@ void MissionsService::saveMission(Mission* mission)
     mission->setParent(this);
 
     // Save mission route
-    if (mission->route)
-        m_routes->saveRoute(mission->route);
+    if (mission->route())
+        m_routes->saveRoute(mission->route());
 
     // Finaly save mission
     if (m_missions.contains(mission->id))
@@ -208,8 +208,7 @@ Mission* MissionsService::readMission(const QVariant& id)
     emit missionAdded(mission);
 
     Route* route = m_routes->route(map.value(props::route));
-    if (route)
-        mission->route = route;
+    mission->assignRoute(route);
 
     return mission;
 }

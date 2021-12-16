@@ -11,10 +11,7 @@ Mission::Mission(const MissionType* type, const QString& name, const QVariant& v
     Named(id, name, parent),
     type(type),
     vehicleId(vehicleId),
-    home(new RouteItem(type->homePointType, type->homePointType->name)),
-    route(nullptr, [this]() {
-        emit routeChanged(this->route());
-    })
+    home(new RouteItem(type->homePointType, type->homePointType->name))
 {
 }
 
@@ -35,19 +32,24 @@ QVariantMap Mission::toVariantMap() const
     return map;
 }
 
+Route* Mission::route() const
+{
+    return m_route;
+}
+
 RouteItem* Mission::item(int index)
 {
     if (index == 0)
         return home;
 
-    if (index > 0 && this->route && this->route()->count() > index - 1) // +1 for home
+    if (index > 0 && m_route && this->route()->count() > index - 1) // +1 for home
         return this->route()->item(index - 1);
     return nullptr;
 }
 
 int Mission::count() const
 {
-    return this->route ? this->route()->count() + 1 : 1;
+    return m_route ? this->route()->count() + 1 : 1;
 }
 
 int Mission::currentItem() const
@@ -55,13 +57,29 @@ int Mission::currentItem() const
     if (m_currentItem == home)
         return 0;
 
-    if (route)
+    if (m_route)
     {
         int index = this->route()->index(m_currentItem);
         if (index > -1)
             return index + 1;
     }
     return -1;
+}
+
+void Mission::assignRoute(Route* route)
+{
+    if (m_route == route)
+        return;
+
+    if (m_route)
+        m_route->block.set(QString());
+
+    m_route = route;
+
+    if (m_route)
+        m_route->block.set(this->name());
+
+    emit routeChanged(m_route);
 }
 
 void Mission::setCurrentItem(int index)
