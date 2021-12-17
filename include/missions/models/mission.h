@@ -19,7 +19,7 @@ public:
     utils::ConstProperty<MissionType const*> type;
     utils::ConstProperty<QVariant> vehicleId;
     utils::ConstProperty<RouteItem*> home;
-    utils::ConstProperty<RouteItem*> target;
+    utils::ConstProperty<RouteItem*> target; // TODO: target to vehicle
 
     QVariantMap toVariantMap() const override;
 
@@ -39,7 +39,8 @@ signals:
     void currentItemChanged(int index);
     void itemReached(int index);
 
-    void goTo(int item); // Goto item
+    void goTo(int item);
+    void navTo(double latitude, double longitude, float altitude);
 
 private:
     Route* m_route = nullptr;
