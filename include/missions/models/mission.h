@@ -38,7 +38,7 @@ signals:
     void currentItemChanged(int index);
     void itemReached(int index);
 
-    void switchCurrentItem(int item); // Goto item
+    void goTo(int item); // Goto item
 
 private:
     Route* m_route = nullptr;

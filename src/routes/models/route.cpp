@@ -93,6 +93,9 @@ void Route::addItem(RouteItem* item)
     connect(item, &RouteItem::changed, this, [item, this]() {
         emit itemChanged(this->index(item), item);
     });
+    connect(item, &RouteItem::goTo, this, [item, this]() {
+        emit goTo(this->index(item));
+    });
 
     m_items.append(item);
     emit itemAdded(m_items.count() - 1, item);

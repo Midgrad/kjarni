@@ -72,12 +72,20 @@ void Mission::assignRoute(Route* route)
         return;
 
     if (m_route)
+    {
+        disconnect(m_route, nullptr, this, nullptr);
         m_route->block.set(QString());
+    }
 
     m_route = route;
 
     if (m_route)
+    {
+        connect(m_route, &Route::goTo, this, [this](int index) {
+            emit goTo(index + 1);
+        });
         m_route->block.set(this->name());
+    }
 
     emit routeChanged(m_route);
 }

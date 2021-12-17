@@ -38,6 +38,8 @@ signals:
     void itemChanged(int index, RouteItem* item);
     void itemRemoved(int index, RouteItem* item);
 
+    void goTo(int index);
+
 private:
     const RouteType* const m_type;
     QList<RouteItem*> m_items;

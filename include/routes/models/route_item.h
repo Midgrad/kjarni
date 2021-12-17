@@ -39,6 +39,8 @@ public slots:
 signals:
     void typeChanged();
 
+    void goTo();
+
 private:
     const RouteItemType* m_type;
 };
