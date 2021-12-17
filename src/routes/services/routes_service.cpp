@@ -108,7 +108,7 @@ void RoutesService::removeRoute(Route* route)
     QMutexLocker locker(&m_mutex);
 
     // Delete items first
-    this->removeItems(m_itemsRepo->selectChildItemsIds(route->id));
+    this->removeItems(m_itemsRepo->selectRouteItemsIds(route->id));
 
     // Delete route
     m_routesRepo->remove(route);
@@ -122,7 +122,7 @@ void RoutesService::restoreRoute(Route* route)
 {
     QMutexLocker locker(&m_mutex);
 
-    QVariantList itemIds = m_itemsRepo->selectChildItemsIds(route->id);
+    QVariantList itemIds = m_itemsRepo->selectRouteItemsIds(route->id);
     for (RouteItem* item : route->items())
     {
         // Restore stored item
@@ -173,7 +173,7 @@ void RoutesService::saveRoute(Route* route)
     }
 
     // Update or insert items
-    QVariantList itemIds = m_itemsRepo->selectChildItemsIds(route->id);
+    QVariantList itemIds = m_itemsRepo->selectRouteItemsIds(route->id);
     for (RouteItem* item : route->items())
     {
         this->saveItemImpl(item, route->id, itemIds);
@@ -190,7 +190,7 @@ void RoutesService::saveItem(Route* route, RouteItem* item)
 {
     QMutexLocker locker(&m_mutex);
 
-    this->saveItemImpl(item, route->id, m_itemsRepo->selectChildItemsIds(route->id));
+    this->saveItemImpl(item, route->id, m_itemsRepo->selectRouteItemsIds(route->id));
 
     emit routeChanged(route);
 }
@@ -218,7 +218,7 @@ Route* RoutesService::readRoute(const QVariant& id)
     m_routes.insert(id, route);
 
     // Read items for route
-    for (const QVariant& itemId : m_itemsRepo->selectChildItemsIds(id))
+    for (const QVariant& itemId : m_itemsRepo->selectRouteItemsIds(id))
     {
         auto item = this->readItem(itemId);
         if (item)
@@ -250,7 +250,7 @@ void RoutesService::saveItemImpl(RouteItem* item, const QVariant& parentId,
     // Update stored item
     if (itemIds.contains(item->id))
     {
-        m_itemsRepo->update(item, parentId);
+        m_itemsRepo->update(item);
     }
     // Insert newbie items
     else

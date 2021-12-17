@@ -41,10 +41,17 @@ void SqliteSchema::setup()
 
     query.exec("CREATE TABLE schema_version (version STRING NOT NULL UNIQUE)");
 
+    // Vehicles
     query.exec("CREATE TABLE vehicles ("
                "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
                "params TEXT, "
+               "type STRING);");
+
+    // Routes
+    query.exec("CREATE TABLE routes ("
+               "id UUID PRIMARY KEY NOT NULL, "
+               "name STRING, "
                "type STRING);");
 
     query.exec("CREATE TABLE route_items ("
@@ -54,14 +61,10 @@ void SqliteSchema::setup()
                "position TEXT, "
                "calcData TEXT, "
                "type STRING, "
-               "parent UUID);"); // parent can be other item, route or mission
+               "route UUID, "
+               "FOREIGN KEY(route) REFERENCES routes(id) ON DELETE CASCADE);");
 
-    query.exec("CREATE TABLE routes ("
-               "id UUID PRIMARY KEY NOT NULL, "
-               "name STRING, "
-               "type STRING);");
-
-    // TODO: specialised mission route
+    // Missions
     query.exec("CREATE TABLE missions ("
                "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
@@ -70,6 +73,15 @@ void SqliteSchema::setup()
                "vehicle UUID, "
                "FOREIGN KEY(route) REFERENCES routes(id) ON DELETE CASCADE, "
                "FOREIGN KEY(vehicle) REFERENCES vehicles(id) ON DELETE CASCADE);");
+
+    query.exec("CREATE TABLE home_items ("
+               "id UUID PRIMARY KEY NOT NULL, "
+               "name STRING, "
+               "params TEXT, "
+               "position TEXT, "
+               "type STRING, "
+               "mission UUID, "
+               "FOREIGN KEY(mission) REFERENCES missions(id) ON DELETE CASCADE);");
 
     query.exec("INSERT INTO schema_version (version) VALUES (\'17.14.00_09.11.2021\')");
 }

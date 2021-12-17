@@ -25,11 +25,11 @@ class RouteItemsRepositoryMock : public IRouteItemsRepository
 {
 public:
     MOCK_METHOD(QVariantMap, select, (const QVariant&), (override));
-    MOCK_METHOD(QVariantList, selectChildItemsIds, (const QVariant&), (override));
+    MOCK_METHOD(QVariantList, selectRouteItemsIds, (const QVariant&), (override));
 
     MOCK_METHOD(void, insert, (RouteItem*, const QVariant&), (override));
     MOCK_METHOD(void, read, (RouteItem*), (override));
-    MOCK_METHOD(void, update, (RouteItem*, const QVariant&), (override));
+    MOCK_METHOD(void, update, (RouteItem*), (override));
     MOCK_METHOD(void, remove, (RouteItem*), (override));
     MOCK_METHOD(void, removeById, (const QVariant&), (override));
 };
@@ -75,7 +75,7 @@ TEST_F(RouteServiceTest, testReadAll)
     // Select route 1
     EXPECT_CALL(routes, select(route1Id))
         .WillOnce(Return(QVariantMap({ { props::type, test_mission::routeType.id } })));
-    EXPECT_CALL(items, selectChildItemsIds(route1Id))
+    EXPECT_CALL(items, selectRouteItemsIds(route1Id))
         .WillOnce(Return(QVariantList({ item11Id, item12Id })));
     // Select item11
     EXPECT_CALL(items, select(item11Id))
@@ -87,7 +87,7 @@ TEST_F(RouteServiceTest, testReadAll)
     // Select route 2
     EXPECT_CALL(routes, select(route2Id))
         .WillOnce(Return(QVariantMap({ { props::type, test_mission::routeType.id } })));
-    EXPECT_CALL(items, selectChildItemsIds(route2Id))
+    EXPECT_CALL(items, selectRouteItemsIds(route2Id))
         .WillOnce(Return(QVariantList({ item21Id, item22Id })));
     // Select item21
     EXPECT_CALL(items, select(item21Id))
@@ -131,7 +131,7 @@ TEST_F(RouteServiceTest, testInsertRoute)
 
     // Insert route
     EXPECT_CALL(routes, insert(route)).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(route->id())).WillOnce(Return(QVariantList({})));
+    EXPECT_CALL(items, selectRouteItemsIds(route->id())).WillOnce(Return(QVariantList({})));
 
     // Insert route items
     EXPECT_CALL(items, insert(wpt1, route->id())).Times(1);
@@ -171,11 +171,11 @@ TEST_F(RouteServiceTest, testUpdateRoute)
 
     // Update route
     EXPECT_CALL(routes, update(route)).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(route->id()))
+    EXPECT_CALL(items, selectRouteItemsIds(route->id()))
         .WillOnce(Return(QVariantList({ wpt1->id, wpt2->id, wpt3->id })));
 
     // Update wpt2
-    EXPECT_CALL(items, update(wpt2, route->id())).Times(1);
+    EXPECT_CALL(items, update(wpt2)).Times(1);
     // Insert wpt4
     EXPECT_CALL(items, insert(wpt4, route->id())).Times(1);
 
@@ -211,7 +211,7 @@ TEST_F(RouteServiceTest, testRestoreRoute)
 
     // Read route
     EXPECT_CALL(routes, read(route)).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(route->id()))
+    EXPECT_CALL(items, selectRouteItemsIds(route->id()))
         .WillOnce(Return(QVariantList({ wpt1->id, wpt2->id, wpt3->id })));
 
     // Read wpt2
@@ -254,7 +254,7 @@ TEST_F(RouteServiceTest, testRemoveRoute)
 
     // Remove route
     EXPECT_CALL(routes, remove(route)).Times(1);
-    EXPECT_CALL(items, selectChildItemsIds(route->id()))
+    EXPECT_CALL(items, selectRouteItemsIds(route->id()))
         .WillOnce(Return(QVariantList({ wpt1->id, wpt2->id, wpt3->id })));
 
     // Remove wpt1
@@ -283,10 +283,10 @@ TEST_F(RouteServiceTest, testUpdateRouteItem)
     QSignalSpy spyChanged(&service, &IRoutesService::routeChanged);
 
     // Check route
-    EXPECT_CALL(items, selectChildItemsIds(route->id())).WillOnce(Return(QVariantList({ wpt->id })));
+    EXPECT_CALL(items, selectRouteItemsIds(route->id())).WillOnce(Return(QVariantList({ wpt->id })));
 
     // Update wpt
-    EXPECT_CALL(items, update(wpt, route->id())).Times(1);
+    EXPECT_CALL(items, update(wpt)).Times(1);
 
     service.saveItem(route, wpt);
 

@@ -12,11 +12,11 @@ public:
     RouteItemsRepositorySql(QSqlDatabase* database);
 
     QVariantMap select(const QVariant& itemId) override;
-    QVariantList selectChildItemsIds(const QVariant& parentId) override;
+    QVariantList selectRouteItemsIds(const QVariant& routeId) override;
 
-    void insert(domain::RouteItem* item, const QVariant& parentId) override;
+    void insert(domain::RouteItem* item, const QVariant& routeId) override;
     void read(domain::RouteItem* item) override;
-    void update(domain::RouteItem* item, const QVariant& parentId) override;
+    void update(domain::RouteItem* item) override;
     void remove(domain::RouteItem* item) override;
     void removeById(const QVariant& id) override;
 

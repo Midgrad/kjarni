@@ -1,9 +1,9 @@
 #ifndef MISSIONS_SERVICE_H
 #define MISSIONS_SERVICE_H
 
+#include "i_home_items_repository.h"
 #include "i_missions_repository.h"
 #include "i_missions_service.h"
-#include "i_route_items_repository.h"
 #include "i_routes_service.h" // TODO: remove direct dependency
 
 #include <QMutex>
@@ -16,7 +16,7 @@ class MissionsService : public IMissionsService
 
 public:
     MissionsService(IRoutesService* routes, IMissionsRepository* missionsRepo,
-                    IRouteItemsRepository* itemsRepo, QObject* parent = nullptr);
+                    IHomeItemsRepository* itemsRepo, QObject* parent = nullptr);
 
     Mission* mission(const QVariant& id) const override;
     Mission* missionForVehicle(const QVariant& vehicleId) const override;
@@ -43,7 +43,7 @@ private:
 
     IRoutesService* const m_routes;
     IMissionsRepository* const m_missionsRepo;
-    IRouteItemsRepository* const m_itemsRepo;
+    IHomeItemsRepository* const m_homeItemsRepo;
 
     QMap<QString, const MissionType*> m_missionTypes;
     QMap<QVariant, Mission*> m_missions;

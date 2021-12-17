@@ -12,11 +12,11 @@ public:
     virtual ~IRouteItemsRepository() = default;
 
     virtual QVariantMap select(const QVariant& itemId) = 0;
-    virtual QVariantList selectChildItemsIds(const QVariant& parentId) = 0;
+    virtual QVariantList selectRouteItemsIds(const QVariant& routeId) = 0;
 
-    virtual void insert(RouteItem* item, const QVariant& parentId) = 0;
+    virtual void insert(RouteItem* item, const QVariant& routeId) = 0;
     virtual void read(RouteItem* item) = 0;
-    virtual void update(RouteItem* item, const QVariant& parentId) = 0;
+    virtual void update(RouteItem* item) = 0;
     virtual void remove(RouteItem* item) = 0;
     virtual void removeById(const QVariant& id) = 0;
 };

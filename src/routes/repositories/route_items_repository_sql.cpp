@@ -23,18 +23,16 @@ QVariantMap RouteItemsRepositorySql::select(const QVariant& itemId)
     return m_routeItemsTable.selectById(itemId);
 }
 
-QVariantList RouteItemsRepositorySql::selectChildItemsIds(const QVariant& parentId)
+QVariantList RouteItemsRepositorySql::selectRouteItemsIds(const QVariant& routeId)
 {
-    return m_routeItemsTable.selectOne({ { domain::props::parent, parentId } }, domain::props::id);
+    return m_routeItemsTable.selectOne({ { domain::props::route, routeId } }, domain::props::id);
 }
 
-void RouteItemsRepositorySql::insert(domain::RouteItem* item, const QVariant& parentId)
+void RouteItemsRepositorySql::insert(domain::RouteItem* item, const QVariant& routeId)
 {
     QVariantMap map = m_routeItemsTable.entityToMap(item);
 
-    if (!parentId.isNull())
-        map.insert(domain::props::parent, parentId);
-
+    map.insert(domain::props::route, routeId);
     m_routeItemsTable.insert(map);
 }
 
@@ -43,14 +41,9 @@ void RouteItemsRepositorySql::read(domain::RouteItem* item)
     m_routeItemsTable.readEntity(item);
 }
 
-void RouteItemsRepositorySql::update(domain::RouteItem* item, const QVariant& parentId)
+void RouteItemsRepositorySql::update(domain::RouteItem* item)
 {
-    QVariantMap map = m_routeItemsTable.entityToMap(item);
-
-    if (!parentId.isNull())
-        map.insert(domain::props::parent, parentId);
-
-    m_routeItemsTable.updateById(map, item->id);
+    m_routeItemsTable.updateEntity(item);
 }
 
 void RouteItemsRepositorySql::remove(domain::RouteItem* item)

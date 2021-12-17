@@ -8,11 +8,11 @@
 using namespace md::domain;
 
 MissionsService::MissionsService(IRoutesService* routes, IMissionsRepository* missionsRepo,
-                                 IRouteItemsRepository* itemsRepo, QObject* parent) :
+                                 IHomeItemsRepository* itemsRepo, QObject* parent) :
     IMissionsService(parent),
     m_routes(routes),
     m_missionsRepo(missionsRepo),
-    m_itemsRepo(itemsRepo),
+    m_homeItemsRepo(itemsRepo),
     m_mutex(QMutex::Recursive)
 {
 }
@@ -129,7 +129,7 @@ void MissionsService::removeMission(Mission* mission)
         this->endOperation(operation);
 
     // Remove home point
-    m_itemsRepo->remove(mission->home);
+    m_homeItemsRepo->remove(mission->home);
 
     // Remove mission
     m_missionsRepo->remove(mission);
@@ -147,7 +147,7 @@ void MissionsService::restoreMission(Mission* mission)
     m_missionsRepo->read(mission);
 
     // Restore home point
-    m_itemsRepo->read(mission->home);
+    m_homeItemsRepo->read(mission->home);
 
     emit missionChanged(mission);
 }
@@ -167,15 +167,15 @@ void MissionsService::saveMission(Mission* mission)
     // Finaly save mission
     if (m_missions.contains(mission->id))
     {
-        m_itemsRepo->update(mission->home, mission->id);
         m_missionsRepo->update(mission);
+        m_homeItemsRepo->update(mission->home);
 
         emit missionChanged(mission);
     }
     else
     {
-        m_itemsRepo->insert(mission->home, mission->id);
         m_missionsRepo->insert(mission);
+        m_homeItemsRepo->insert(mission->home, mission->id);
 
         m_missions.insert(mission->id, mission);
         emit missionAdded(mission);
@@ -194,16 +194,12 @@ Mission* MissionsService::readMission(const QVariant& id)
         return nullptr;
     }
 
-    // Read home waypoint for mission
-    QVariantList waypointIds = m_itemsRepo->selectChildItemsIds(id);
-    if (waypointIds.length())
-    {
-        QVariant homeId = waypointIds.first();
-        QVariantMap homeMap = m_itemsRepo->select(homeId);
-        map[props::home] = homeMap;
-    }
+    // Read home id for mission
+    map[props::home] = m_homeItemsRepo->selectMissionItemId(id);
 
     Mission* mission = new Mission(type, map);
+    m_homeItemsRepo->read(mission->home);
+
     m_missions.insert(id, mission);
     emit missionAdded(mission);
 

@@ -7,17 +7,17 @@
 using namespace md::domain;
 
 Mission::Mission(const MissionType* type, const QString& name, const QVariant& vehicleId,
-                 const QVariant& id, QObject* parent) :
+                 const QVariant& id, const QVariant& homeId, QObject* parent) :
     Named(id, name, parent),
     type(type),
     vehicleId(vehicleId),
-    home(new RouteItem(type->homePointType, type->homePointType->name))
+    home(new RouteItem(type->homePointType, homeId, type->homePointType->name))
 {
 }
 
 Mission::Mission(const MissionType* type, const QVariantMap& map, QObject* parent) :
     Mission(type, map.value(props::name).toString(), map.value(props::vehicle),
-            map.value(props::id), parent)
+            map.value(props::id), map.value(props::home), parent)
 {
 }
 
