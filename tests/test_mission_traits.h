@@ -28,7 +28,7 @@ const RouteType routeType = { "test_route",
                                 &takePhoto } };
 
 // Mission
-const MissionType missionType = { "test_mission", "Test Mission", &routeType, &waypoint };
+const MissionType missionType = { "test_mission", "Test Mission", &routeType, &waypoint, &waypoint };
 
 } // namespace md::domain::test_mission
 

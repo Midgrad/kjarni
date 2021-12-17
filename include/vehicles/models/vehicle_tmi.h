@@ -54,11 +54,6 @@ constexpr char longitude[] = "longitude";
 constexpr char x[] = "x";
 constexpr char y[] = "y";
 
-// Home
-constexpr char homeLatitude[] = "homeLatitude";
-constexpr char homeLongitude[] = "homeLongitude";
-constexpr char homeAltitude[] = "homeAltitude";
-
 // Target
 constexpr char wpDistance[] = "wpDistance";
 constexpr char targetBearing[] = "targetBearing";

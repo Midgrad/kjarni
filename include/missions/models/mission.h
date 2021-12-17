@@ -19,6 +19,7 @@ public:
     utils::ConstProperty<MissionType const*> type;
     utils::ConstProperty<QVariant> vehicleId;
     utils::ConstProperty<RouteItem*> home;
+    utils::ConstProperty<RouteItem*> target;
 
     QVariantMap toVariantMap() const override;
 
