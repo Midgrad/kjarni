@@ -12,7 +12,7 @@ Mission::Mission(const MissionType* type, const QString& name, const QVariant& v
     type(type),
     vehicleId(vehicleId),
     home(new RouteItem(type->homePointType, homeId, type->homePointType->name)),
-    target(new RouteItem(type->targetPointType, utils::generateId(), tr("Target")))
+    target(new RouteItem(type->targetPointType, utils::generateId(), QString()))
 {
 }
 
