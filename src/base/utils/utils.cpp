@@ -12,6 +12,11 @@ QVariant generateId()
     return QUuid::createUuid().toString();
 }
 
+double guardNaN(const QVariant& variant)
+{
+    return variant.isNull() ? qQNaN() : variant.toDouble();
+}
+
 QJsonObject mergeJson(QJsonObject& src, const QJsonObject& other)
 {
     for (auto it = other.constBegin(); it != other.constEnd(); ++it)

@@ -9,6 +9,9 @@ namespace md::utils
 // Generate entity id
 QVariant generateId();
 
+// return NaN if varinat is null
+double guardNaN(const QVariant& variant);
+
 // Merge two JSON in one
 QJsonObject mergeJson(QJsonObject& src, const QJsonObject& other);
 
