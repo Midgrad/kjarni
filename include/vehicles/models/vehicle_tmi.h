@@ -8,7 +8,6 @@ constexpr char name[] = "name";
 
 // System
 constexpr char state[] = "state";
-constexpr char online[] = "online";
 
 // Arming
 constexpr char armed[] = "armed";

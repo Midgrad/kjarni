@@ -27,6 +27,7 @@ public:
     Vehicle(const QVariantMap& map, QObject* parent = nullptr);
 
     utils::Property<Type> type;
+    utils::Property<bool> online;
 
     QVariantMap toVariantMap() const override;
     void fromVariantMap(const QVariantMap& map) override;

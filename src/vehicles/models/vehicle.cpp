@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <QMetaEnum>
 
+#include "vehicle_traits.h"
+
 using namespace md::domain;
 
 namespace
@@ -17,7 +19,8 @@ Vehicle::Type typeFromVariant(const QVariant& value)
 Vehicle::Vehicle(Type type, const QString& name, const QVariant& id, const QVariantMap& parameters,
                  QObject* parent) :
     Parametrised(id, name, parameters, parent),
-    type(type, std::bind(&Entity::changed, this))
+    type(type, std::bind(&Entity::changed, this)),
+    online(false, std::bind(&Entity::changed, this))
 {
 }
 
@@ -31,6 +34,7 @@ QVariantMap Vehicle::toVariantMap() const
 {
     QVariantMap map = Parametrised::toVariantMap();
     map.insert(props::type, QVariant::fromValue(this->type()).toString());
+    map.insert(props::online, this->online());
     return map;
 }
 

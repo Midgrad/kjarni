@@ -4,6 +4,7 @@
 #include <QSignalSpy>
 
 #include "vehicle.h"
+#include "vehicle_traits.h"
 
 using namespace md::domain;
 
@@ -74,6 +75,7 @@ TEST_P(VehicleTest, testToVariant)
     map.insert(props::name, args.name);
     map.insert(props::params, args.params);
     map.insert(props::type, QVariant::fromValue(args.type).toString());
+    map.insert(props::online, vehicle.online());
 
     EXPECT_EQ(map, vehicle.toVariantMap());
 }
