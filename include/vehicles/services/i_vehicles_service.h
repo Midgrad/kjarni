@@ -6,7 +6,7 @@
 
 namespace md::domain
 {
-class IVehiclesService
+class IVehiclesService // TODO: rename to Context, Unit of Work or Registry
     : public QObject
     , public IService
 {

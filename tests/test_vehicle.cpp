@@ -24,9 +24,10 @@ public:
 
 INSTANTIATE_TEST_SUITE_P(
     instantiation, VehicleTest,
-    ::testing::Values(VehicleTestArgs({ md::utils::generateId(), "Vehicle 1", vehicle::generic, {} }),
-                      VehicleTestArgs({ md::utils::generateId(), "MAV 23", "none",
-                                        QVariantMap({ { "mav_id", 23 } }) })));
+    ::testing::Values(
+        VehicleTestArgs({ md::utils::generateId(), "Vehicle 1", vehicleType::generic, {} }),
+        VehicleTestArgs({ md::utils::generateId(), "MAV 23", "none",
+                          QVariantMap({ { "mav_id", 23 } }) })));
 
 TEST_P(VehicleTest, testConstructFromMap)
 {
@@ -48,7 +49,7 @@ TEST_P(VehicleTest, testConstructFromMap)
 
 TEST_P(VehicleTest, testFromVariant)
 {
-    Vehicle vehicle(vehicle::generic, QString());
+    Vehicle vehicle(vehicleType::generic, QString());
 
     VehicleTestArgs args = GetParam();
 

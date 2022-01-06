@@ -21,18 +21,18 @@ public:
     MOCK_METHOD(void, remove, (Vehicle*), (override));
 };
 
-class VehicleServiceTest : public Test
+class VehiclesServiceTest : public Test
 {
 public:
     VehiclesRepositoryMock vehicles;
     VehiclesService service;
 
-    VehicleServiceTest() : service(&vehicles)
+    VehiclesServiceTest() : service(&vehicles)
     {
     }
 };
 
-TEST_F(VehicleServiceTest, testReadAll)
+TEST_F(VehiclesServiceTest, testReadAll)
 {
     QSignalSpy spyAdded(&service, &IVehiclesService::vehicleAdded);
 
@@ -46,12 +46,12 @@ TEST_F(VehicleServiceTest, testReadAll)
     EXPECT_EQ(spyAdded.count(), 2);
 }
 
-TEST_F(VehicleServiceTest, testSave)
+TEST_F(VehiclesServiceTest, testSave)
 {
     QSignalSpy spyAdded(&service, &IVehiclesService::vehicleAdded);
     QSignalSpy spyChanged(&service, &IVehiclesService::vehicleChanged);
 
-    auto vehicle = new Vehicle(vehicle::generic, "Some vehicle");
+    auto vehicle = new Vehicle(vehicleType::generic, "Some vehicle");
 
     EXPECT_CALL(vehicles, insert(vehicle)).Times(1);
     service.saveVehicle(vehicle);
@@ -64,22 +64,22 @@ TEST_F(VehicleServiceTest, testSave)
     EXPECT_EQ(spyChanged.count(), 1);
 }
 
-TEST_F(VehicleServiceTest, testRestore)
+TEST_F(VehiclesServiceTest, testRestore)
 {
     QSignalSpy spyChanged(&service, &IVehiclesService::vehicleChanged);
 
-    auto vehicle = new Vehicle(vehicle::generic, "Some vehicle");
+    auto vehicle = new Vehicle(vehicleType::generic, "Some vehicle");
 
     EXPECT_CALL(vehicles, read(vehicle)).Times(1);
     service.restoreVehicle(vehicle);
     EXPECT_EQ(spyChanged.count(), 1);
 }
 
-TEST_F(VehicleServiceTest, testRemove)
+TEST_F(VehiclesServiceTest, testRemove)
 {
     QSignalSpy spyRemove(&service, &IVehiclesService::vehicleRemoved);
 
-    auto vehicle = new Vehicle(vehicle::generic, "Some vehicle");
+    auto vehicle = new Vehicle(vehicleType::generic, "Some vehicle");
 
     EXPECT_CALL(vehicles, remove(vehicle)).Times(1);
     service.removeVehicle(vehicle);
