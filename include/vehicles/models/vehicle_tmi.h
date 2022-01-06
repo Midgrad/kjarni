@@ -1,6 +1,7 @@
 #ifndef VEHICLE_TMI_H
 #define VEHICLE_TMI_H
 
+// TODO: generic_tmi, to telemetry
 namespace md::tmi
 {
 // Global

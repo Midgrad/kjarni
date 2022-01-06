@@ -10,29 +10,15 @@ class Vehicle : public Parametrised
     Q_OBJECT
 
 public:
-    enum Type
-    {
-        Generic,
-        Auto,
-        FixedWing,
-        FlyingWing,
-        Copter,
-        RotaryWing,
-        Vtol,
-        Airship,
-    };
-
-    Vehicle(Type type, const QString& name, const QVariant& id = utils::generateId(),
+    Vehicle(const QString& type, const QString& name, const QVariant& id = utils::generateId(),
             const QVariantMap& parameters = QVariantMap(), QObject* parent = nullptr);
     Vehicle(const QVariantMap& map, QObject* parent = nullptr);
 
-    utils::Property<Type> type;
+    utils::Property<QString> type;
     utils::Property<bool> online;
 
     QVariantMap toVariantMap() const override;
     void fromVariantMap(const QVariantMap& map) override;
-
-    Q_ENUM(Type)
 };
 } // namespace md::domain
 

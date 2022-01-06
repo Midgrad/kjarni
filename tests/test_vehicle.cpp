@@ -12,7 +12,7 @@ struct VehicleTestArgs
 {
     QVariant id;
     QString name;
-    Vehicle::Type type;
+    QString type;
     QVariantMap params;
 };
 
@@ -24,8 +24,8 @@ public:
 
 INSTANTIATE_TEST_SUITE_P(
     instantiation, VehicleTest,
-    ::testing::Values(VehicleTestArgs({ md::utils::generateId(), "Vehicle 1", Vehicle::Generic, {} }),
-                      VehicleTestArgs({ md::utils::generateId(), "MAV 23", Vehicle::FixedWing,
+    ::testing::Values(VehicleTestArgs({ md::utils::generateId(), "Vehicle 1", vehicle::generic, {} }),
+                      VehicleTestArgs({ md::utils::generateId(), "MAV 23", "none",
                                         QVariantMap({ { "mav_id", 23 } }) })));
 
 TEST_P(VehicleTest, testConstructFromMap)
@@ -36,7 +36,7 @@ TEST_P(VehicleTest, testConstructFromMap)
     map.insert(props::id, args.id.toString());
     map.insert(props::name, args.name);
     map.insert(props::params, QJsonValue::fromVariant(args.params));
-    map.insert(props::type, QVariant::fromValue(args.type).toString());
+    map.insert(props::type, args.type);
 
     Vehicle vehicle(map);
 
@@ -48,7 +48,7 @@ TEST_P(VehicleTest, testConstructFromMap)
 
 TEST_P(VehicleTest, testFromVariant)
 {
-    Vehicle vehicle(Vehicle::Generic, QString());
+    Vehicle vehicle(vehicle::generic, QString());
 
     VehicleTestArgs args = GetParam();
 
@@ -74,7 +74,7 @@ TEST_P(VehicleTest, testToVariant)
     map.insert(props::id, vehicle.id);
     map.insert(props::name, args.name);
     map.insert(props::params, args.params);
-    map.insert(props::type, QVariant::fromValue(args.type).toString());
+    map.insert(props::type, args.type);
     map.insert(props::online, vehicle.online());
 
     EXPECT_EQ(map, vehicle.toVariantMap());

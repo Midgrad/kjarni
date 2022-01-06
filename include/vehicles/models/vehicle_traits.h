@@ -8,8 +8,12 @@ namespace md::domain
 namespace props
 {
 constexpr char online[] = "online";
-
 } // namespace props
+
+namespace vehicle
+{
+constexpr char generic[] = "Generic";
+}
 } // namespace md::domain
 
 #endif // VEHICLE_TRAITS_H

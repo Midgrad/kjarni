@@ -7,17 +7,8 @@
 
 using namespace md::domain;
 
-namespace
-{
-Vehicle::Type typeFromVariant(const QVariant& value)
-{
-    auto&& metaEnum = QMetaEnum::fromType<Vehicle::Type>();
-    return static_cast<Vehicle::Type>(metaEnum.keyToValue(value.toString().toUtf8().constData()));
-}
-} // namespace
-
-Vehicle::Vehicle(Type type, const QString& name, const QVariant& id, const QVariantMap& parameters,
-                 QObject* parent) :
+Vehicle::Vehicle(const QString& type, const QString& name, const QVariant& id,
+                 const QVariantMap& parameters, QObject* parent) :
     Parametrised(id, name, parameters, parent),
     type(type, std::bind(&Entity::changed, this)),
     online(false, std::bind(&Entity::changed, this))
@@ -25,7 +16,7 @@ Vehicle::Vehicle(Type type, const QString& name, const QVariant& id, const QVari
 }
 
 Vehicle::Vehicle(const QVariantMap& map, QObject* parent) :
-    Vehicle(::typeFromVariant(map.value(props::type)), map.value(props::name).toString(),
+    Vehicle(map.value(props::type).toString(), map.value(props::name).toString(),
             map.value(props::id), map.value(props::params).toMap(), parent)
 {
 }
@@ -40,8 +31,7 @@ QVariantMap Vehicle::toVariantMap() const
 
 void Vehicle::fromVariantMap(const QVariantMap& map)
 {
-    if (map.contains(props::type))
-        type = ::typeFromVariant(map.value(props::type));
+    type = map.value(props::type, this->type()).toString();
 
     Parametrised::fromVariantMap(map);
 }

@@ -3,6 +3,7 @@
 
 #include <QSignalSpy>
 
+#include "vehicle_traits.h"
 #include "vehicles_service.h"
 
 using namespace testing;
@@ -50,7 +51,7 @@ TEST_F(VehicleServiceTest, testSave)
     QSignalSpy spyAdded(&service, &IVehiclesService::vehicleAdded);
     QSignalSpy spyChanged(&service, &IVehiclesService::vehicleChanged);
 
-    auto vehicle = new Vehicle(Vehicle::Generic, "Some vehicle");
+    auto vehicle = new Vehicle(vehicle::generic, "Some vehicle");
 
     EXPECT_CALL(vehicles, insert(vehicle)).Times(1);
     service.saveVehicle(vehicle);
@@ -67,7 +68,7 @@ TEST_F(VehicleServiceTest, testRestore)
 {
     QSignalSpy spyChanged(&service, &IVehiclesService::vehicleChanged);
 
-    auto vehicle = new Vehicle(Vehicle::Generic, "Some vehicle");
+    auto vehicle = new Vehicle(vehicle::generic, "Some vehicle");
 
     EXPECT_CALL(vehicles, read(vehicle)).Times(1);
     service.restoreVehicle(vehicle);
@@ -78,7 +79,7 @@ TEST_F(VehicleServiceTest, testRemove)
 {
     QSignalSpy spyRemove(&service, &IVehiclesService::vehicleRemoved);
 
-    auto vehicle = new Vehicle(Vehicle::Generic, "Some vehicle");
+    auto vehicle = new Vehicle(vehicle::generic, "Some vehicle");
 
     EXPECT_CALL(vehicles, remove(vehicle)).Times(1);
     service.removeVehicle(vehicle);
