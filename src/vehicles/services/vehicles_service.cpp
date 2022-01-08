@@ -30,6 +30,11 @@ QList<Vehicle*> VehiclesService::vehicles() const
     return m_vehicles.values();
 }
 
+QStringList VehiclesService::vehicleTypes() const
+{
+    return m_vehicleTypes;
+}
+
 void VehiclesService::readAll()
 {
     QMutexLocker locker(&m_mutex);
@@ -79,6 +84,18 @@ void VehiclesService::saveVehicle(Vehicle* vehicle)
         vehicle->setParent(this);
         emit vehicleAdded(vehicle);
     }
+}
+
+void VehiclesService::addVehicleType(const QString& type)
+{
+    m_vehicleTypes.append(type);
+    emit vehicleTypesChanged();
+}
+
+void VehiclesService::removeVehicleType(const QString& type)
+{
+    m_vehicleTypes.removeOne(type);
+    emit vehicleTypesChanged();
 }
 
 Vehicle* VehiclesService::readVehicle(const QVariant& id)
