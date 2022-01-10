@@ -29,6 +29,7 @@ public:
 
     VehiclesServiceTest() : service(&vehicles)
     {
+        service.addVehicleType(&vehicle::generic);
     }
 };
 
@@ -37,7 +38,8 @@ TEST_F(VehiclesServiceTest, testReadAll)
     QSignalSpy spyAdded(&service, &IVehiclesService::vehicleAdded);
 
     EXPECT_CALL(vehicles, selectVehicleIds()).WillOnce(Return(QVariantList({ "vehicle 1", 2345 })));
-    EXPECT_CALL(vehicles, select(_)).WillRepeatedly(Return(QVariantMap()));
+    EXPECT_CALL(vehicles, select(_))
+        .WillRepeatedly(Return(QVariantMap({ { props::type, vehicle::generic.id } })));
 
     service.readAll();
 
@@ -51,7 +53,7 @@ TEST_F(VehiclesServiceTest, testSave)
     QSignalSpy spyAdded(&service, &IVehiclesService::vehicleAdded);
     QSignalSpy spyChanged(&service, &IVehiclesService::vehicleChanged);
 
-    auto vehicle = new Vehicle(vehicleType::generic, "Some vehicle");
+    auto vehicle = new Vehicle(&vehicle::generic, "Some vehicle");
 
     EXPECT_CALL(vehicles, insert(vehicle)).Times(1);
     service.saveVehicle(vehicle);
@@ -68,7 +70,7 @@ TEST_F(VehiclesServiceTest, testRestore)
 {
     QSignalSpy spyChanged(&service, &IVehiclesService::vehicleChanged);
 
-    auto vehicle = new Vehicle(vehicleType::generic, "Some vehicle");
+    auto vehicle = new Vehicle(&vehicle::generic, "Some vehicle");
 
     EXPECT_CALL(vehicles, read(vehicle)).Times(1);
     service.restoreVehicle(vehicle);
@@ -79,7 +81,7 @@ TEST_F(VehiclesServiceTest, testRemove)
 {
     QSignalSpy spyRemove(&service, &IVehiclesService::vehicleRemoved);
 
-    auto vehicle = new Vehicle(vehicleType::generic, "Some vehicle");
+    auto vehicle = new Vehicle(&vehicle::generic, "Some vehicle");
 
     EXPECT_CALL(vehicles, remove(vehicle)).Times(1);
     service.removeVehicle(vehicle);

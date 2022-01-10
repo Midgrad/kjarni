@@ -30,9 +30,14 @@ QList<Vehicle*> VehiclesService::vehicles() const
     return m_vehicles.values();
 }
 
-QStringList VehiclesService::vehicleTypes() const
+QList<const VehicleType*> VehiclesService::vehicleTypes() const
 {
-    return m_vehicleTypes;
+    return m_vehicleTypes.values();
+}
+
+const VehicleType* VehiclesService::vehicleType(const QString& typeId) const
+{
+    return m_vehicleTypes.value(typeId, nullptr);
 }
 
 void VehiclesService::readAll()
@@ -86,22 +91,36 @@ void VehiclesService::saveVehicle(Vehicle* vehicle)
     }
 }
 
-void VehiclesService::addVehicleType(const QString& type)
+void VehiclesService::addVehicleType(const VehicleType* type)
 {
-    m_vehicleTypes.append(type);
+    if (m_vehicleTypes.contains(type->id))
+        return;
+
+    m_vehicleTypes.insert(type->id, type);
     emit vehicleTypesChanged();
 }
 
-void VehiclesService::removeVehicleType(const QString& type)
+void VehiclesService::removeVehicleType(const VehicleType* type)
 {
-    m_vehicleTypes.removeOne(type);
+    if (!m_vehicleTypes.contains(type->id))
+        return;
+
+    m_vehicleTypes.remove(type->id);
     emit vehicleTypesChanged();
 }
 
 Vehicle* VehiclesService::readVehicle(const QVariant& id)
 {
-    QVariantMap map = m_vehiclesRepo->select(id);
-    Vehicle* vehicle = new Vehicle(map, this);
+    QVariantMap select = m_vehiclesRepo->select(id);
+    QString typeId = select.value(props::type).toString();
+    const VehicleType* const type = m_vehicleTypes.value(typeId);
+    if (!type)
+    {
+        qWarning() << "Unknown vehicle type" << typeId;
+        return nullptr;
+    }
+
+    Vehicle* vehicle = new Vehicle(type, select, this);
 
     m_vehicles.insert(id, vehicle);
     emit vehicleAdded(vehicle);

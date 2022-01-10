@@ -15,12 +15,11 @@ public:
           const QVariant& id = utils::generateId(), QObject* parent = nullptr);
     Route(const RouteType* type, const QVariantMap& map, QObject* parent = nullptr);
 
+    utils::ConstProperty<const RouteType*> type;
     utils::Property<QString> block;
 
     QVariantMap toVariantMap() const override;
     void fromVariantMap(const QVariantMap& map) override;
-
-    const RouteType* type() const;
 
     int count() const;
     int index(RouteItem* item) const;
@@ -41,7 +40,6 @@ signals:
     void goTo(int index);
 
 private:
-    const RouteType* const m_type;
     QList<RouteItem*> m_items;
 };
 } // namespace md::domain

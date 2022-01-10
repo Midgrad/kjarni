@@ -10,7 +10,7 @@ using namespace md::domain;
 Route::Route(const RouteType* type, const QString& name, const QVariant& id, QObject* parent) :
     Named(id, name, parent),
     block(QString(), std::bind(&Entity::changed, this)),
-    m_type(type)
+    type(type)
 {
     Q_ASSERT(type);
 }
@@ -24,7 +24,7 @@ QVariantMap Route::toVariantMap() const
 {
     QVariantMap map = Named::toVariantMap();
 
-    map.insert(props::type, m_type->id);
+    map.insert(props::type, this->type()->id);
     map.insert(props::block, this->block());
 
     return map;
@@ -33,11 +33,6 @@ QVariantMap Route::toVariantMap() const
 void Route::fromVariantMap(const QVariantMap& map)
 {
     Named::fromVariantMap(map);
-}
-
-const RouteType* Route::type() const
-{
-    return m_type;
 }
 
 int Route::count() const
