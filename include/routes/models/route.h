@@ -11,7 +11,7 @@ class Route : public Named
     Q_OBJECT
 
 public:
-    Route(const RouteType* type, const QString& name = QString(),
+    explicit Route(const RouteType* type, const QString& name = QString(),
           const QVariant& id = utils::generateId(), QObject* parent = nullptr);
     Route(const RouteType* type, const QVariantMap& map, QObject* parent = nullptr);
 

@@ -51,7 +51,7 @@ QVariant Parameter::guard(const QVariant& value) const
 
 Parametrised::Parametrised(const QVariant& id, const QString& name, const QVariantMap& parameters,
                            QObject* parent) :
-    Named(id, name, parent),
+    Named(name, id, parent),
     m_parameters(parameters)
 {
 }
