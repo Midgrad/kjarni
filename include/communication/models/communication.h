@@ -14,26 +14,24 @@ class Communication : public Named
     Q_OBJECT
 
 public:
-    Communication(const QString& type, const QString& name = QString(),
-          const QVariant& id = utils::generateId(), QObject* parent = nullptr);
-    Communication(const QString& type, const QVariantMap& map, QObject* parent = nullptr);
+    Communication(const QString& name = QString(), QObject* parent = nullptr);
+//    Communication(const QString& type, const QVariantMap& map, QObject* parent = nullptr);
 
-    Communication& operator=(const Communication& other);
+//    Communication& operator=(const Communication& other);
 
-    QString type() const;
-    QString protocol() const;
+//    QString name() const;
+//    QString protocol() const;
     QVariant parameter(const QString& parameter) const;
     QVariantMap parameters() const;
 
-    bool isConnected() const;
+    bool isActive() const;
 
-    int bytesReceived() const;
-    int bytesSent() const;
+//    int bytesReceived() const;
+//    int bytesSent() const;
 
 
 private:
-    QString m_type;
-    QString m_protocol;
+//    ICommunicationProtocol m_protocol;
     QVariantMap m_parameters;
     bool m_connected;
     int m_bytesReceived;
