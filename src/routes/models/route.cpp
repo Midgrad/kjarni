@@ -8,7 +8,7 @@
 using namespace md::domain;
 
 Route::Route(const RouteType* type, const QString& name, const QVariant& id, QObject* parent) :
-    Named(id, name, parent),
+    Named(name, id, parent),
     block(QString(), std::bind(&Entity::changed, this)),
     type(type)
 {

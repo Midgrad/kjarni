@@ -43,9 +43,9 @@ class Parametrised : public Named
     Q_OBJECT
 
 public:
-    Parametrised(const QVariant& id = utils::generateId(), const QString& name = QString(),
+    explicit Parametrised(const QVariant& id = utils::generateId(), const QString& name = QString(),
                  const QVariantMap& parameters = QVariantMap(), QObject* parent = nullptr);
-    Parametrised(const QVariantMap& map, QObject* parent = nullptr);
+    explicit Parametrised(const QVariantMap& map, QObject* parent = nullptr);
 
     const QVariantMap& parameters() const;
     QVariant parameter(const QString& key) const;

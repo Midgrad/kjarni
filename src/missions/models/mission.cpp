@@ -8,7 +8,7 @@ using namespace md::domain;
 
 Mission::Mission(const MissionType* type, const QString& name, const QVariant& vehicleId,
                  const QVariant& id, const QVariant& homeId, QObject* parent) :
-    Named(id, name, parent),
+    Named(name, id, parent),
     type(type),
     vehicleId(vehicleId),
     home(new RouteItem(type->homePointType, homeId, type->homePointType->name)),
