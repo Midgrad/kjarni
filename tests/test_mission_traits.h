@@ -25,7 +25,8 @@ const RouteItemType loop = { "circle", "Circle", "CRL", { &radius } };
 const RouteType routeType = { "test_route",
                               "Test Route",
                               { &waypoint, &circle, &loop, &changeSpeed, &changeAltitude,
-                                &takePhoto } };
+                                &takePhoto },
+                              {} };
 
 // Mission
 const MissionType missionType = { "test_mission", "Test Mission", &routeType, &waypoint, &waypoint };
