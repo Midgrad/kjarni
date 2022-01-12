@@ -19,11 +19,12 @@ public:
 
 //    Communication& operator=(const Communication& other);
 
-//    QString name() const;
 //    QString protocol() const;
-    QVariant parameter(const QString& parameter) const;
-    QVariantMap parameters() const;
+//    QVariant parameter(const QString& parameter) const;
+//    QVariantMap parameters() const;
 
+    void Activate() const;
+    void Deactivate() const;
     bool isActive() const;
 
 //    int bytesReceived() const;
@@ -32,8 +33,9 @@ public:
 
 private:
 //    ICommunicationProtocol m_protocol;
+//    LinkConfiguration m_linkSpecification;
     QVariantMap m_parameters;
-    bool m_connected;
+    bool m_active;
     int m_bytesReceived;
     int m_bytesSent;
 
