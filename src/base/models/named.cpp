@@ -2,7 +2,7 @@
 
 using namespace md::domain;
 
-Named::Named(const QVariant& id, const QString& name, QObject* parent) :
+Named::Named(const QString& name, const QVariant& id, QObject* parent) :
     Entity(id, parent),
     name(name, std::bind(&Entity::changed, this))
 {

@@ -18,21 +18,22 @@ public:
     Vehicle* vehicle(const QVariant& id) const override;
     QVariantList vehicleIds() const override;
     QList<Vehicle*> vehicles() const override;
-    QStringList vehicleTypes() const override;
+    QList<const VehicleType*> vehicleTypes() const override;
+    const VehicleType* vehicleType(const QString& typeId) const override;
 
 public slots:
     void readAll() override;
     void removeVehicle(Vehicle* vehicle) override;
     void restoreVehicle(Vehicle* vehicle) override;
     void saveVehicle(Vehicle* vehicle) override;
-    void addVehicleType(const QString& type) override;
-    void removeVehicleType(const QString& type) override;
+    void addVehicleType(const VehicleType* type) override;
+    void removeVehicleType(const VehicleType* type) override;
 
 private:
     Vehicle* readVehicle(const QVariant& id);
 
-    QStringList m_vehicleTypes;
     IVehiclesRepository* const m_vehiclesRepo;
+    QMap<QString, const VehicleType*> m_vehicleTypes;
     QMap<QVariant, Vehicle*> m_vehicles;
 
     mutable QMutex m_mutex;

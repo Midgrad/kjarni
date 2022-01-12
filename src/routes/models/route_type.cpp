@@ -6,10 +6,12 @@
 using namespace md::domain;
 
 RouteType::RouteType(const QString& id, const QString& name,
-                     const QVector<const RouteItemType*>& itemTypes) :
+                     const QVector<const RouteItemType*>& itemTypes,
+                     const QVector<const RoutePattern*>& patterns) :
     id(id),
     name(name),
-    itemTypes(utils::listToMap<RouteItemType>(itemTypes))
+    itemTypes(utils::listToMap<RouteItemType>(itemTypes)),
+    patterns(utils::listToMap<RoutePattern>(patterns))
 {
 }
 

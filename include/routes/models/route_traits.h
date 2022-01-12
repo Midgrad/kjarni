@@ -13,6 +13,7 @@ namespace props
 constexpr char items[] = "items";
 constexpr char item[] = "item";
 constexpr char route[] = "route";
+constexpr char shortName[] = "shortName";
 constexpr char calcData[] = "calcData";
 constexpr char block[] = "block";
 

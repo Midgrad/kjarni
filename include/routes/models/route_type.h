@@ -2,6 +2,7 @@
 #define ROUTE_TYPE_H
 
 #include "route_item_type.h"
+#include "route_pattern.h"
 
 namespace md::domain
 {
@@ -11,7 +12,8 @@ class RouteType
 
 public:
     RouteType(const QString& id, const QString& name,
-              const QVector<const RouteItemType*>& itemTypes);
+              const QVector<const RouteItemType*>& itemTypes,
+              const QVector<const RoutePattern*>& patterns);
 
     QVariantMap toVariantMap() const;
 
@@ -20,6 +22,7 @@ public:
     const QString id;
     const QString name;
     const QMap<QString, const RouteItemType*> itemTypes;
+    const QMap<QString, const RoutePattern*> patterns;
 };
 } // namespace md::domain
 
