@@ -18,6 +18,7 @@ public:
     QVariantMap toVariantMap() const;
 
     const RouteItemType* itemType(const QString& id) const;
+    const RoutePattern* pattern(const QString& id) const;
 
     const QString id;
     const QString name;

@@ -27,3 +27,8 @@ const RouteItemType* RouteType::itemType(const QString& id) const
 {
     return this->itemTypes.value(id, nullptr);
 }
+
+const RoutePattern* RouteType::pattern(const QString& id) const
+{
+    return this->patterns.value(id, nullptr);
+}
