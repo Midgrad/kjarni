@@ -1,7 +1,8 @@
-
 #ifndef COMMUNICATION_H
 #define COMMUNICATION_H
 
+#include "link_specification.h"
+#include "link_traits.h"
 #include "named.h"
 
 #include <QObject>
@@ -14,31 +15,30 @@ class Communication : public Named
     Q_OBJECT
 
 public:
-    Communication(const QString& name = QString(), QObject* parent = nullptr);
-//    Communication(const QString& type, const QVariantMap& map, QObject* parent = nullptr);
+    explicit Communication(LinkSpecification linkSpecification, const QString& name = QString(),
+                           QObject* parent = nullptr);
 
-//    Communication& operator=(const Communication& other);
+    QString type() const;
 
-//    QString protocol() const;
-//    QVariant parameter(const QString& parameter) const;
-//    QVariantMap parameters() const;
+    bool isConnected() const;
 
-    void Activate() const;
-    void Deactivate() const;
-    bool isActive() const;
+    int bytesReceived() const;
+    int bytesSent() const;
 
-//    int bytesReceived() const;
-//    int bytesSent() const;
+public slots:
+    void Connect();
+    void Disconnect();
 
+signals:
+    void connectedChanged(bool connected);
+    void bytesReceivedChanged(int bytesReceived);
+    void bytesSentChanged(int bytesSent);
 
 private:
-//    ICommunicationProtocol m_protocol;
-//    LinkConfiguration m_linkSpecification;
-    QVariantMap m_parameters;
-    bool m_active;
+    LinkSpecification m_linkSpecification;
+    bool m_connected;
     int m_bytesReceived;
     int m_bytesSent;
-
 };
 } // namespace md::domain
 

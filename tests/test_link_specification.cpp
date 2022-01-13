@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QSignalSpy>
 
-#include "link_configuration.h"
+#include "communication.h"
 
 using namespace md::domain;
 //using namespace md::data_source;
@@ -35,7 +35,7 @@ INSTANTIATE_TEST_SUITE_P(instantiation, linkConfigurationTest,
 TEST_P(linkConfigurationTest, testConstruct)
 {
     linkConfigurationTestArgs args = GetParam();
-    LinkConfiguration linkConfig(GetParam().params, GetParam().name);
+    Communication linkConfig(GetParam().params, GetParam().name);
 
     QSignalSpy spy(&linkConfig, &Entity::changed);
 
@@ -59,7 +59,7 @@ INSTANTIATE_TEST_SUITE_P(
 TEST_P(linkConfigurationUdpTest, testUdpConstruct)
 {
     linkConfigurationTestArgs args = GetParam();
-    LinkConfiguration linkConfig(GetParam().params, GetParam().name);
+    Communication linkConfig(GetParam().params, GetParam().name);
 
     QSignalSpy spy(&linkConfig, &Entity::changed);
 
