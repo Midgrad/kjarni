@@ -20,60 +20,60 @@ public:
     linkConfigurationTest() = default;
 };
 
-INSTANTIATE_TEST_SUITE_P(
-    instantiation, linkConfigurationTest,
-    ::testing::Values(
-        linkConfigurationTestArgs({ "Name 665", {} }),
-        linkConfigurationTestArgs({ "some_name", { { "bool_propery", false } } }),
-        linkConfigurationTestArgs({ "entity", { { "int_propery", 34 }, { "float_propery", 34 } } }),
-        linkConfigurationTestArgs({ "", { { "string_propery", "str123" } } })));
+class linkConfigurationUdpTest : public ::testing::TestWithParam<linkConfigurationTestArgs>
+{
+public:
+    linkConfigurationUdpTest() = default;
+};
 
-TEST_P(linkConfigurationTest, testParameters)
+INSTANTIATE_TEST_SUITE_P(instantiation, linkConfigurationTest,
+                         ::testing::Values(linkConfigurationTestArgs({ "Name 2", {} }),
+                                           linkConfigurationTestArgs({ "some_name", { {} } }),
+                                           linkConfigurationTestArgs({ "link", {} }),
+                                           linkConfigurationTestArgs({ "", {} })));
+
+TEST_P(linkConfigurationTest, testConstruct)
 {
     linkConfigurationTestArgs args = GetParam();
     LinkConfiguration linkConfig(GetParam().params, GetParam().name);
 
     QSignalSpy spy(&linkConfig, &Entity::changed);
 
-    EXPECT_EQ(linkConfig.parameters(), args.params);
+    //    EXPECT_EQ(linkConfig.parameters(), QVariantMap());
+    EXPECT_EQ(linkConfig.isConnected(), false);
+    EXPECT_EQ(linkConfig.bytesReceived(), 0);
+    EXPECT_EQ(linkConfig.bytesSent(), 0);
+    // TODO: Change to NE after type typification and verification
+    EXPECT_EQ(linkConfig.type(), "");
     EXPECT_EQ(spy.count(), 0);
-
-    //    entity.setParameters(
-    //        { { "bool_propery", true }, { "int_propery", -42 }, { "string_propery", "test" } });
-    //
-    //    EXPECT_EQ(entity.parameter("bool_propery"), true);
-    //    EXPECT_EQ(entity.parameter("int_propery"), -42);
-    //    EXPECT_EQ(entity.parameter("string_propery"), "test");
-    //
-    //    EXPECT_EQ(spy.count(), 1);
-    //
-    //    entity.removeParameter("string_propery");
-    //
-    //    EXPECT_EQ(entity.parameter("string_propery"), QVariant());
-    //    EXPECT_EQ(spy.count(), 2);
-    //
-    //    entity.removeParameters({ "bool_propery", "int_propery" });
-    //
-    //    EXPECT_TRUE(entity.parameters().isEmpty());
-    //    EXPECT_EQ(spy.count(), 3);
 }
-//
-//TEST_P(BaseModelsTest, testConstructFromMap)
-//{
-//    BaseModelsTestArgs args = GetParam();
-//
-//    QVariantMap map;
-//    map.insert(props::id, args.id.toString());
-//    map.insert(props::name, args.name);
-//    map.insert(props::params, QJsonValue::fromVariant(args.params));
-//
-//    Parametrised entity(map);
-//
-//    EXPECT_EQ(entity.id, args.id);
-//    EXPECT_EQ(entity.name, args.name);
-//    EXPECT_EQ(entity.parameters(), args.params);
-//}
-//
+
+INSTANTIATE_TEST_SUITE_P(
+    instantiation, linkConfigurationUdpTest,
+    ::testing::Values(
+        linkConfigurationTestArgs({ "Name 2", { { link_parameters::type, link_type::udp } } }),
+        linkConfigurationTestArgs({ "some_name", { { link_parameters::type, link_type::udp } } }),
+        linkConfigurationTestArgs({ "link", { { link_parameters::type, link_type::udp } } }),
+        linkConfigurationTestArgs({ "", { { link_parameters::type, link_type::udp } } })));
+
+TEST_P(linkConfigurationUdpTest, testUdpConstruct)
+{
+    linkConfigurationTestArgs args = GetParam();
+    LinkConfiguration linkConfig(GetParam().params, GetParam().name);
+
+    QSignalSpy spy(&linkConfig, &Entity::changed);
+
+    //    EXPECT_EQ(linkConfig.parameters(), args.params);
+    EXPECT_EQ(linkConfig.isConnected(), false);
+    EXPECT_EQ(linkConfig.bytesReceived(), 0);
+    EXPECT_EQ(linkConfig.bytesSent(), 0);
+    EXPECT_EQ(linkConfig.parameter(link_parameters::port), 14550);
+    EXPECT_EQ(linkConfig.parameter(link_parameters::autoResponse), false);
+
+    EXPECT_EQ(linkConfig.type(), link_type::udp);
+    EXPECT_EQ(spy.count(), 0);
+}
+
 //TEST_P(BaseModelsTest, testFromVariant)
 //{
 //    BaseModelsTestArgs args = GetParam();

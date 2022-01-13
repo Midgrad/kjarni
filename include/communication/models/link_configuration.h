@@ -1,6 +1,7 @@
 #ifndef LINK_CONFIGURATION_H
 #define LINK_CONFIGURATION_H
 
+#include "link_traits.h"
 #include "named.h"
 
 #include <QObject>
@@ -39,6 +40,7 @@ signals:
 
 private:
     void fillInParameters();
+    md::data_source::LinkPtr m_link;
     QString m_type;
     QVariantMap m_parameters;
     bool m_connected;

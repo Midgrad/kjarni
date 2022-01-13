@@ -1,5 +1,4 @@
 #include "link_configuration.h"
-#include "link_traits.h"
 
 using namespace md::domain;
 
@@ -21,6 +20,8 @@ LinkConfiguration::LinkConfiguration(QVariantMap parameters, const QString& name
     m_bytesReceived(0),
     m_bytesSent(0)
 {
+    // TODO: Bring back after refactoring is finished
+    //    Q_ASSERT(m_type != "");
     this->fillInParameters();
 }
 
