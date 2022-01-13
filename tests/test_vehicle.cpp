@@ -76,6 +76,8 @@ TEST_P(VehicleTest, testToVariant)
     map.insert(props::params, args.params);
     map.insert(props::type, args.type);
     map.insert(props::online, vehicle.online());
+    map.insert(props::icon, args.type->icon);
+    map.insert(props::model, args.type->model);
 
     EXPECT_EQ(map, vehicle.toVariantMap());
 }
