@@ -13,8 +13,7 @@ class LinkTransceiver : public ILinkTransceiver
     Q_OBJECT
 
 public:
-    LinkTransceiver(const data_source::LinkPtr& link, loodsman::LinkFactory* linkFactory,
-                    QObject* parent = nullptr);
+    LinkTransceiver(const data_source::LinkPtr& link, QObject* parent = nullptr);
 
 public slots:
     void start() override;
@@ -33,7 +32,6 @@ private:
 
     int m_timerId = 0;
     data_source::LinkPtr const m_link;
-    loodsman::LinkFactory* m_factory;
 };
 } // namespace md::data_source
 

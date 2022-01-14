@@ -2,16 +2,16 @@
 
 using namespace md::domain;
 
-Communication::Communication(LinkSpecification linkSpecification, ProtocolDescription protocolDescription, const QString& name,
+Communication::Communication(LinkSpecification linkSpecification,
+                             ProtocolDescription protocolDescription, const QString& name,
                              QObject* parent) :
     Named(name, utils::generateId(), parent),
     m_linkSpecification(linkSpecification),
     m_protocolDescription(protocolDescription),
     m_connected(false),
     m_bytesReceived(0),
-    m_bytesSent(0),
+    m_bytesSent(0)
 {
-
 }
 
 using namespace md::domain;

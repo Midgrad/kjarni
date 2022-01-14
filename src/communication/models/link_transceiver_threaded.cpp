@@ -1,8 +1,6 @@
 #include "link_transceiver_threaded.h"
 #include "link_transceiver.h"
 
-#include "mavlink_transceiver.h"
-
 #include <QDebug>
 
 namespace

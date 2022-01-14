@@ -22,7 +22,7 @@ public:
     ICommunicationProtocol* protocol() const;
 
 private:
-    ICommunicationProtocol* m_communicationProtocol;
+    ICommunicationProtocol* const m_communicationProtocol;
 };
 } // namespace md::domain
 

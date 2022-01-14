@@ -11,11 +11,9 @@ namespace
 constexpr int interval = 100;
 } // namespace
 
-LinkTransceiver::LinkTransceiver(const data_source::LinkPtr& link,
-                                 loodsman::LinkFactory* linkFactory, QObject* parent) :
+LinkTransceiver::LinkTransceiver(const data_source::LinkPtr& link, QObject* parent) :
     ILinkTransceiver(parent),
-    m_link(link),
-    m_factory(linkFactory)
+    m_link(link)
 
 {
 }
@@ -43,7 +41,8 @@ void LinkTransceiver::timerEvent(QTimerEvent* event)
     if (event->timerId() != m_timerId)
         return QObject::timerEvent(event);
 
-    m_factory->checkHandlers();
+    // TODO: check if signals and slots works with runHandlers()
+    m_link->checkHandlers();
 }
 
 void LinkTransceiver::receiveData()
