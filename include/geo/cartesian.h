@@ -9,6 +9,10 @@ class Cartesian
 {
 public:
     Cartesian(double x, double y, float z);
+    Cartesian();
+
+    bool isNull() const;
+    bool isValid() const;
 
     utils::ConstProperty<double> x;
     utils::ConstProperty<double> y;

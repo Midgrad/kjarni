@@ -3,6 +3,8 @@
 
 #include <gtest/gtest.h>
 
+#include <QDebug>
+
 #include "geodetic.h"
 
 using namespace md::domain;
@@ -120,4 +122,32 @@ TEST_P(GeodeticTest, testEquality)
     }
 
     EXPECT_EQ(first.datum(), second.datum());
+}
+
+TEST_P(GeodeticTest, testNedPointZero)
+{
+    TestArgs args = GetParam();
+    if (args.datum != geo::datums::wgs84)
+        return;
+
+    Geodetic initial(args.latitude, args.longitude, args.altitude, args.datum);
+    Cartesian ned = initial.nedPoint(initial);
+    if (initial.isValid())
+    {
+        ASSERT_TRUE(ned.isNull());
+    }
+    else
+    {
+        ASSERT_FALSE(ned.isValid());
+    }
+
+    Geodetic restored = initial.offsetted(ned);
+    if (initial.isValid())
+    {
+        EXPECT_EQ(initial, restored);
+    }
+    else
+    {
+        ASSERT_FALSE(restored.isValid());
+    }
 }

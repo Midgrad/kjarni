@@ -3,8 +3,8 @@
 
 #include <QVariantMap>
 
+#include "cartesian.h"
 #include "geo_traits.h"
-#include "magic_property.hpp"
 
 namespace md::domain
 {
@@ -27,6 +27,8 @@ public:
     bool isValid() const;
 
     Geodetic offsetted(double dLatitude, double dLongitude, float dAltitude) const;
+    Geodetic offsetted(const Cartesian& nedPoint);
+    Cartesian nedPoint(const Geodetic& origin);
 
     Geodetic& operator=(const Geodetic& other);
     friend bool operator==(const Geodetic& first, const Geodetic& second);
