@@ -27,8 +27,8 @@ public:
     bool isValid() const;
 
     Geodetic offsetted(double dLatitude, double dLongitude, float dAltitude) const;
-    Geodetic offsetted(const Cartesian& nedPoint);
-    Cartesian nedPoint(const Geodetic& origin);
+    Geodetic offsetted(const Cartesian& nedPoint) const;
+    Cartesian nedPoint(const Geodetic& origin) const;
 
     Geodetic& operator=(const Geodetic& other);
     friend bool operator==(const Geodetic& first, const Geodetic& second);

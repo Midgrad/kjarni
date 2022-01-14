@@ -61,7 +61,7 @@ Geodetic Geodetic::offsetted(double dLatitude, double dLongitude, float dAltitud
                     this->altitude() + dAltitude, datum);
 }
 
-Geodetic Geodetic::offsetted(const Cartesian& nedPoint)
+Geodetic Geodetic::offsetted(const Cartesian& nedPoint) const
 {
     if (!nedPoint.isValid() || !this->isValid())
         return Geodetic();
@@ -96,7 +96,7 @@ Geodetic Geodetic::offsetted(const Cartesian& nedPoint)
                     -nedPoint.z + this->altitude());
 }
 
-Cartesian Geodetic::nedPoint(const Geodetic& origin)
+Cartesian Geodetic::nedPoint(const Geodetic& origin) const
 {
     if (!origin.isValid() || !this->isValid())
         return Cartesian();
