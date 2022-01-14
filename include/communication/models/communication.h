@@ -4,6 +4,7 @@
 #include "link_specification.h"
 #include "link_traits.h"
 #include "named.h"
+#include "protocol_description.h"
 
 #include <QObject>
 #include <QVariantMap>
@@ -15,7 +16,8 @@ class Communication : public Named
     Q_OBJECT
 
 public:
-    explicit Communication(LinkSpecification linkSpecification, const QString& name = QString(),
+    explicit Communication(LinkSpecification linkSpecification,
+                           ProtocolDescription protocolDescription, const QString& name = QString(),
                            QObject* parent = nullptr);
 
     QString type() const;
@@ -36,6 +38,7 @@ signals:
 
 private:
     LinkSpecification m_linkSpecification;
+    ProtocolDescription m_protocolDescription;
     bool m_connected;
     int m_bytesReceived;
     int m_bytesSent;
