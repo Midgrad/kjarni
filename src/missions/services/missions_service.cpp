@@ -88,8 +88,6 @@ void MissionsService::registerMissionType(const MissionType* type)
         return;
 
     m_missionTypes.insert(type->id, type);
-    m_routes->registerRouteType(type->routeType);
-
     emit missionTypesChanged();
 }
 
@@ -100,9 +98,7 @@ void MissionsService::unregisterMissionType(const MissionType* type)
     if (!m_missionTypes.contains(type->id))
         return;
 
-    m_routes->unregisterRouteType(type->routeType);
     m_missionTypes.remove(type->id);
-
     emit missionTypesChanged();
 }
 
@@ -160,6 +156,7 @@ void MissionsService::saveMission(Mission* mission)
     mission->moveToThread(this->thread());
     mission->setParent(this);
 
+    // TODO: remove extra cals to routes
     // Save mission route
     if (mission->route())
         m_routes->saveRoute(mission->route());

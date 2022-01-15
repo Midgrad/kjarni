@@ -3,6 +3,7 @@
 
 #include "i_service.h"
 #include "route.h"
+#include "route_pattern.h"
 
 namespace md::domain
 {
@@ -23,8 +24,14 @@ public:
     virtual const RouteType* routeType(const QString& id) const = 0;
     virtual QList<const RouteType*> routeTypes() const = 0;
 
+    virtual RoutePattern* createRoutePattern(const QString& routePatternId) = 0;
+
     virtual void registerRouteType(const RouteType* routeType) = 0;
     virtual void unregisterRouteType(const RouteType* routeType) = 0;
+
+    virtual void registerRoutePatternFactory(const QString& routePatternId,
+                                             IRoutePatternFactory* factory) = 0;
+    virtual void unregisterRoutePatternFactory(const QString& routePatternId) = 0;
 
 public slots:
     virtual void readAll() = 0;

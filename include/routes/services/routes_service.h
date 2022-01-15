@@ -23,8 +23,14 @@ public:
     const RouteType* routeType(const QString& id) const override;
     QList<const RouteType*> routeTypes() const override;
 
+    RoutePattern* createRoutePattern(const QString& routePatternId) override;
+
     void registerRouteType(const RouteType* routeType) override;
     void unregisterRouteType(const RouteType* routeType) override;
+
+    void registerRoutePatternFactory(const QString& routePatternId,
+                                     IRoutePatternFactory* factory) override;
+    void unregisterRoutePatternFactory(const QString& routePatternId) override;
 
     // For tests
     void addRoute(Route* route);
@@ -48,8 +54,8 @@ private:
     IRouteItemsRepository* const m_itemsRepo;
 
     QMap<QString, const RouteType*> m_routeTypes;
-    QMap<QString, const RouteItemType*> m_itemTypes; // TODO: remove
     QMap<QVariant, Route*> m_routes;
+    QMap<QString, IRoutePatternFactory*> m_patternFactories;
 
     mutable QMutex m_mutex;
 };

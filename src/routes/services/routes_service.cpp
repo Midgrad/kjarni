@@ -46,6 +46,15 @@ QList<const RouteType*> RoutesService::routeTypes() const
     return m_routeTypes.values();
 }
 
+RoutePattern* RoutesService::createRoutePattern(const QString& routePatternId)
+{
+    IRoutePatternFactory* factory = m_patternFactories.value(routePatternId, nullptr);
+    if (!factory)
+        return nullptr;
+
+    return factory->create(routePatternId);
+}
+
 void RoutesService::registerRouteType(const RouteType* routeType)
 {
     QMutexLocker locker(&m_mutex);
@@ -53,15 +62,7 @@ void RoutesService::registerRouteType(const RouteType* routeType)
     if (m_routeTypes.contains(routeType->id))
         return;
 
-    // Route type
     m_routeTypes.insert(routeType->id, routeType);
-
-    // Route item types
-    for (const RouteItemType* itemType : routeType->itemTypes)
-    {
-        m_itemTypes.insert(itemType->id, itemType);
-    }
-
     emit routeTypesChanged();
 }
 
@@ -72,16 +73,19 @@ void RoutesService::unregisterRouteType(const RouteType* routeType)
     if (!m_routeTypes.contains(routeType->id))
         return;
 
-    // Route item types
-    for (const RouteItemType* itemType : routeType->itemTypes)
-    {
-        m_itemTypes.remove(itemType->id);
-    }
-
-    // Route type
     m_routeTypes.remove(routeType->id);
-
     emit routeTypesChanged();
+}
+
+void RoutesService::registerRoutePatternFactory(const QString& routePatternId,
+                                                IRoutePatternFactory* factory)
+{
+    m_patternFactories[routePatternId] = factory;
+}
+
+void RoutesService::unregisterRoutePatternFactory(const QString& routePatternId)
+{
+    m_patternFactories.remove(routePatternId);
 }
 
 void RoutesService::addRoute(Route* route)
@@ -232,16 +236,23 @@ Route* RoutesService::readRoute(const QVariant& id)
 RouteItem* RoutesService::readItem(const QVariant& id)
 {
     QVariantMap select = m_itemsRepo->select(id);
-    QString typeId = select.value(props::type).toString();
-    const RouteItemType* const type = m_itemTypes.value(typeId);
-    if (!type)
+    QString itemTypeId = select.value(props::type).toString();
+    const RouteItemType* itemType = nullptr;
+    for (const RouteType* routeType : qAsConst(m_routeTypes))
     {
-        qWarning() << "Unknown route item type" << typeId;
+        itemType = routeType->itemType(itemTypeId);
+        if (itemType)
+            break;
+    }
+
+    if (!itemType)
+    {
+        qWarning() << "Unknown route item type" << itemTypeId;
         return nullptr;
     }
 
     // Read current item
-    return new RouteItem(type, select);
+    return new RouteItem(itemType, select);
 }
 
 void RoutesService::saveItemImpl(RouteItem* item, const QVariant& parentId,

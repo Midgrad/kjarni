@@ -1,7 +1,6 @@
 #ifndef ROUTE_ITEM_H
 #define ROUTE_ITEM_H
 
-#include "entity.h"
 #include "geodetic.h"
 #include "route_item_type.h"
 
@@ -12,10 +11,10 @@ class RouteItem : public Parametrised
     Q_OBJECT
 
 public:
-    RouteItem(const RouteItemType* type, const QVariant& id = utils::generateId(),
-              const QString& name = QString(), QVariantMap params = {},
-              const Geodetic& position = Geodetic(), const QVariantMap& calcData = {},
-              bool current = false, bool reached = false, QObject* parent = nullptr);
+    explicit RouteItem(const RouteItemType* type, const QVariant& id = utils::generateId(),
+                       const QString& name = QString(), QVariantMap params = {},
+                       const Geodetic& position = Geodetic(), const QVariantMap& calcData = {},
+                       bool current = false, bool reached = false, QObject* parent = nullptr);
     RouteItem(const RouteItemType* type, const QVariantMap& map, QObject* parent = nullptr);
 
     utils::Property<Geodetic> position;
