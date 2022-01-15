@@ -9,7 +9,7 @@
 
 using namespace md::domain;
 
-struct TestArgs
+struct GeodeticTestArgs
 {
     double latitude;
     double longitude;
@@ -17,7 +17,7 @@ struct TestArgs
     QString datum;
 };
 
-class GeodeticTest : public ::testing::TestWithParam<TestArgs>
+class GeodeticTest : public ::testing::TestWithParam<GeodeticTestArgs>
 {
 public:
     GeodeticTest()
@@ -27,18 +27,18 @@ public:
 
 INSTANTIATE_TEST_SUITE_P(
     instantiation, GeodeticTest,
-    ::testing::Values(TestArgs({ 44.5432, 31.2344, 4584.56, geo::datums::wgs84 }),
-                      TestArgs({ -18.1283, -164.8748, 202.82, geo::datums::wgs84 }),
-                      TestArgs({ 0, 0, 0, "" }),
-                      TestArgs({ std::numeric_limits<double>::quiet_NaN(),
+    ::testing::Values(GeodeticTestArgs({ 44.5432, 31.2344, 4584.56, geo::datums::wgs84 }),
+                      GeodeticTestArgs({ -18.1283, -164.8748, 202.82, geo::datums::wgs84 }),
+                      GeodeticTestArgs({ 0, 0, 0, "" }),
+                      GeodeticTestArgs({ std::numeric_limits<double>::quiet_NaN(),
                                  std::numeric_limits<double>::quiet_NaN(), 0, "" }),
-                      TestArgs({ std::numeric_limits<double>::quiet_NaN(),
+                      GeodeticTestArgs({ std::numeric_limits<double>::quiet_NaN(),
                                  std::numeric_limits<double>::quiet_NaN(),
                                  std::numeric_limits<double>::quiet_NaN(), "" })));
 
 TEST_P(GeodeticTest, testToVariant)
 {
-    TestArgs args = GetParam();
+    GeodeticTestArgs args = GetParam();
 
     Geodetic geodetic(args.latitude, args.longitude, args.altitude, args.datum);
     QVariantMap map = geodetic.toVariantMap();
@@ -68,7 +68,7 @@ TEST_P(GeodeticTest, testToVariant)
 
 TEST_P(GeodeticTest, testFromVariant)
 {
-    TestArgs args = GetParam();
+    GeodeticTestArgs args = GetParam();
 
     QVariantMap map({ { geo::latitude, args.latitude },
                       { geo::longitude, args.longitude },
@@ -92,7 +92,7 @@ TEST_P(GeodeticTest, testFromVariant)
 
 TEST_P(GeodeticTest, testEquality)
 {
-    TestArgs args = GetParam();
+    GeodeticTestArgs args = GetParam();
 
     Geodetic first(args.latitude, args.longitude, args.altitude, args.datum);
     Geodetic second(first.toVariantMap());
@@ -126,7 +126,7 @@ TEST_P(GeodeticTest, testEquality)
 
 TEST_P(GeodeticTest, testNedPointZero)
 {
-    TestArgs args = GetParam();
+    GeodeticTestArgs args = GetParam();
     if (args.datum != geo::datums::wgs84)
         return;
 

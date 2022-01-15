@@ -9,15 +9,23 @@ class Cartesian
 {
 public:
     Cartesian(double x, double y, float z);
+    Cartesian(const QVariantMap& map);
     Cartesian();
-
-    bool isNull() const;
-    bool isValid() const;
 
     utils::ConstProperty<double> x;
     utils::ConstProperty<double> y;
     utils::ConstProperty<float> z;
+
+    QVariantMap toVariantMap() const;
+    bool isNull() const;
+    bool isValid() const;
+
+    Cartesian translated(const Cartesian& d) const;
+    Cartesian rotated(float heading) const;
+    Cartesian operator-() const;
 };
+
+bool operator==(const Cartesian& first, const Cartesian& second);
 } // namespace md::domain
 
 #endif // CARTESIAN_H

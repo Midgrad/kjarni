@@ -26,7 +26,6 @@ public:
     bool isValidAltitude() const;
     bool isValid() const;
 
-    Geodetic offsetted(double dLatitude, double dLongitude, float dAltitude) const;
     Geodetic offsetted(const Cartesian& nedPoint) const;
     Cartesian nedPoint(const Geodetic& origin) const;
 

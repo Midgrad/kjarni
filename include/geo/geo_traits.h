@@ -11,6 +11,10 @@ namespace datums
 constexpr char wgs84[] = "WGS84";
 } // namespace datums
 
+constexpr char x[] = "x";
+constexpr char y[] = "y";
+constexpr char z[] = "z";
+
 constexpr char latitude[] = "latitude";
 constexpr char longitude[] = "longitude";
 constexpr char altitude[] = "altitude";
