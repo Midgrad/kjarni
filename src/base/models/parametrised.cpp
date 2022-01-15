@@ -72,6 +72,11 @@ QVariant Parametrised::parameter(const QString& key) const
     return m_parameters.value(key);
 }
 
+bool Parametrised::hasParameter(const QString& key) const
+{
+    return m_parameters.contains(key);
+}
+
 QVariantMap Parametrised::toVariantMap() const
 {
     QVariantMap map = Named::toVariantMap();

@@ -20,6 +20,7 @@ public:
 
     void setAreaPositions(const QVector<domain::Geodetic>& areaPositions);
 
+public slots:
     virtual void calculate() = 0;
 
 signals:

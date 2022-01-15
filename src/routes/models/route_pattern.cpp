@@ -6,6 +6,7 @@ RoutePattern::RoutePattern(const RoutePatternType* type, QObject* parent) :
     Parametrised(utils::generateId(), type->name, type->defaultParameters()),
     type(type)
 {
+    connect(this, &RoutePattern::changed, this, &RoutePattern::calculate);
 }
 
 const QVector<Geodetic>& RoutePattern::areaPositions() const

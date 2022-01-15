@@ -30,6 +30,7 @@ public:
 public slots:
     void setType(const RouteItemType* type);
 
+    // TODO: to Parametrised or TypeParametrised
     void setAndCheckParameter(const QString& paramId, const QVariant& value);
     void resetParameter(const QString& paramId);
     void resetParameters();
