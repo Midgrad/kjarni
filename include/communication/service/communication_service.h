@@ -41,7 +41,7 @@ private:
     QVector<domain::ProtocolDescription> m_protocols;
     loodsman::LinkFactory m_factory;
     data_source::LinkPtrMap m_links;
-    QVector<md::data_source::ILinkTransceiver*> m_linkTransceiverThreaded;
+    QVector<md::domain::ILinkTransceiver*> m_linkTransceiverThreaded;
     QScopedPointer<data_source::IJsonSource> m_source;
 };
 

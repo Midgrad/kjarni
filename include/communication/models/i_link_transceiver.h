@@ -1,9 +1,10 @@
 #ifndef I_LINK_TRANSCEIVER_H
 #define I_LINK_TRANSCEIVER_H
 
+#include <QByteArray>
 #include <QObject>
 
-namespace md::data_source
+namespace md::domain
 {
 class ILinkTransceiver : public QObject
 {
@@ -18,9 +19,11 @@ public:
 public slots:
     virtual void start() = 0;
     virtual void stop() = 0;
+    virtual void send(const QByteArray& data);
 
 signals:
     void finished();
+    void receivedData(QByteArray data);
 };
 } // namespace md::domain
 

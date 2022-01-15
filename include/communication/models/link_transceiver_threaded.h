@@ -7,12 +7,12 @@
 
 namespace md::data_source
 {
-class LinkTransceiverThreaded : public ILinkTransceiver
+class LinkTransceiverThreaded : public md::domain::ILinkTransceiver
 {
     Q_OBJECT
 
 public:
-    LinkTransceiverThreaded(ILinkTransceiver* worker, QObject* parent = nullptr);
+    explicit LinkTransceiverThreaded(ILinkTransceiver* worker, QObject* parent = nullptr);
     ~LinkTransceiverThreaded() override;
 
 public slots:

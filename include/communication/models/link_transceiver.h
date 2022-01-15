@@ -8,7 +8,7 @@
 
 namespace md::data_source
 {
-class LinkTransceiver : public ILinkTransceiver
+class LinkTransceiver : public md::domain::ILinkTransceiver
 {
     Q_OBJECT
 
@@ -19,13 +19,10 @@ public slots:
     void start() override;
     void stop() override;
 
-    void send(const QByteArray& data);
+    void send(const QByteArray& data) override;
 
 protected:
     void timerEvent(QTimerEvent* event) override;
-
-signals:
-    void receivedData(QByteArray data);
 
 private:
     void receiveData();
