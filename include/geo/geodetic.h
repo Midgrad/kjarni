@@ -28,6 +28,7 @@ public:
 
     Geodetic offsetted(const Cartesian& nedPoint) const;
     Cartesian nedPoint(const Geodetic& origin) const;
+    double distanceTo(const Geodetic& other) const;
 
     Geodetic& operator=(const Geodetic& other);
     friend bool operator==(const Geodetic& first, const Geodetic& second);

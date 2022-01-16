@@ -69,8 +69,8 @@ Geodetic Geodetic::offsetted(const Cartesian& nedPoint) const
     double refLonR = qDegreesToRadians(this->longitude());
     double refLatR = qDegreesToRadians(this->latitude());
 
-    double refSinLat = sin(refLatR);
-    double refCosLat = cos(refLatR);
+    double refSinLat = qSin(refLatR);
+    double refCosLat = qCos(refLatR);
 
     double latR = 0;
     double lonR = 0;
@@ -87,7 +87,7 @@ Geodetic Geodetic::offsetted(const Cartesian& nedPoint) const
     }
 
     return Geodetic(qRadiansToDegrees(latR), qRadiansToDegrees(lonR),
-                    -nedPoint.z + this->altitude());
+                    -nedPoint.z + this->altitude(), this->datum());
 }
 
 Cartesian Geodetic::nedPoint(const Geodetic& origin) const
@@ -104,19 +104,37 @@ Cartesian Geodetic::nedPoint(const Geodetic& origin) const
     double refLatR = qDegreesToRadians(origin.latitude);
     double refLonR = qDegreesToRadians(origin.longitude);
 
-    double sinLatR = sin(latR);
-    double cosLatR = cos(latR);
-    double cosDLon = cos(lonR - refLonR);
+    double sinLatR = qSin(latR);
+    double cosLatR = qCos(latR);
+    double cosDLon = qCos(lonR - refLonR);
 
-    double refSinLatR = sin(refLatR);
-    double refCosLatR = cos(refLatR);
+    double refSinLatR = qSin(refLatR);
+    double refCosLatR = qCos(refLatR);
 
-    double c = acos(refSinLatR * sinLatR + refCosLatR * cosLatR * cosDLon);
+    double c = qAcos(refSinLatR * sinLatR + refCosLatR * cosLatR * cosDLon);
     double k = (fabs(c) < std::numeric_limits<double>::epsilon()) ? 1.0 : (c / sin(c));
 
     return Cartesian(k * (refCosLatR * sinLatR - refSinLatR * cosLatR * cosDLon) * ::wgs84Radius,
                      k * cosLatR * sin(lonR - refLonR) * ::wgs84Radius,
                      -(this->altitude - origin.altitude));
+}
+
+double Geodetic::distanceTo(const Geodetic& other) const
+{
+    double lat1R = qDegreesToRadians(this->latitude);
+    double lon1R = qDegreesToRadians(this->longitude);
+
+    double lat2R = qDegreesToRadians(other.latitude);
+    double lon2R = qDegreesToRadians(other.longitude);
+
+    double dLat = lat2R - lat1R;
+    double dLon = lon2R - lon1R;
+
+    double a = qSin(dLat / 2) * qSin(dLat / 2) +
+               qCos(lat1R) * qCos(lat2R) * qSin(dLon / 2) * qSin(dLon / 2);
+    double c = 2 * qAtan2(qSqrt(a), qSqrt(1 - a));
+
+    return ::wgs84Radius * c;
 }
 
 Geodetic& Geodetic::operator=(const Geodetic& other)
