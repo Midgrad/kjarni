@@ -55,5 +55,6 @@ void LinkTransceiver::receiveData()
 
 void LinkTransceiver::send(const QByteArray& data)
 {
+    qDebug() << "send";
     m_link->asyncSend(data.toStdString(), [](std::size_t size) {});
 }

@@ -91,4 +91,9 @@ void CommunicationService::registerProtocol(const QString& name,
     domain::ProtocolDescription protocolDescription(protocol, name, this);
     m_protocols.append(protocolDescription);
     m_linkTransceivers = createLinkTranceivers();
+
+    for (auto thread : m_linkTransceivers)
+    {
+        thread->start();
+    }
 }
