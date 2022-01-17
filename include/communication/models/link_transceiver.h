@@ -19,7 +19,10 @@ public slots:
     void start() override;
     void stop() override;
 
-    void send(const QByteArray& data) override;
+    void send(const QByteArray& data);
+
+signals:
+    void receivedData(QByteArray data);
 
 protected:
     void timerEvent(QTimerEvent* event) override;

@@ -10,7 +10,7 @@ ProtocolDescription::ProtocolDescription(ICommunicationProtocol* communicationPr
 }
 
 ProtocolDescription::ProtocolDescription(const ProtocolDescription& another, QObject* parent) :
-    Named(name, utils::generateId(), parent),
+    Named(another.name(), utils::generateId(), parent),
     m_communicationProtocol(another.protocol())
 {
 }

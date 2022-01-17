@@ -4,6 +4,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
+#include "i_link_transceiver.h"
 #include "json_source_file.h"
 #include "link_factory.h"
 #include "link_transceiver.h"
@@ -24,6 +25,7 @@ CommunicationService::CommunicationService(const QString& fileName) :
     m_factory()
 {
     m_links = createLinks();
+    //    m_linkTransceivers = createLinkTranceivers();
 }
 
 md::data_source::LinkPtrMap CommunicationService::createLinks()
@@ -54,35 +56,39 @@ md::data_source::LinkPtrMap CommunicationService::createLinks()
     return links;
 }
 
-void CommunicationService::createLinkTranceivers()
+QVector<md::domain::ILinkTransceiver*> CommunicationService::createLinkTranceivers()
 {
+    QVector<md::domain::ILinkTransceiver*> linkTransceivers;
     for (const auto& link : m_links)
     {
         // TODO: check thread safety for factory
         auto linkT = new data_source::LinkTransceiver(link, nullptr);
         auto linkTT = new data_source::LinkTransceiverThreaded(linkT, this);
-        m_linkTransceiverThreaded.append(linkTT);
+        linkTransceivers.append(linkTT);
 
-        //        QObject::connect(linkT, &data_source::LinkTransceiver::receivedData, m_proto,
-        //                         &domain::ICommunicationProtocol::receiveData);
-        //        QObject::connect(this, &domain::ICommunicationProtocol::sendData, linkT,
-        //                         &data_source::LinkTransceiver::send);
+        QObject::connect(linkT, &data_source::LinkTransceiver::receivedData,
+                         m_protocols[0].protocol(), &domain::ICommunicationProtocol::receiveData);
+        QObject::connect(m_protocols[0].protocol(), &domain::ICommunicationProtocol::sendData,
+                         linkT, &data_source::LinkTransceiver::send);
     }
+
+    return linkTransceivers;
 }
 
-md::data_source::LinkPtrMap CommunicationService::links()
-{
-    return m_links;
-}
+//md::data_source::LinkPtrMap CommunicationService::links()
+//{
+//    return m_links;
+//}
 
-loodsman::LinkFactory* CommunicationService::factory()
-{
-    return &m_factory;
-}
+//loodsman::LinkFactory* CommunicationService::factory()
+//{
+//    return &m_factory;
+//}
 
 void CommunicationService::registerProtocol(const QString& name,
                                             md::domain::ICommunicationProtocol* protocol)
 {
     domain::ProtocolDescription protocolDescription(protocol, name, this);
     m_protocols.append(protocolDescription);
+    m_linkTransceivers = createLinkTranceivers();
 }

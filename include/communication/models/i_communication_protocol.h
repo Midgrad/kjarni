@@ -1,7 +1,9 @@
 #ifndef I_COMMUNICATION_PROTOCOL_H
 #define I_COMMUNICATION_PROTOCOL_H
 
+#include "QByteArray"
 #include "QObject"
+
 namespace md::domain
 {
 class ICommunicationProtocol : public QObject
@@ -15,9 +17,9 @@ public:
     virtual ~ICommunicationProtocol() = default;
 
 public slots:
-    virtual void start() = 0;
-    virtual void stop() = 0;
-    virtual void receiveData(const QByteArray& data);
+    //    virtual void start() = 0;
+    //    virtual void stop() = 0;
+    virtual void receiveData(const QByteArray& data) = 0;
 
 signals:
     void finished();

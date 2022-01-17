@@ -13,6 +13,7 @@
 #include "i_service.h"
 #include "link_factory.h"
 #include "link_traits.h"
+#include "link_transceiver_threaded.h"
 
 namespace md::app
 {
@@ -27,21 +28,17 @@ public:
 
     void registerProtocol(const QString& name, domain::ICommunicationProtocol* protocol);
 
-    // TODO: decide where to put it
-    void checkHandlers();
-    void runHandlers();
-
 private:
     data_source::LinkPtrMap createLinks();
-    void createLinkTranceivers();
+    QVector<md::domain::ILinkTransceiver*> createLinkTranceivers();
 
-    data_source::LinkPtrMap links();
-    loodsman::LinkFactory* factory();
+    //    data_source::LinkPtrMap links();
+    //    loodsman::LinkFactory* factory();
 
     QVector<domain::ProtocolDescription> m_protocols;
     loodsman::LinkFactory m_factory;
     data_source::LinkPtrMap m_links;
-    QVector<md::domain::ILinkTransceiver*> m_linkTransceiverThreaded;
+    QVector<md::domain::ILinkTransceiver*> m_linkTransceivers;
     QScopedPointer<data_source::IJsonSource> m_source;
 };
 
