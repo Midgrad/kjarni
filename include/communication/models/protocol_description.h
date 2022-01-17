@@ -17,12 +17,14 @@ public:
     explicit ProtocolDescription() = default;
     explicit ProtocolDescription(ICommunicationProtocol* communicationProtocol,
                                  const QString& name = QString(), QObject* parent = nullptr);
-    ProtocolDescription(ProtocolDescription& another, QObject* parent = nullptr);
+    explicit ProtocolDescription(const ProtocolDescription& another, QObject* parent = nullptr);
+
+    ProtocolDescription& operator=(const ProtocolDescription& another);
 
     ICommunicationProtocol* protocol() const;
 
 private:
-    ICommunicationProtocol* const m_communicationProtocol;
+    ICommunicationProtocol* m_communicationProtocol;
 };
 } // namespace md::domain
 

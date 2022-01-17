@@ -17,8 +17,8 @@
 namespace md::app
 {
 class CommunicationService
-    : public md::domain::IService
-    , QObject
+    : public QObject
+    , public md::domain::IService
 {
     Q_OBJECT
 

@@ -15,7 +15,7 @@ class LinkSpecification : public QObject
 public:
     explicit LinkSpecification() = default;
     explicit LinkSpecification(QVariantMap parameters, QObject* parent = nullptr);
-    LinkSpecification(LinkSpecification& another, QObject* parent = nullptr);
+    explicit LinkSpecification(LinkSpecification& another, QObject* parent = nullptr);
 
     QString type() const;
     QVariant parameter(const QString& parameter) const;

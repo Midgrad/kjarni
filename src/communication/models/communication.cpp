@@ -14,7 +14,23 @@ Communication::Communication(LinkSpecification linkSpecification,
 {
 }
 
-using namespace md::domain;
+void Communication::start()
+{
+    for (auto thread : m_linkTransceiverThreaded)
+    {
+        thread->start();
+    }
+}
+
+void Communication::stop()
+{
+    for (auto thread : m_linkTransceiverThreaded)
+    {
+        thread->stop();
+    }
+
+    //    emit finished();
+}
 
 QString Communication::type() const
 {

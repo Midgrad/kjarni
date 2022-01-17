@@ -21,10 +21,8 @@ public slots:
 
 signals:
     void finished();
-    virtual void sendData(QByteArray data);
-
+    void sendData(QByteArray data);
 };
 } // namespace md::domain
-
 
 #endif //I_COMMUNICATION_PROTOCOL_H

@@ -1,6 +1,7 @@
 #ifndef COMMUNICATION_H
 #define COMMUNICATION_H
 
+#include "i_link_transceiver.h"
 #include "link_specification.h"
 #include "link_traits.h"
 #include "named.h"
@@ -8,6 +9,7 @@
 
 #include <QObject>
 #include <QVariantMap>
+#include <QVector>
 
 namespace md::domain
 {
@@ -31,12 +33,16 @@ public slots:
     void Connect();
     void Disconnect();
 
+    void start();
+    void stop();
+
 signals:
     void connectedChanged(bool connected);
     void bytesReceivedChanged(int bytesReceived);
     void bytesSentChanged(int bytesSent);
 
 private:
+    QVector<ILinkTransceiver*> m_linkTransceiverThreaded;
     LinkSpecification m_linkSpecification;
     ProtocolDescription m_protocolDescription;
     bool m_connected;

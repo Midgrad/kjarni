@@ -81,7 +81,7 @@ loodsman::LinkFactory* CommunicationService::factory()
 }
 
 void CommunicationService::registerProtocol(const QString& name,
-                                            md::domain::ICommunicationProtocol* const protocol)
+                                            md::domain::ICommunicationProtocol* protocol)
 {
     domain::ProtocolDescription protocolDescription(protocol, name, this);
     m_protocols.append(protocolDescription);
