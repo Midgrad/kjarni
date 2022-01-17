@@ -38,6 +38,12 @@ bool Cartesian::isValid() const
     return !std::isnan(this->x()) && !std::isnan(this->y()) && !std::isnan(this->z());
 }
 
+double Cartesian::distanceTo(const Cartesian& other) const
+{
+    return std::hypot(std::hypot(this->x() - other.x(), this->y() - other.y()),
+                      this->z() - other.z());
+}
+
 Cartesian Cartesian::translated(const Cartesian& d) const
 {
     return Cartesian(this->x() + d.x(), this->y() + d.y(), this->z() + d.z());

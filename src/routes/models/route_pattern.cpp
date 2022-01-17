@@ -9,19 +9,19 @@ RoutePattern::RoutePattern(const RoutePatternType* type, QObject* parent) :
     connect(this, &RoutePattern::changed, this, &RoutePattern::calculate);
 }
 
-const QVector<Geodetic>& RoutePattern::areaPositions() const
+const GeodeticPath& RoutePattern::area() const
 {
-    return m_areaPositions;
+    return m_area;
 }
 
-const QVector<Geodetic>& RoutePattern::pathPositions() const
+const GeodeticPath& RoutePattern::path() const
 {
-    return m_pathPositions;
+    return m_path;
 }
 
-void RoutePattern::setAreaPositions(const QVector<Geodetic>& areaPositions)
+void RoutePattern::setArea(const GeodeticPath& area)
 {
-    m_areaPositions = areaPositions;
+    m_area = area;
     emit areaPositionsChanged();
 
     this->calculate();

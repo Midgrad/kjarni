@@ -19,6 +19,7 @@ public:
     QVariantMap toVariantMap() const;
     bool isNull() const;
     bool isValid() const;
+    double distanceTo(const Cartesian& other) const;
 
     Cartesian translated(const Cartesian& d) const;
     Cartesian rotated(float heading) const;
