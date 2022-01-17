@@ -20,9 +20,9 @@ public:
     bool isNull() const;
     bool isValid() const;
     double distanceTo(const Cartesian& other) const;
-
+    Cartesian midPoint(const Cartesian& other) const;
     Cartesian translated(const Cartesian& d) const;
-    Cartesian rotated(float heading) const;
+    Cartesian rotated(float heading, const Cartesian& origin) const;
     Cartesian operator-() const;
 };
 

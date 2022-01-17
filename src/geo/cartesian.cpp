@@ -44,19 +44,26 @@ double Cartesian::distanceTo(const Cartesian& other) const
                       this->z() - other.z());
 }
 
+Cartesian Cartesian::midPoint(const Cartesian& other) const
+{
+    return Cartesian((this->x() + other.x()) / 2, (this->y() + other.y()) / 2,
+                     (this->z() + other.z()) / 2);
+}
+
 Cartesian Cartesian::translated(const Cartesian& d) const
 {
     return Cartesian(this->x() + d.x(), this->y() + d.y(), this->z() + d.z());
 }
 
-Cartesian Cartesian::rotated(float heading) const
+Cartesian Cartesian::rotated(float heading, const Cartesian& origin) const
 {
-    float headingR = qDegreesToRadians(heading);
+    float headingR = qDegreesToRadians(-heading);
 
-    double xR = this->x() * qCos(headingR) - this->y() * qSin(headingR);
-    double yR = this->x() * qSin(headingR) + this->y() * qCos(headingR);
-
-    return Cartesian(xR, yR, this->z());
+    return Cartesian(((this->x() - origin.x()) * qCos(headingR)) -
+                         ((this->y() - origin.y()) * qSin(headingR)) + origin.x(),
+                     ((this->x() - origin.x()) * qSin(headingR)) +
+                         ((this->y() - origin.y()) * qCos(headingR)) + origin.y(),
+                     this->z);
 }
 
 Cartesian Cartesian::operator-() const

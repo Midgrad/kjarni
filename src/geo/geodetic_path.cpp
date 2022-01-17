@@ -23,10 +23,6 @@ GeodeticPath::GeodeticPath(const QVariantList& list) : GeodeticPath(::variantLis
 {
 }
 
-GeodeticPath::GeodeticPath() : GeodeticPath(QVector<Geodetic>({}))
-{
-}
-
 bool GeodeticPath::isEmpty() const
 {
     return this->positions().isEmpty();
@@ -60,4 +56,28 @@ CartesianPath GeodeticPath::nedPath(const Geodetic& origin) const
         cartesians.append(position.nedPoint(origin));
     }
     return cartesians;
+}
+
+GeodeticRect GeodeticPath::boundingRect() const
+{
+    if (this->isEmpty())
+        return GeodeticRect();
+
+    Geodetic first = this->positions().first();
+    double minLat = first.latitude;
+    double maxLat = first.latitude;
+    double minLon = first.longitude;
+    double maxLon = first.longitude;
+    float minAlt = first.altitude;
+    float maxAlt = first.altitude;
+    for (const Geodetic& pos : this->positions())
+    {
+        minLat = qMin(minLat, pos.latitude());
+        maxLat = qMax(maxLat, pos.latitude());
+        minLon = qMin(minLon, pos.longitude());
+        maxLon = qMax(maxLon, pos.longitude());
+        minAlt = qMin(minAlt, pos.altitude());
+        maxAlt = qMax(maxAlt, pos.altitude());
+    }
+    return GeodeticRect(Geodetic(minLat, minLon, minAlt), Geodetic(maxLat, maxLon, maxAlt));
 }

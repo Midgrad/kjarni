@@ -25,7 +25,7 @@ public:
     bool isValidPosition() const;
     bool isValidAltitude() const;
     bool isValid() const;
-
+    Geodetic midPoint(const Geodetic& other) const;
     Geodetic offsetted(const Cartesian& nedPoint) const;
     Cartesian nedPoint(const Geodetic& origin) const;
     double distanceTo(const Geodetic& other) const;

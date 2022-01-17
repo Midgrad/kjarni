@@ -55,6 +55,13 @@ bool Geodetic::isValid() const
     return this->isValidPosition() && this->isValidAltitude();
 }
 
+Geodetic Geodetic::midPoint(const Geodetic& other) const
+{
+    return Geodetic((this->latitude() + other.latitude()) / 2,
+                    (this->longitude() + other.longitude()) / 2,
+                    (this->altitude() + other.altitude()) / 2);
+}
+
 Geodetic Geodetic::offsetted(const Cartesian& nedPoint) const
 {
     if (!nedPoint.isValid() || !this->isValid())
