@@ -11,6 +11,7 @@ public:
     RoutePatternAlgorithmGrid(const QVector<Cartesian>& area, const QVariantMap& parameters);
 
     void calculate() override;
+    void trace(float heading, const CartesianRect& boundingRect);
 };
 } // namespace md::domain
 

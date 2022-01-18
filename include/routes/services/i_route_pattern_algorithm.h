@@ -18,7 +18,7 @@ public:
     utils::ConstProperty<CartesianPath> area;
     utils::ConstProperty<QVariantMap> parameters;
 
-    const CartesianPath& path()
+    const QVector<Cartesian>& path()
     {
         return m_path;
     };
@@ -26,7 +26,7 @@ public:
     virtual void calculate() = 0;
 
 protected:
-    CartesianPath m_path;
+    QVector<Cartesian> m_path;
 };
 } // namespace md::domain
 

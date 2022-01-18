@@ -12,21 +12,41 @@ RoutePatternAlgorithmGrid::RoutePatternAlgorithmGrid(const QVector<Cartesian>& a
 
 void RoutePatternAlgorithmGrid::calculate()
 {
-    const int spacing = this->parameters().value(route::spacing.id).toInt();
-    const float altitude = this->parameters().value(route::altitude.id).toFloat();
-    const float heading = this->parameters().value(route::heading.id).toFloat();
-    const bool doubled = this->parameters().value(route::doubled.id).toBool();
+    // General params
+    const float heading =
+        this->parameters().value(route::heading.id, route::heading.defaultValue).toFloat();
+    const bool doubled =
+        this->parameters().value(route::doubled.id, route::doubled.defaultValue).toBool();
 
     // Bounding rect & center of area
     const CartesianRect boundingRect = this->area().boundingRect();
+
+    // Trace the rect guaranteed covered survey area
+    const double dDiv2 = boundingRect.diagonal() / 2;
+    this->trace(heading, boundingRect);
+    // Repeat rotated 90 if doubled
+    if (doubled)
+        this->trace(heading + 90, boundingRect);
+}
+
+void RoutePatternAlgorithmGrid::trace(float heading, const CartesianRect& boundingRect)
+{
     const Cartesian center = boundingRect.center();
 
-    // Take the rect guaranteed covered survey area
-    const double minX = center.x() - boundingRect.diagonal() / 2;
-    const double maxX = center.x() + boundingRect.diagonal() / 2;
-    const double maxY = center.y() + boundingRect.diagonal() / 2;
-    double y = center.y() - boundingRect.diagonal() / 2;
+    // Some more params
+    const int spacing =
+        this->parameters().value(route::spacing.id, route::spacing.defaultValue).toInt();
+    const float altitude =
+        this->parameters().value(route::altitude.id, route::altitude.defaultValue).toFloat();
 
+    // Trace the rect guaranteed covered survey area
+    const double dDiv2 = boundingRect.diagonal() / 2;
+    const double minX = center.x() - dDiv2;
+    const double maxX = center.x() + dDiv2;
+    const double minY = center.y() - dDiv2;
+    const double maxY = center.y() + dDiv2;
+
+    double y = minY;
     // Cast lines to detect intersections with area
     QVector<Cartesian> pathPositions;
     for (int i = 0;; ++i)
@@ -48,5 +68,5 @@ void RoutePatternAlgorithmGrid::calculate()
         if (y >= maxY)
             break;
     }
-    m_path = pathPositions;
+    m_path += pathPositions;
 }
