@@ -11,9 +11,11 @@ namespace
 constexpr int interval = 100;
 } // namespace
 
-LinkTransceiver::LinkTransceiver(const data_source::LinkPtr& link, QObject* parent) :
+LinkTransceiver::LinkTransceiver(const domain::LinkSpecification& linkSpecification,
+                                 QObject* parent) :
     ILinkTransceiver(parent),
-    m_link(link)
+    m_factory(),
+    m_link(createLink(linkSpecification))
 
 {
 }
@@ -40,7 +42,6 @@ void LinkTransceiver::timerEvent(QTimerEvent* event)
     if (event->timerId() != m_timerId)
         return QObject::timerEvent(event);
 
-    // TODO: check if signals and slots works with runHandlers()
     m_link->checkHandlers();
 }
 
@@ -64,4 +65,24 @@ void LinkTransceiver::openLink()
 void LinkTransceiver::closeLink()
 {
     m_link->close();
+}
+
+LinkPtr LinkTransceiver::createLink(const domain::LinkSpecification& specification)
+{
+    data_source::LinkPtr link;
+
+    if (specification.type() == domain::link_type::udp)
+        link = md::data_source::LinkPtr(
+            m_factory.create(loodsman::LinkType::udp,
+                             specification.parameter(domain::link_parameters::port).toInt()));
+    else if (specification.type() == "tcp")
+        link = md::data_source::LinkPtr(
+            m_factory.create(loodsman::LinkType::tcp,
+                             specification.parameter(domain::link_parameters::port).toInt()));
+    else
+        qWarning() << "Wrong link type";
+
+    Q_ASSERT(link);
+
+    return link;
 }

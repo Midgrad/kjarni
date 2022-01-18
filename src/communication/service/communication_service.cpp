@@ -4,11 +4,10 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
-#include "i_link_transceiver.h"
-#include "include/communication/tranceivers/link_transceiver.h"
-#include "include/communication/tranceivers/link_transceiver_threaded.h"
 #include "json_source_file.h"
-#include "link_factory.h"
+#include "link_traits.h"
+#include "link_transceiver.h"
+#include "link_transceiver_threaded.h"
 
 using namespace md::app;
 
@@ -16,74 +15,55 @@ namespace
 {
 constexpr char type[] = "type";
 constexpr char name[] = "name";
+constexpr char protocol[] = "protocol";
 constexpr char localPort[] = "local_port";
 
 } // namespace
 
 CommunicationService::CommunicationService(const QString& fileName) :
+    m_protocols(),
+    m_communications(),
     m_source(new data_source::JsonSourceFile(fileName)),
-    m_factory()
+    m_json(m_source->read())
+
 {
-    m_links = createLinks();
-    //    m_linkTransceivers = createLinkTranceivers();
-}
-
-md::data_source::LinkPtrMap CommunicationService::createLinks()
-{
-    QJsonDocument document = m_source->read();
-
-    QMap<QString, md::data_source::LinkPtr> links;
-    for (const QJsonValue& value : document.array())
-    {
-        QJsonObject linkConfig = value.toObject();
-
-        QString type = (linkConfig.value(::type).toString());
-        data_source::LinkPtr link;
-
-        if (type == "udp")
-            link = md::data_source::LinkPtr(
-                m_factory.create(loodsman::LinkType::udp, linkConfig.value(::localPort).toInt()));
-        else if (type == "tcp")
-            link = md::data_source::LinkPtr(
-                m_factory.create(loodsman::LinkType::tcp, linkConfig.value(::localPort).toInt()));
-        else
-            qWarning() << "Wrong link type in " << linkConfig.value(::name).toString();
-
-        if (link)
-            links[linkConfig.value(::name).toString()] = link;
-    }
-
-    return links;
-}
-
-QVector<md::domain::ILinkTransceiver*> CommunicationService::createLinkTranceivers()
-{
-    QVector<md::domain::ILinkTransceiver*> linkTransceivers;
-    for (const auto& link : m_links)
-    {
-        // TODO: check thread safety for factory
-        auto linkT = new data_source::LinkTransceiver(link, nullptr);
-        auto linkTT = new data_source::LinkTransceiverThreaded(linkT, this);
-        linkTransceivers.append(linkTT);
-
-        QObject::connect(linkTransceivers[0], &domain::ILinkTransceiver::receivedData,
-                         m_protocols[0].protocol(), &domain::ICommunicationProtocol::receiveData);
-        QObject::connect(m_protocols[0].protocol(), &domain::ICommunicationProtocol::sendData,
-                         linkTransceivers[0], &domain::ILinkTransceiver::send);
-    }
-
-    return linkTransceivers;
 }
 
 void CommunicationService::registerProtocol(const QString& name,
                                             md::domain::ICommunicationProtocol* protocol)
 {
+    for (auto& protocol : m_protocols)
+    {
+        if (protocol.name == name)
+        {
+            qCritical() << "Duplicate protocol found!";
+            return;
+        }
+    }
+
     domain::ProtocolDescription protocolDescription(protocol, name, this);
     m_protocols.append(protocolDescription);
-    m_linkTransceivers = createLinkTranceivers();
 
-    for (auto thread : m_linkTransceivers)
+    //TODO: rewrite after sql implementation
+    for (const auto& value : m_json.array())
     {
-        thread->start();
+        QJsonObject communicationConfig = value.toObject();
+        QString protocol = (communicationConfig.value(::protocol).toString());
+
+        if (protocol == protocolDescription.name())
+        {
+            QString name = (communicationConfig.value(::name).toString());
+            QString type = (communicationConfig.value(::type).toString());
+            int port = (communicationConfig.value(::localPort).toInt());
+
+            domain::LinkSpecification linkSpecification({ { domain::link_parameters::port, port },
+                                                          { domain::link_parameters::type, type } },
+                                                        this);
+
+            auto communication = new domain::Communication(linkSpecification, protocolDescription,
+                                                           name, this);
+            communication->start();
+            m_communications.insert(name, communication);
+        }
     }
 }

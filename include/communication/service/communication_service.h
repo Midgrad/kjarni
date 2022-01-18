@@ -13,6 +13,7 @@
 #include "i_service.h"
 #include "link_factory.h"
 #include "link_ptr.h"
+#include "link_specification.h"
 #include "link_traits.h"
 
 namespace md::app
@@ -24,18 +25,16 @@ class CommunicationService
     Q_OBJECT
 
 public:
-    CommunicationService(const QString& fileName);
+    explicit CommunicationService(const QString& fileName);
 
     void registerProtocol(const QString& name, domain::ICommunicationProtocol* protocol);
 
 private:
-    data_source::LinkPtrMap createLinks();
-    QVector<md::domain::ILinkTransceiver*> createLinkTranceivers();
     QVector<domain::ProtocolDescription> m_protocols;
-    loodsman::LinkFactory m_factory;
-    data_source::LinkPtrMap m_links;
-    QVector<md::domain::ILinkTransceiver*> m_linkTransceivers;
+    QHash<QString, domain::Communication*> m_communications;
+
     QScopedPointer<data_source::IJsonSource> m_source;
+    QJsonDocument m_json;
 };
 
 } // namespace md::app

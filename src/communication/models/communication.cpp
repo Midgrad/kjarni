@@ -1,9 +1,12 @@
 #include "communication.h"
 
+#include "link_transceiver.h"
+#include "link_transceiver_threaded.h"
+
 using namespace md::domain;
 
-Communication::Communication(LinkSpecification linkSpecification,
-                             ProtocolDescription protocolDescription, const QString& name,
+Communication::Communication(const LinkSpecification& linkSpecification,
+                             const ProtocolDescription& protocolDescription, const QString& name,
                              QObject* parent) :
     Named(name, utils::generateId(), parent),
     m_linkSpecification(linkSpecification),
@@ -12,23 +15,23 @@ Communication::Communication(LinkSpecification linkSpecification,
     m_bytesReceived(0),
     m_bytesSent(0)
 {
+    m_linkTransceiver = createLinkTranceiver(linkSpecification);
+
+    QObject::connect(m_linkTransceiver, &domain::ILinkTransceiver::receivedData,
+                     m_protocolDescription.protocol(),
+                     &domain::ICommunicationProtocol::receiveData);
+    QObject::connect(m_protocolDescription.protocol(), &domain::ICommunicationProtocol::sendData,
+                     m_linkTransceiver, &domain::ILinkTransceiver::send);
 }
 
 void Communication::start()
 {
-    for (auto thread : m_linkTransceiverThreaded)
-    {
-        thread->start();
-    }
+    m_linkTransceiver->start();
 }
 
 void Communication::stop()
 {
-    for (auto thread : m_linkTransceiverThreaded)
-    {
-        thread->stop();
-    }
-
+    m_linkTransceiver->stop();
     //    emit finished();
 }
 
@@ -54,7 +57,7 @@ int Communication::bytesSent() const
 
 void Communication::Connect()
 {
-    if (m_connected == true)
+    if (m_connected)
         return;
 
     m_connected = true;
@@ -63,9 +66,17 @@ void Communication::Connect()
 
 void Communication::Disconnect()
 {
-    if (m_connected == false)
+    if (!m_connected)
         return;
 
     m_connected = false;
     emit connectedChanged(m_connected);
+}
+
+md::domain::ILinkTransceiver* Communication::createLinkTranceiver(
+    const domain::LinkSpecification& specification)
+{
+    // TODO: check thread safety for a factory
+    auto linkT = new data_source::LinkTransceiver(specification, nullptr);
+    return new data_source::LinkTransceiverThreaded(linkT, this);
 }

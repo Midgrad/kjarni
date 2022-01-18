@@ -12,7 +12,7 @@ LinkSpecification::LinkSpecification(QVariantMap parameters, QObject* parent) :
     this->fillInParameters();
 }
 
-LinkSpecification::LinkSpecification(LinkSpecification& another, QObject* parent) :
+LinkSpecification::LinkSpecification(const LinkSpecification& another, QObject* parent) :
     QObject(parent),
     m_type(another.type()),
     m_parameters(another.parameters())

@@ -18,9 +18,9 @@ class Communication : public Named
     Q_OBJECT
 
 public:
-    explicit Communication(LinkSpecification linkSpecification,
-                           ProtocolDescription protocolDescription, const QString& name = QString(),
-                           QObject* parent = nullptr);
+    explicit Communication(const LinkSpecification& linkSpecification,
+                           const ProtocolDescription& protocolDescription,
+                           const QString& name = QString(), QObject* parent = nullptr);
 
     QString type() const;
 
@@ -42,7 +42,9 @@ signals:
     void bytesSentChanged(int bytesSent);
 
 private:
-    QVector<ILinkTransceiver*> m_linkTransceiverThreaded;
+    md::domain::ILinkTransceiver* createLinkTranceiver(
+        const domain::LinkSpecification& specification);
+    ILinkTransceiver* m_linkTransceiver;
     LinkSpecification m_linkSpecification;
     ProtocolDescription m_protocolDescription;
     bool m_connected;
