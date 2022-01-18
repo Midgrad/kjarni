@@ -19,6 +19,7 @@ constexpr char defaultValue[] = "defaultValue";
 constexpr char minValue[] = "minValue";
 constexpr char maxValue[] = "maxValue";
 constexpr char step[] = "step";
+constexpr char variants[] = "variants";
 } // namespace props
 } // namespace md::domain
 

@@ -17,12 +17,16 @@ public:
         Bool,
         Int,
         Real,
-        LatLon
+        LatLon,
+        Combo
     };
 
     Parameter(const QString& id, const QString& name, Type type, const QVariant& defaultValue,
-              const QVariant& minValue, const QVariant& maxValue, const QVariant& step = 1);
+              const QVariant& minValue, const QVariant& maxValue, const QVariant& step = 1,
+              const QVariantList& variants = {});
     Parameter(const QString& id, const QString& name, bool defaultValue = false);
+    Parameter(const QString& id, const QString& name, const QVariantList& variants,
+              const QVariant& defaultValue);
 
     QVariantMap toVariantMap() const;
     QVariant guard(const QVariant& value) const;
@@ -34,6 +38,7 @@ public:
     const QVariant minValue;
     const QVariant maxValue;
     const QVariant step;
+    const QVariantList variants;
 
     Q_ENUM(Type)
 };

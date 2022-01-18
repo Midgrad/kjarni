@@ -4,19 +4,26 @@ using namespace md::domain;
 
 Parameter::Parameter(const QString& id, const QString& name, Type type,
                      const QVariant& defaultValue, const QVariant& minValue,
-                     const QVariant& maxValue, const QVariant& step) :
+                     const QVariant& maxValue, const QVariant& step, const QVariantList& variants) :
     id(id),
     name(name),
     type(type),
     defaultValue(defaultValue),
     minValue(minValue),
     maxValue(maxValue),
-    step(step)
+    step(step),
+    variants(variants)
 {
 }
 
 Parameter::Parameter(const QString& id, const QString& name, bool defaultValue) :
     Parameter(id, name, Bool, defaultValue, QVariant(), QVariant(), QVariant())
+{
+}
+
+Parameter::Parameter(const QString& id, const QString& name, const QVariantList& variants,
+                     const QVariant& defaultValue) :
+    Parameter(id, name, Combo, defaultValue, QVariant(), QVariant(), QVariant(), variants)
 {
 }
 
@@ -29,6 +36,7 @@ QVariantMap Parameter::toVariantMap() const
     map.insert(props::minValue, minValue);
     map.insert(props::maxValue, maxValue);
     map.insert(props::step, step);
+    map.insert(props::variants, variants);
     map.insert(props::type, QVariant::fromValue(type).toString());
     return map;
 }
