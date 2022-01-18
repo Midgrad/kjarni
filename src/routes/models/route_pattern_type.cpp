@@ -5,10 +5,11 @@
 
 using namespace md::domain;
 
-RoutePatternType::RoutePatternType(const QString& id, const QString& name,
-                           const QVector<const Parameter*>& parameters) :
+RoutePatternType::RoutePatternType(const QString& id, const QString& name, const QString& icon,
+                                   const QVector<const Parameter*>& parameters) :
     id(id),
     name(name),
+    icon(icon),
     parameters(utils::listToMap<Parameter>(parameters))
 {
 }
@@ -18,6 +19,7 @@ QVariantMap RoutePatternType::toVariantMap() const
     QVariantMap map;
     map.insert(props::id, id);
     map.insert(props::name, name);
+    map.insert(props::icon, icon);
     return map;
 }
 

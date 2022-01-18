@@ -10,7 +10,7 @@ class RoutePatternType
     Q_GADGET
 
 public:
-    RoutePatternType(const QString& id, const QString& name,
+    RoutePatternType(const QString& id, const QString& name, const QString& icon,
                      const QVector<const Parameter*>& parameters);
 
     QVariantMap toVariantMap() const;
@@ -20,6 +20,7 @@ public:
 
     const QString id;
     const QString name;
+    const QString icon;
     const QMap<QString, const Parameter*> parameters;
 };
 } // namespace md::domain

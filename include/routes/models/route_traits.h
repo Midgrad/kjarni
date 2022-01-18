@@ -29,9 +29,6 @@ constexpr float maxDistance = 1000000.0;
 constexpr float maxRadius = 1000000.0;
 constexpr int maxTime = 100000; // 86400 sec in a day
 
-const QString grid = TR_ROUTE("Grid");
-const QString snail = TR_ROUTE("Snail");
-
 // Parameters
 const Parameter distance = {
     "distance", TR_ROUTE("Distance"), Parameter::Real, 0.0, 0.0, maxDistance, 1
@@ -47,7 +44,6 @@ const Parameter radius = { "radius", TR_ROUTE("Radius"), Parameter::Real, 100, 0
 const Parameter heading = { "heading", TR_ROUTE("Heading"), Parameter::Int, 0, 0, 359 };
 const Parameter spacing = { "spacing", TR_ROUTE("Spacing"), Parameter::Int, 50, 10, 10000 };
 const Parameter doubled = { "doubled", TR_ROUTE("Doubled"), false };
-const Parameter surveyType = { "survey_type", TR_ROUTE("Syrvey type"), { grid, snail }, grid };
 } // namespace route
 } // namespace md::domain
 

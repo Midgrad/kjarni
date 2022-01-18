@@ -8,25 +8,10 @@ namespace md::domain
 class IRoutePatternAlgorithm
 {
 public:
-    IRoutePatternAlgorithm(const QVector<Cartesian>& area, const QVariantMap& parameters) :
-        area(area),
-        parameters(parameters)
-    {
-    }
     virtual ~IRoutePatternAlgorithm() = default;
 
-    utils::ConstProperty<CartesianPath> area;
-    utils::ConstProperty<QVariantMap> parameters;
-
-    const QVector<Cartesian>& path()
-    {
-        return m_path;
-    };
-
-    virtual void calculate() = 0;
-
-protected:
-    QVector<Cartesian> m_path;
+    virtual QVector<Cartesian> calculate(const QVector<Cartesian>& area,
+                                         const QVariantMap& parameters) = 0;
 };
 } // namespace md::domain
 

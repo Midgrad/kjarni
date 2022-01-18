@@ -4,27 +4,20 @@
 
 using namespace md::domain;
 
-RoutePatternAlgorithmSnail::RoutePatternAlgorithmSnail(const QVector<Cartesian>& area,
-                                                       const QVariantMap& parameters) :
-    IRoutePatternAlgorithm(area, parameters)
-{
-}
-
-void RoutePatternAlgorithmSnail::calculate()
+QVector<Cartesian> RoutePatternAlgorithmSnail::calculate(const QVector<Cartesian>& area,
+                                                         const QVariantMap& parameters)
 {
     // Params
-    const float heading =
-        this->parameters().value(route::heading.id, route::heading.defaultValue).toFloat();
-    const int spacing =
-        this->parameters().value(route::spacing.id, route::spacing.defaultValue).toInt();
-    const float altitude =
-        this->parameters().value(route::altitude.id, route::altitude.defaultValue).toFloat();
+    const float heading = parameters.value(route::heading.id, route::heading.defaultValue).toFloat();
+    const int spacing = parameters.value(route::spacing.id, route::spacing.defaultValue).toInt();
+    const float altitude = parameters.value(route::altitude.id, route::altitude.defaultValue)
+                               .toFloat();
 
-    this->trace(heading, altitude, spacing, this->area());
+    return this->trace(heading, altitude, spacing, area);
 }
 
-void RoutePatternAlgorithmSnail::trace(float heading, float altitude, float spacing,
-                                       const CartesianPath& area)
+QVector<Cartesian> RoutePatternAlgorithmSnail::trace(float heading, float altitude, float spacing,
+                                                     const CartesianPath& area)
 {
     const Cartesian center = area.center();
     const double limit = area.sortedByDistance(center).first().distanceTo(center) * 2;
@@ -44,5 +37,5 @@ void RoutePatternAlgorithmSnail::trace(float heading, float altitude, float spac
 
         pathPositions += current;
     }
-    m_path += pathPositions;
+    return pathPositions;
 }

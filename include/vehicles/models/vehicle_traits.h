@@ -10,7 +10,6 @@ namespace props
 {
 constexpr char online[] = "online";
 
-constexpr char icon[] = "icon";
 constexpr char model[] = "model";
 } // namespace props
 

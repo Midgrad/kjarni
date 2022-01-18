@@ -8,12 +8,12 @@ namespace md::domain
 class RoutePatternAlgorithmGrid : public IRoutePatternAlgorithm
 {
 public:
-    RoutePatternAlgorithmGrid(const QVector<Cartesian>& area, const QVariantMap& parameters);
-
-    void calculate() override;
+    QVector<Cartesian> calculate(const QVector<Cartesian>& area,
+                                 const QVariantMap& parameters) override;
 
 private:
-    void trace(float heading, float altitude, float spacing, const CartesianRect& boundingRect);
+    QVector<Cartesian> trace(float heading, float altitude, float spacing,
+                             const CartesianPath &area);
 };
 } // namespace md::domain
 

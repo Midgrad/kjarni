@@ -8,12 +8,12 @@ namespace md::domain
 class RoutePatternAlgorithmSnail : public IRoutePatternAlgorithm
 {
 public:
-    RoutePatternAlgorithmSnail(const QVector<Cartesian>& area, const QVariantMap& parameters);
-
-    void calculate() override;
+    QVector<Cartesian> calculate(const QVector<Cartesian>& area,
+                                 const QVariantMap& parameters) override;
 
 private:
-    void trace(float heading, float altitude, float spacing, const CartesianPath& area);
+    QVector<Cartesian> trace(float heading, float altitude, float spacing,
+                             const CartesianPath& area);
 };
 } // namespace md::domain
 

@@ -4,36 +4,30 @@
 
 using namespace md::domain;
 
-RoutePatternAlgorithmGrid::RoutePatternAlgorithmGrid(const QVector<Cartesian>& area,
-                                                     const QVariantMap& parameters) :
-    IRoutePatternAlgorithm(area, parameters)
+QVector<Cartesian> RoutePatternAlgorithmGrid::calculate(const QVector<Cartesian>& area,
+                                                        const QVariantMap& parameters)
 {
-}
-
-void RoutePatternAlgorithmGrid::calculate()
-{
+    QVector<Cartesian> path;
     // Params
-    const float heading =
-        this->parameters().value(route::heading.id, route::heading.defaultValue).toFloat();
-    const bool doubled =
-        this->parameters().value(route::doubled.id, route::doubled.defaultValue).toBool();
-    const int spacing =
-        this->parameters().value(route::spacing.id, route::spacing.defaultValue).toInt();
-    const float altitude =
-        this->parameters().value(route::altitude.id, route::altitude.defaultValue).toFloat();
+    const float heading = parameters.value(route::heading.id, route::heading.defaultValue).toFloat();
+    const bool doubled = parameters.value(route::doubled.id, route::doubled.defaultValue).toBool();
+    const int spacing = parameters.value(route::spacing.id, route::spacing.defaultValue).toInt();
+    const float altitude = parameters.value(route::altitude.id, route::altitude.defaultValue)
+                               .toFloat();
 
-    // Bounding rect & center of area
-    const CartesianRect boundingRect = this->area().boundingRect();
-
-    this->trace(heading, altitude, spacing, boundingRect);
+    path += this->trace(heading, altitude, spacing, area);
     // Repeat rotated 90 if doubled
     if (doubled)
-        this->trace(heading + 90, altitude, spacing, boundingRect);
+        path += this->trace(heading + 90, altitude, spacing, area);
+
+    return path;
 }
 
-void RoutePatternAlgorithmGrid::trace(float heading, float altitude, float spacing,
-                                      const CartesianRect& boundingRect)
+QVector<Cartesian> RoutePatternAlgorithmGrid::trace(float heading, float altitude, float spacing,
+                                                    const CartesianPath& area)
 {
+    // Bounding rect & center of area
+    const CartesianRect boundingRect = area.boundingRect();
     const Cartesian center = boundingRect.center();
 
     // Trace the rect guaranteed covered survey area
@@ -50,7 +44,7 @@ void RoutePatternAlgorithmGrid::trace(float heading, float altitude, float spaci
     {
         Cartesian castPoint = Cartesian(minX, y, -altitude).rotated(heading, center);
         CartesianLine cast(castPoint, Cartesian(maxX, y, -altitude).rotated(heading, center));
-        QVector<Cartesian> intersections = CartesianPath(this->area().intersections2D(cast, true))
+        QVector<Cartesian> intersections = CartesianPath(area.intersections2D(cast, true))
                                                .sortedByDistance(castPoint);
 
         if (intersections.count() >= 2)
@@ -65,5 +59,5 @@ void RoutePatternAlgorithmGrid::trace(float heading, float altitude, float spaci
         if (y >= maxY)
             break;
     }
-    m_path += pathPositions;
+    return pathPositions;
 }
