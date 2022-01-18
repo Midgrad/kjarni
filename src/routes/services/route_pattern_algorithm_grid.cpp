@@ -12,32 +12,29 @@ RoutePatternAlgorithmGrid::RoutePatternAlgorithmGrid(const QVector<Cartesian>& a
 
 void RoutePatternAlgorithmGrid::calculate()
 {
-    // General params
+    // Params
     const float heading =
         this->parameters().value(route::heading.id, route::heading.defaultValue).toFloat();
     const bool doubled =
         this->parameters().value(route::doubled.id, route::doubled.defaultValue).toBool();
-
-    // Bounding rect & center of area
-    const CartesianRect boundingRect = this->area().boundingRect();
-
-    // Trace the rect guaranteed covered survey area
-    const double dDiv2 = boundingRect.diagonal() / 2;
-    this->trace(heading, boundingRect);
-    // Repeat rotated 90 if doubled
-    if (doubled)
-        this->trace(heading + 90, boundingRect);
-}
-
-void RoutePatternAlgorithmGrid::trace(float heading, const CartesianRect& boundingRect)
-{
-    const Cartesian center = boundingRect.center();
-
-    // Some more params
     const int spacing =
         this->parameters().value(route::spacing.id, route::spacing.defaultValue).toInt();
     const float altitude =
         this->parameters().value(route::altitude.id, route::altitude.defaultValue).toFloat();
+
+    // Bounding rect & center of area
+    const CartesianRect boundingRect = this->area().boundingRect();
+
+    this->trace(heading, altitude, spacing, boundingRect);
+    // Repeat rotated 90 if doubled
+    if (doubled)
+        this->trace(heading + 90, altitude, spacing, boundingRect);
+}
+
+void RoutePatternAlgorithmGrid::trace(float heading, float altitude, float spacing,
+                                      const CartesianRect& boundingRect)
+{
+    const Cartesian center = boundingRect.center();
 
     // Trace the rect guaranteed covered survey area
     const double dDiv2 = boundingRect.diagonal() / 2;

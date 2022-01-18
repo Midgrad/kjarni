@@ -21,6 +21,7 @@ public:
     double distance() const;
     QVector<CartesianLine> lines(bool closed) const;
     CartesianRect boundingRect() const;
+    Cartesian center() const;
     QVector<Cartesian> intersections2D(const CartesianLine& line, bool closed) const;
     QVector<Cartesian> rotated(float heading, const Cartesian& origin) const;
     QVector<Cartesian> sortedByDistance(const Cartesian& origin) const;

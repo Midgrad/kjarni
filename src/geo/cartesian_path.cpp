@@ -96,6 +96,22 @@ CartesianRect CartesianPath::boundingRect() const
     return CartesianRect(Cartesian(minX, minY, minZ), Cartesian(maxX, maxY, maxZ));
 }
 
+Cartesian CartesianPath::center() const
+{
+    double x = 0;
+    double y = 0;
+    double z = 0;
+
+    for (const Cartesian& pos : this->positions())
+    {
+        x += pos.x();
+        y += pos.y();
+        z += pos.z();
+    }
+    int cnt = this->positions().length();
+    return Cartesian(x / cnt, y / cnt, z / cnt);
+}
+
 QVector<Cartesian> CartesianPath::intersections2D(const CartesianLine& line, bool closed) const
 {
     QVector<Cartesian> intersections;
