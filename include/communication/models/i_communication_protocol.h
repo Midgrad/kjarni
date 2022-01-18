@@ -17,8 +17,6 @@ public:
     virtual ~ICommunicationProtocol() = default;
 
 public slots:
-    //    virtual void start() = 0;
-    //    virtual void stop() = 0;
     virtual void receiveData(const QByteArray& data) = 0;
 
 signals:
