@@ -1,18 +1,10 @@
 #ifndef LINK_TRAITS_H
 #define LINK_TRAITS_H
 
-#include "link_async.h"
-
 #include <QMap>
 #include <QSharedPointer>
 #include <QString>
 #include <QVariantMap>
-
-namespace md::data_source
-{
-using LinkPtr = QSharedPointer<loodsman::LinkAsync>;
-using LinkPtrMap = QMap<QString, LinkPtr>;
-} // namespace md::data_source
 
 namespace md::domain
 {

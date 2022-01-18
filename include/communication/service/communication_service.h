@@ -12,8 +12,8 @@
 #include "i_link_transceiver.h"
 #include "i_service.h"
 #include "link_factory.h"
+#include "link_ptr.h"
 #include "link_traits.h"
-#include "link_transceiver_threaded.h"
 
 namespace md::app
 {
@@ -31,10 +31,6 @@ public:
 private:
     data_source::LinkPtrMap createLinks();
     QVector<md::domain::ILinkTransceiver*> createLinkTranceivers();
-
-    //    data_source::LinkPtrMap links();
-    //    loodsman::LinkFactory* factory();
-
     QVector<domain::ProtocolDescription> m_protocols;
     loodsman::LinkFactory m_factory;
     data_source::LinkPtrMap m_links;

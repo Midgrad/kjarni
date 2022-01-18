@@ -1,5 +1,4 @@
 #include "link_transceiver_threaded.h"
-#include "link_transceiver.h"
 
 #include <QDebug>
 
@@ -24,8 +23,7 @@ LinkTransceiverThreaded::LinkTransceiverThreaded(ILinkTransceiver* worker, QObje
     QObject::connect(m_worker, &ILinkTransceiver::finished, m_thread, &QThread::quit);
     QObject::connect(m_worker, &ILinkTransceiver::finished, m_worker, &QObject::deleteLater);
     QObject::connect(m_thread, &QThread::finished, m_thread, &QThread::deleteLater);
-
-    //    QObject::connect(m_worker, &ILinkTransceiver::finished, this, &ILinkTransceiver::finished);
+    QObject::connect(m_worker, &ILinkTransceiver::finished, this, &ILinkTransceiver::finished);
 }
 
 LinkTransceiverThreaded::~LinkTransceiverThreaded()

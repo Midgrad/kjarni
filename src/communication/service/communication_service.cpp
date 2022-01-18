@@ -5,10 +5,10 @@
 #include <QJsonObject>
 
 #include "i_link_transceiver.h"
+#include "include/communication/tranceivers/link_transceiver.h"
+#include "include/communication/tranceivers/link_transceiver_threaded.h"
 #include "json_source_file.h"
 #include "link_factory.h"
-#include "link_transceiver.h"
-#include "link_transceiver_threaded.h"
 
 using namespace md::app;
 

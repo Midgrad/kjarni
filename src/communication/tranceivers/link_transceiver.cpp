@@ -21,7 +21,6 @@ LinkTransceiver::LinkTransceiver(const data_source::LinkPtr& link, QObject* pare
 void LinkTransceiver::start()
 {
     m_timerId = this->startTimer(::interval);
-
     receiveData();
 }
 
@@ -55,6 +54,14 @@ void LinkTransceiver::receiveData()
 
 void LinkTransceiver::send(const QByteArray& data)
 {
-    qDebug() << "send";
     m_link->asyncSend(data.toStdString(), [](std::size_t size) {});
+}
+void LinkTransceiver::openLink()
+{
+    m_link->open();
+}
+
+void LinkTransceiver::closeLink()
+{
+    m_link->close();
 }
