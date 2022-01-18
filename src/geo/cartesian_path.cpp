@@ -109,18 +109,24 @@ QVector<Cartesian> CartesianPath::intersections2D(const CartesianLine& line, boo
     return intersections;
 }
 
-Cartesian CartesianPath::farest(const Cartesian& other) const
+QVector<Cartesian> CartesianPath::rotated(float heading, const Cartesian& origin) const
 {
-    Cartesian result;
-    double distance = 0;
-    for (const Cartesian& position : this->positions())
+    QVector<Cartesian> rotatedPath;
+    for (const Cartesian& pos : this->positions())
     {
-        double newDistance = position.distanceTo(other);
-        if (result.isNull() || distance < newDistance)
-        {
-            result = position;
-            distance = newDistance;
-        }
+        rotatedPath.append(pos.rotated(heading, origin));
     }
-    return result;
+    return rotatedPath;
+}
+
+QVector<Cartesian> CartesianPath::sortedByDistance(const Cartesian& origin) const
+{
+    QVector<Cartesian> sortedPath = this->positions();
+
+    std::sort(sortedPath.begin(), sortedPath.end(),
+              [origin](const Cartesian& first, const Cartesian& second) {
+                  return first.distanceTo(origin) > second.distanceTo(origin);
+              });
+
+    return sortedPath;
 }

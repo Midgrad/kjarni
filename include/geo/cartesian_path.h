@@ -22,7 +22,8 @@ public:
     QVector<CartesianLine> lines(bool closed) const;
     CartesianRect boundingRect() const;
     QVector<Cartesian> intersections2D(const CartesianLine& line, bool closed) const;
-    Cartesian farest(const Cartesian& other) const;
+    QVector<Cartesian> rotated(float heading, const Cartesian& origin) const;
+    QVector<Cartesian> sortedByDistance(const Cartesian& origin) const;
 };
 
 } // namespace md::domain
