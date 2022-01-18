@@ -19,6 +19,11 @@ public slots:
     void start() override;
     void stop() override;
 
+    void send(const QByteArray& data) override;
+
+signals:
+    void resendData(QByteArray data);
+
 private:
     ILinkTransceiver* const m_worker;
     QThread* const m_thread;

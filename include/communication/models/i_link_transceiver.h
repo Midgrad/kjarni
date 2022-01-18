@@ -19,8 +19,10 @@ public:
 public slots:
     virtual void start() = 0;
     virtual void stop() = 0;
+    virtual void send(const QByteArray& data) = 0;
 
 signals:
+    void receivedData(QByteArray data);
     void finished();
 };
 } // namespace md::domain

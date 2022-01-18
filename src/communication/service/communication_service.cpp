@@ -66,24 +66,14 @@ QVector<md::domain::ILinkTransceiver*> CommunicationService::createLinkTranceive
         auto linkTT = new data_source::LinkTransceiverThreaded(linkT, this);
         linkTransceivers.append(linkTT);
 
-        QObject::connect(linkT, &data_source::LinkTransceiver::receivedData,
+        QObject::connect(linkTransceivers[0], &domain::ILinkTransceiver::receivedData,
                          m_protocols[0].protocol(), &domain::ICommunicationProtocol::receiveData);
         QObject::connect(m_protocols[0].protocol(), &domain::ICommunicationProtocol::sendData,
-                         linkT, &data_source::LinkTransceiver::send);
+                         linkTransceivers[0], &domain::ILinkTransceiver::send);
     }
 
     return linkTransceivers;
 }
-
-//md::data_source::LinkPtrMap CommunicationService::links()
-//{
-//    return m_links;
-//}
-
-//loodsman::LinkFactory* CommunicationService::factory()
-//{
-//    return &m_factory;
-//}
 
 void CommunicationService::registerProtocol(const QString& name,
                                             md::domain::ICommunicationProtocol* protocol)
