@@ -29,5 +29,6 @@ QVariantMap Vehicle::toVariantMap() const
     map.insert(props::online, this->online());
     map.insert(props::icon, this->type()->icon);
     map.insert(props::model, this->type()->model);
+
     return map;
 }

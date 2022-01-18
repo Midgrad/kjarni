@@ -44,11 +44,12 @@ class Parametrised : public Named
 
 public:
     explicit Parametrised(const QVariant& id = utils::generateId(), const QString& name = QString(),
-                 const QVariantMap& parameters = QVariantMap(), QObject* parent = nullptr);
+                          const QVariantMap& parameters = QVariantMap(), QObject* parent = nullptr);
     explicit Parametrised(const QVariantMap& map, QObject* parent = nullptr);
 
     const QVariantMap& parameters() const;
     QVariant parameter(const QString& key) const;
+    bool hasParameter(const QString& key) const;
 
     QVariantMap toVariantMap() const override;
     void fromVariantMap(const QVariantMap& map) override;
@@ -60,7 +61,7 @@ public slots:
     void removeParameters(const QStringList& keys);
     void removeParameter(const QString& key);
 
-private:
+protected:
     QVariantMap m_parameters;
 };
 } // namespace md::domain

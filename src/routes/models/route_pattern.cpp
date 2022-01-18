@@ -1,37 +1,28 @@
 #include "route_pattern.h"
 
-#include "route_traits.h"
-#include "utils.h"
-
 using namespace md::domain;
 
-RoutePattern::RoutePattern(const QString& id, const QString& name,
-                           const QVector<const Parameter*>& parameters) :
-    id(id),
-    name(name),
-    parameters(utils::listToMap<Parameter>(parameters))
+RoutePattern::RoutePattern(const RoutePatternType* type, QObject* parent) :
+    Parametrised(utils::generateId(), type->name, type->defaultParameters()),
+    type(type)
 {
+    connect(this, &RoutePattern::changed, this, &RoutePattern::calculate);
 }
 
-QVariantMap RoutePattern::toVariantMap() const
+const GeodeticPath& RoutePattern::area() const
 {
-    QVariantMap map;
-    map.insert(props::id, id);
-    map.insert(props::name, name);
-    return map;
+    return m_area;
 }
 
-const Parameter* RoutePattern::parameter(const QString& id) const
+const GeodeticPath& RoutePattern::path() const
 {
-    return this->parameters.value(id, nullptr);
+    return m_path;
 }
 
-QVariantMap RoutePattern::defaultParameters() const
+void RoutePattern::setArea(const GeodeticPath& area)
 {
-    QVariantMap map;
-    for (const Parameter* parameter : parameters)
-    {
-        map.insert(parameter->id, parameter->defaultValue);
-    }
-    return map;
+    m_area = area;
+    emit areaPositionsChanged();
+
+    this->calculate();
 }

@@ -7,11 +7,11 @@ using namespace md::domain;
 
 RouteType::RouteType(const QString& id, const QString& name,
                      const QVector<const RouteItemType*>& itemTypes,
-                     const QVector<const RoutePattern*>& patterns) :
+                     const QVector<const RoutePatternType*>& patternTypes) :
     id(id),
     name(name),
     itemTypes(utils::listToMap<RouteItemType>(itemTypes)),
-    patterns(utils::listToMap<RoutePattern>(patterns))
+    patternTypes(utils::listToMap<RoutePatternType>(patternTypes))
 {
 }
 
@@ -26,4 +26,9 @@ QVariantMap RouteType::toVariantMap() const
 const RouteItemType* RouteType::itemType(const QString& id) const
 {
     return this->itemTypes.value(id, nullptr);
+}
+
+const RoutePatternType* RouteType::patternType(const QString& id) const
+{
+    return this->patternTypes.value(id, nullptr);
 }

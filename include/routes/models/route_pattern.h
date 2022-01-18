@@ -1,26 +1,43 @@
 #ifndef ROUTE_PATTERN_H
 #define ROUTE_PATTERN_H
 
-#include "parametrised.h"
+#include "geodetic_path.h"
+#include "route_pattern_type.h"
 
 namespace md::domain
 {
-class RoutePattern
+class RoutePattern : public Parametrised
 {
-    Q_GADGET
+    Q_OBJECT
 
 public:
-    RoutePattern(const QString& id, const QString& name,
-                 const QVector<const Parameter*>& parameters);
+    explicit RoutePattern(const RoutePatternType* type, QObject* parent = nullptr);
 
-    QVariantMap toVariantMap() const;
+    utils::ConstProperty<const RoutePatternType*> type;
 
-    const Parameter* parameter(const QString& id) const;
-    QVariantMap defaultParameters() const;
+    const GeodeticPath& area() const;
+    const GeodeticPath& path() const;
 
-    const QString id;
-    const QString name;
-    const QMap<QString, const Parameter*> parameters;
+    void setArea(const GeodeticPath& area);
+
+public slots:
+    virtual void calculate() = 0;
+
+signals:
+    void areaPositionsChanged();
+    void pathPositionsChanged();
+
+protected:
+    GeodeticPath m_area;
+    GeodeticPath m_path;
+};
+
+class IRoutePatternFactory
+{
+public:
+    virtual ~IRoutePatternFactory() = default;
+
+    virtual RoutePattern* create(const QString& routePatternId) = 0;
 };
 } // namespace md::domain
 

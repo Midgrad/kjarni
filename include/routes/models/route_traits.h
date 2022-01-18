@@ -34,6 +34,8 @@ const Parameter distance = {
 };
 const Parameter time = { "time", TR_ROUTE("Time"), Parameter::Int, 0, 0, maxTime };
 const Parameter yaw = { "yaw", TR_ROUTE("Yaw"), Parameter::Real, qQNaN(), 0, 360 };
+const Parameter altitude = { "altitude", TR_ROUTE("Altitude"), Parameter::Real,
+                             0,          minAltitude,          maxAltitude };
 const Parameter pitch = { "pitch", TR_ROUTE("Pitch"), Parameter::Real, 15.0, -90.0, 90.0 };
 const Parameter acceptRadius = { "accept_radius", TR_ROUTE("Accept. radius"), Parameter::Real, 0, 0,
                                  maxRadius };
