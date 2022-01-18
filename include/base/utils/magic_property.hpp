@@ -55,6 +55,12 @@ public:
         m_notifier();
     }
 
+    void clear()
+    {
+        ConstProperty<T>::m_value = T();
+        m_notifier();
+    }
+
     Property<T>& operator=(const T& value)
     {
         this->set(value);
