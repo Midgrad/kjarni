@@ -2,6 +2,7 @@
 #define ROUTE_PATTERN_H
 
 #include "geodetic_path.h"
+#include "route_item.h"
 #include "route_pattern_type.h"
 
 namespace md::domain
@@ -17,6 +18,9 @@ public:
 
     const GeodeticPath& area() const;
     const GeodeticPath& path() const;
+
+    virtual bool isReady() const = 0;
+    virtual QList<RouteItem*> items() = 0;
 
     void setArea(const GeodeticPath& area);
 

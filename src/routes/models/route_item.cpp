@@ -6,7 +6,7 @@
 
 using namespace md::domain;
 
-RouteItem::RouteItem(const RouteItemType* type, const QVariant& id, const QString& name,
+RouteItem::RouteItem(const RouteItemType* type, const QString& name, const QVariant& id,
                      QVariantMap params, const Geodetic& position, const QVariantMap& calcData,
                      bool current, bool reached, QObject* parent) :
     Parametrised(id, name, params, parent),
@@ -20,7 +20,7 @@ RouteItem::RouteItem(const RouteItemType* type, const QVariant& id, const QStrin
 }
 
 RouteItem::RouteItem(const RouteItemType* type, const QVariantMap& map, QObject* parent) :
-    RouteItem(type, map.value(props::id), map.value(props::name).toString(),
+    RouteItem(type, map.value(props::name).toString(), map.value(props::id),
               map.value(props::params).toMap(), map.value(props::position).toMap(),
               map.value(props::calcData).toMap(), map.value(props::current).toBool(),
               map.value(props::reached).toBool(), parent)

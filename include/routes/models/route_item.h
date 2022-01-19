@@ -11,8 +11,8 @@ class RouteItem : public Parametrised
     Q_OBJECT
 
 public:
-    explicit RouteItem(const RouteItemType* type, const QVariant& id = utils::generateId(),
-                       const QString& name = QString(), QVariantMap params = {},
+    explicit RouteItem(const RouteItemType* type, const QString& name = QString(),
+                       const QVariant& id = utils::generateId(), QVariantMap params = {},
                        const Geodetic& position = Geodetic(), const QVariantMap& calcData = {},
                        bool current = false, bool reached = false, QObject* parent = nullptr);
     RouteItem(const RouteItemType* type, const QVariantMap& map, QObject* parent = nullptr);

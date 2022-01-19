@@ -12,6 +12,7 @@ using namespace md::domain;
 struct RouteItemTestArgs
 {
     QVariant id;
+    QString name;
     QVariantMap position;
     QVariantMap params;
     const RouteItemType* type;
@@ -26,16 +27,19 @@ public:
 INSTANTIATE_TEST_SUITE_P(
     instantiation, RouteItemTest,
     ::testing::Values(RouteItemTestArgs({ md::utils::generateId(),
+                                          "WPT 1",
                                           {},
                                           { { test_mission::passthrough.id, false } },
                                           &test_mission::waypoint }),
                       RouteItemTestArgs({ md::utils::generateId(),
+                                          "WPT 2",
                                           { { geo::latitude, 54.196783 },
                                             { geo::longitude, -23.59275 },
                                             { geo::altitude, 550 } },
                                           { { test_mission::radius.id, 650 } },
                                           &test_mission::circle }),
                       RouteItemTestArgs({ md::utils::generateId(),
+                                          "WPT 3",
                                           { { geo::latitude, -62.10348 },
                                             { geo::longitude, 138.74623 },
                                             { geo::altitude, 550 } },
@@ -60,7 +64,7 @@ TEST_P(RouteItemTest, testConstructFromMap)
 TEST_P(RouteItemTest, testFromVariant)
 {
     RouteItemTestArgs args = GetParam();
-    RouteItem item(args.type, args.id);
+    RouteItem item(args.type, args.name, args.id);
 
     QVariantMap map;
     map.insert(props::params, QJsonValue::fromVariant(args.params));
@@ -73,7 +77,7 @@ TEST_P(RouteItemTest, testToVariant)
 {
     RouteItemTestArgs args = GetParam();
 
-    RouteItem item(args.type, args.id);
+    RouteItem item(args.type, args.name, args.id);
     item.setParameters(args.params);
 
     QVariantMap result = item.toVariantMap();
@@ -87,7 +91,7 @@ TEST_P(RouteItemTest, testToVariant)
 TEST_P(RouteItemTest, testConstructDefaultParamsByType)
 {
     RouteItemTestArgs args = GetParam();
-    RouteItem itemItem(args.type, args.id);
+    RouteItem itemItem(args.type, args.name, args.id);
 
     auto wptParams = itemItem.parameters();
     auto defaultParams = args.type->defaultParameters();
@@ -103,7 +107,7 @@ TEST_P(RouteItemTest, testConstructDefaultParamsByType)
 TEST_P(RouteItemTest, testResetParamToTypeDeafult)
 {
     RouteItemTestArgs args = GetParam();
-    RouteItem itemItem(args.type, args.id);
+    RouteItem itemItem(args.type, args.name, args.id);
 
     if (args.params.isEmpty())
         return;
@@ -129,7 +133,7 @@ TEST_P(RouteItemTest, testResetParamToTypeDeafult)
 TEST_P(RouteItemTest, testResetParamsToTypeDeafults)
 {
     RouteItemTestArgs args = GetParam();
-    RouteItem itemItem(args.type, args.id);
+    RouteItem itemItem(args.type, args.name, args.id);
     itemItem.setParameters(args.params);
 
     EXPECT_NE(itemItem.parameters(), args.type->defaultParameters());
@@ -150,7 +154,7 @@ TEST_P(RouteItemTest, testResetParamsToTypeDeafults)
 TEST_P(RouteItemTest, testSyncParams)
 {
     RouteItemTestArgs args = GetParam();
-    RouteItem itemItem(args.type, args.id);
+    RouteItem itemItem(args.type, args.name, args.id);
     itemItem.setParameters(args.params);
 
     itemItem.syncParameters();
