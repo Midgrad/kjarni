@@ -55,7 +55,7 @@ int Communication::bytesSent() const
     return m_bytesSent;
 }
 
-void Communication::Connect()
+void Communication::connect()
 {
     if (m_connected)
         return;
@@ -64,7 +64,7 @@ void Communication::Connect()
     emit connectedChanged(m_connected);
 }
 
-void Communication::Disconnect()
+void Communication::disconnect()
 {
     if (!m_connected)
         return;

@@ -16,14 +16,13 @@ LinkTransceiver::LinkTransceiver(const domain::LinkSpecification& linkSpecificat
     ILinkTransceiver(parent),
     m_factory(),
     m_link(createLink(linkSpecification))
-
 {
 }
 
 void LinkTransceiver::start()
 {
     m_timerId = this->startTimer(::interval);
-    receiveData();
+    this->receiveData();
 }
 
 void LinkTransceiver::stop()
@@ -49,7 +48,7 @@ void LinkTransceiver::receiveData()
 {
     m_link->asyncReceive([this](const std::string& received_data) {
         emit receivedData(QByteArray::fromStdString(received_data));
-        receiveData();
+        this->receiveData();
     });
 }
 
@@ -57,6 +56,7 @@ void LinkTransceiver::send(const QByteArray& data)
 {
     m_link->asyncSend(data.toStdString(), [](std::size_t size) {});
 }
+
 void LinkTransceiver::openLink()
 {
     m_link->open();

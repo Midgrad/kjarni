@@ -14,10 +14,10 @@ class ProtocolDescription : public Named
     Q_OBJECT
 
 public:
-    explicit ProtocolDescription() = default;
-    explicit ProtocolDescription(ICommunicationProtocol* communicationProtocol,
-                                 const QString& name = QString(), QObject* parent = nullptr);
-    explicit ProtocolDescription(const ProtocolDescription& another, QObject* parent = nullptr);
+    ProtocolDescription() = default;
+    ProtocolDescription(ICommunicationProtocol* communicationProtocol,
+                        const QString& name = QString(), QObject* parent = nullptr);
+    ProtocolDescription(const ProtocolDescription& another, QObject* parent = nullptr);
 
     ProtocolDescription& operator=(const ProtocolDescription& another);
 

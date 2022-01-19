@@ -1,8 +1,8 @@
 #ifndef I_COMMUNICATION_PROTOCOL_H
 #define I_COMMUNICATION_PROTOCOL_H
 
-#include "QByteArray"
-#include "QObject"
+#include <QByteArray>
+#include <QObject>
 
 namespace md::domain
 {

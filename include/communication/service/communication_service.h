@@ -25,7 +25,7 @@ class CommunicationService
     Q_OBJECT
 
 public:
-    explicit CommunicationService(const QString& fileName);
+    CommunicationService(const QString& fileName);
 
     void registerProtocol(const QString& name, domain::ICommunicationProtocol* protocol);
 

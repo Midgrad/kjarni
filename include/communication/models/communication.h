@@ -1,15 +1,15 @@
 #ifndef COMMUNICATION_H
 #define COMMUNICATION_H
 
-#include "i_link_transceiver.h"
-#include "link_specification.h"
-#include "link_traits.h"
 #include "named.h"
-#include "protocol_description.h"
 
 #include <QObject>
 #include <QVariantMap>
 #include <QVector>
+
+#include "i_link_transceiver.h"
+#include "link_specification.h"
+#include "protocol_description.h"
 
 namespace md::domain
 {
@@ -18,9 +18,9 @@ class Communication : public Named
     Q_OBJECT
 
 public:
-    explicit Communication(const LinkSpecification& linkSpecification,
-                           const ProtocolDescription& protocolDescription,
-                           const QString& name = QString(), QObject* parent = nullptr);
+    Communication(const LinkSpecification& linkSpecification,
+                  const ProtocolDescription& protocolDescription, const QString& name = QString(),
+                  QObject* parent = nullptr);
 
     QString type() const;
 
@@ -30,8 +30,8 @@ public:
     int bytesSent() const;
 
 public slots:
-    void Connect();
-    void Disconnect();
+    void connect();
+    void disconnect();
 
     void start();
     void stop();

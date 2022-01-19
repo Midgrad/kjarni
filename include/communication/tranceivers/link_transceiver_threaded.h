@@ -12,7 +12,7 @@ class LinkTransceiverThreaded : public md::domain::ILinkTransceiver
     Q_OBJECT
 
 public:
-    explicit LinkTransceiverThreaded(ILinkTransceiver* worker, QObject* parent = nullptr);
+    LinkTransceiverThreaded(ILinkTransceiver* worker, QObject* parent = nullptr);
     ~LinkTransceiverThreaded() override;
 
 public slots:

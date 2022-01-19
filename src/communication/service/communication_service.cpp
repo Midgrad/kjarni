@@ -13,8 +13,6 @@ using namespace md::app;
 
 namespace
 {
-constexpr char type[] = "type";
-constexpr char name[] = "name";
 constexpr char protocol[] = "protocol";
 constexpr char localPort[] = "local_port";
 
@@ -25,7 +23,6 @@ CommunicationService::CommunicationService(const QString& fileName) :
     m_communications(),
     m_source(new data_source::JsonSourceFile(fileName)),
     m_json(m_source->read())
-
 {
 }
 
@@ -52,8 +49,8 @@ void CommunicationService::registerProtocol(const QString& name,
 
         if (protocol == protocolDescription.name())
         {
-            QString name = (communicationConfig.value(::name).toString());
-            QString type = (communicationConfig.value(::type).toString());
+            QString name = (communicationConfig.value(domain::link_parameters::name).toString());
+            QString type = (communicationConfig.value(domain::link_parameters::type).toString());
             int port = (communicationConfig.value(::localPort).toInt());
 
             domain::LinkSpecification linkSpecification({ { domain::link_parameters::port, port },
