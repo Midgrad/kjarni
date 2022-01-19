@@ -4,6 +4,7 @@
 #include "link_async.h"
 
 #include <QMap>
+#include <QSharedPointer>
 #include <QString>
 
 namespace md::data_source

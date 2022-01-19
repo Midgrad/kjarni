@@ -7,7 +7,7 @@
 
 namespace md::data_source
 {
-class LinkTransceiverThreaded : public md::domain::ILinkTransceiver
+class LinkTransceiverThreaded : public ILinkTransceiver
 {
     Q_OBJECT
 

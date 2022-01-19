@@ -1,9 +1,6 @@
 #ifndef COMMUNICATION_TRAITS_H
 #define COMMUNICATION_TRAITS_H
 
-#include <QMap>
-#include <QSharedPointer>
-#include <QString>
 #include <QVariantMap>
 
 namespace md::domain

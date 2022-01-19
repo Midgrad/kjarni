@@ -5,7 +5,7 @@
 
 namespace
 {
-md::domain::ILinkTransceiver* createLinkTranceiver(
+md::data_source::ILinkTransceiver* createLinkTranceiver(
     const md::domain::LinkSpecification& specification, QObject* parent)
 {
     // TODO: check thread safety for a factory
@@ -14,11 +14,11 @@ md::domain::ILinkTransceiver* createLinkTranceiver(
 }
 } // namespace
 
-using namespace md::domain;
+using namespace md::data_source;
 
-Communication::Communication(const LinkSpecification& linkSpecification,
-                             const ProtocolDescription& protocolDescription, const QString& name,
-                             QObject* parent) :
+Communication::Communication(const domain::LinkSpecification& linkSpecification,
+                             const domain::ProtocolDescription& protocolDescription,
+                             const QString& name, QObject* parent) :
     Named(name, utils::generateId(), parent),
     m_linkSpecification(linkSpecification),
     m_protocolDescription(protocolDescription),
@@ -28,11 +28,11 @@ Communication::Communication(const LinkSpecification& linkSpecification,
 {
     m_linkTransceiver = ::createLinkTranceiver(linkSpecification, this);
 
-    QObject::connect(m_linkTransceiver, &domain::ILinkTransceiver::receivedData,
+    QObject::connect(m_linkTransceiver, &ILinkTransceiver::receivedData,
                      m_protocolDescription.protocol(),
                      &domain::ICommunicationProtocol::receiveData);
     QObject::connect(m_protocolDescription.protocol(), &domain::ICommunicationProtocol::sendData,
-                     m_linkTransceiver, &domain::ILinkTransceiver::send);
+                     m_linkTransceiver, &ILinkTransceiver::send);
 }
 
 void Communication::start()

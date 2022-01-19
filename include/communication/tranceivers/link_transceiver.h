@@ -10,7 +10,7 @@
 
 namespace md::data_source
 {
-class LinkTransceiver : public md::domain::ILinkTransceiver
+class LinkTransceiver : public ILinkTransceiver
 {
     Q_OBJECT
 
@@ -36,7 +36,7 @@ private:
 
     int m_timerId = 0;
     loodsman::LinkFactory m_factory;
-    data_source::LinkPtr const m_link;
+    LinkPtr const m_link;
 };
 } // namespace md::data_source
 

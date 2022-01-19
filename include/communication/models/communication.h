@@ -11,16 +11,16 @@
 #include "link_specification.h"
 #include "protocol_description.h"
 
-namespace md::domain
+namespace md::data_source
 {
-class Communication : public Named
+class Communication : public domain::Named
 {
     Q_OBJECT
 
 public:
-    Communication(const LinkSpecification& linkSpecification,
-                  const ProtocolDescription& protocolDescription, const QString& name = QString(),
-                  QObject* parent = nullptr);
+    Communication(const domain::LinkSpecification& linkSpecification,
+                  const domain::ProtocolDescription& protocolDescription,
+                  const QString& name = QString(), QObject* parent = nullptr);
 
     QString type() const;
 
@@ -43,12 +43,12 @@ signals:
 
 private:
     ILinkTransceiver* m_linkTransceiver;
-    LinkSpecification m_linkSpecification;
-    ProtocolDescription m_protocolDescription;
+    domain::LinkSpecification m_linkSpecification;
+    domain::ProtocolDescription m_protocolDescription;
     bool m_connected;
     int m_bytesReceived;
     int m_bytesSent;
 };
-} // namespace md::domain
+} // namespace md::data_source
 
 #endif //COMMUNICATION_H

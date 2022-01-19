@@ -26,7 +26,7 @@ public:
 
 private:
     QVector<domain::ProtocolDescription> m_protocols;
-    QHash<QString, domain::Communication*> m_communications;
+    QHash<QString, data_source::Communication*> m_communications;
 
     QScopedPointer<data_source::IJsonSource> m_source;
     QJsonDocument m_json;

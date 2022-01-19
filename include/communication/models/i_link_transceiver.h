@@ -4,7 +4,7 @@
 #include <QByteArray>
 #include <QObject>
 
-namespace md::domain
+namespace md::data_source
 {
 class ILinkTransceiver : public QObject
 {
@@ -25,6 +25,6 @@ signals:
     void receivedData(QByteArray data);
     void finished();
 };
-} // namespace md::domain
+} // namespace md::data_source
 
 #endif // I_LINK_TRANSCEIVER_H

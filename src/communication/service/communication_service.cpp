@@ -57,8 +57,8 @@ void CommunicationService::registerProtocol(const QString& name,
                                                           { domain::link_parameters::type, type } },
                                                         this);
 
-            auto communication = new domain::Communication(linkSpecification, protocolDescription,
-                                                           name, this);
+            auto communication = new data_source::Communication(linkSpecification,
+                                                                protocolDescription, name, this);
             communication->start();
             m_communications.insert(name, communication);
         }
