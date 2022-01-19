@@ -31,20 +31,29 @@ int CommunicationDescription::bytesSent() const
     return m_bytesSent;
 }
 
-void CommunicationDescription::connect()
+void CommunicationDescription::setConnected(bool connected)
 {
     if (m_connected)
         return;
 
-    m_connected = true;
+    m_connected = connected;
     emit connectedChanged(m_connected);
 }
 
-void CommunicationDescription::disconnect()
+void CommunicationDescription::setBytesReceived(int bytesReceived)
 {
-    if (!m_connected)
+    if (m_bytesReceived == bytesReceived)
+        return;
+    
+    m_bytesReceived = bytesReceived;
+    emit bytesReceivedChanged(m_bytesReceived);
+}
+
+void CommunicationDescription::setBytesSent(int bytesSent)
+{
+    if (m_bytesSent == bytesSent)
         return;
 
-    m_connected = false;
-    emit connectedChanged(m_connected);
+    m_bytesSent = bytesSent;
+    emit bytesSentChanged(m_bytesSent);
 }

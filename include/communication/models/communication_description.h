@@ -22,8 +22,9 @@ public:
     int bytesSent() const override;
 
 public slots:
-    void connect() override;
-    void disconnect() override;
+    void setConnected(bool connected) override;
+    void setBytesReceived(int bytesReceived);
+    void setBytesSent(int bytesSent);
 
 private:
     LinkSpecification m_linkSpecification;

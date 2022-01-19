@@ -21,8 +21,7 @@ public:
     virtual int bytesSent() const = 0;
 
 public slots:
-    virtual void connect() = 0;
-    virtual void disconnect() = 0;
+    virtual void setConnected(bool) = 0;
 
 signals:
     void connectedChanged(bool connected);

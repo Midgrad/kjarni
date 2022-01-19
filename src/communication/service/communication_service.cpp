@@ -4,9 +4,10 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
+#include "communication.h"
+#include "communication_description.h"
 #include "communication_traits.h"
 #include "json_source_file.h"
-#include "link_transceiver.h"
 #include "link_transceiver_threaded.h"
 
 namespace
@@ -26,21 +27,9 @@ CommunicationService::CommunicationService(const QString& fileName) :
 {
 }
 
-void CommunicationService::registerProtocol(const QString& name,
-                                            md::data_source::ICommunicationProtocol* protocol)
+void CommunicationService::createCommunication(data_source::ICommunicationProtocol* protocol,
+                                               domain::ProtocolSpecification protocolSpecification)
 {
-    domain::ProtocolSpecification protocolSpecification(name);
-
-    //TODO: rewrite properly
-    if (m_protocols.contains(name))
-    {
-        qCritical() << "Duplicate protocol found!";
-        return;
-    }
-
-    m_protocols.insert(name, protocol);
-    m_protocolSpecifications.append(protocolSpecification);
-
     //TODO: rewrite after sql implementation
     for (const auto& value : m_json.array())
     {
@@ -61,7 +50,39 @@ void CommunicationService::registerProtocol(const QString& name,
                                                                 protocolSpecification, protocol,
                                                                 name, this);
             communication->start();
-            m_communications.insert(name, communication);
+
+            auto communicationDescription =
+                new domain::CommunicationDescription(linkSpecification, protocolSpecification, name,
+                                                     this);
+
+            m_communications.insert(communicationDescription, communication);
+
+            QObject::connect(communication, &domain::ICommunication::bytesReceivedChanged,
+                             communicationDescription,
+                             &domain::CommunicationDescription::setBytesReceived);
+            QObject::connect(communication, &domain::ICommunication::bytesSentChanged,
+                             communicationDescription,
+                             &domain::CommunicationDescription::setBytesSent);
+            QObject::connect(communication, &domain::ICommunication::connectedChanged,
+                             communicationDescription, &domain::ICommunication::setConnected);
         }
     }
+}
+
+void CommunicationService::registerProtocol(const QString& name,
+                                            md::data_source::ICommunicationProtocol* protocol)
+{
+    domain::ProtocolSpecification protocolSpecification(name);
+
+    //TODO: rewrite properly
+    if (m_protocols.contains(name))
+    {
+        qCritical() << "Duplicate protocol found!";
+        return;
+    }
+
+    m_protocols.insert(name, protocol);
+    m_protocolSpecifications.append(protocolSpecification);
+
+    this->createCommunication(protocol, protocolSpecification);
 }
