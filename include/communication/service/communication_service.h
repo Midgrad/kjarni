@@ -5,16 +5,11 @@
 #include <QScopedPointer>
 #include <QVector>
 
+#include "i_service.h"
+
 #include "communication.h"
 #include "i_communication_protocol.h"
-
 #include "i_json_source.h"
-#include "i_link_transceiver.h"
-#include "i_service.h"
-#include "link_factory.h"
-#include "link_ptr.h"
-#include "link_specification.h"
-#include "link_traits.h"
 
 namespace md::app
 {

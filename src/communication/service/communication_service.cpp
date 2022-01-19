@@ -4,8 +4,8 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
+#include "communication_traits.h"
 #include "json_source_file.h"
-#include "link_traits.h"
 #include "link_transceiver.h"
 #include "link_transceiver_threaded.h"
 

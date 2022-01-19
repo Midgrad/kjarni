@@ -4,7 +4,6 @@
 #include "i_communication_protocol.h"
 #include "named.h"
 
-#include <QObject>
 #include <QString>
 
 namespace md::domain

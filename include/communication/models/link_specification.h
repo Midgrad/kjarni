@@ -1,7 +1,7 @@
 #ifndef LINK_SPECIFICATION_H
 #define LINK_SPECIFICATION_H
 
-#include "link_traits.h"
+#include "communication_traits.h"
 
 #include <QObject>
 #include <QVariantMap>
@@ -14,7 +14,7 @@ class LinkSpecification : public QObject
 
 public:
     LinkSpecification() = default;
-    LinkSpecification(QVariantMap parameters, QObject* parent = nullptr);
+    LinkSpecification(const QVariantMap& parameters, QObject* parent = nullptr);
     LinkSpecification(const LinkSpecification& another, QObject* parent = nullptr);
 
     QString type() const;
@@ -22,8 +22,6 @@ public:
     QVariantMap parameters() const;
 
 private:
-    void fillInParameters();
-
     const QString m_type;
     QVariantMap m_parameters;
 };

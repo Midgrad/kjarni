@@ -42,8 +42,6 @@ signals:
     void bytesSentChanged(int bytesSent);
 
 private:
-    md::domain::ILinkTransceiver* createLinkTranceiver(
-        const domain::LinkSpecification& specification);
     ILinkTransceiver* m_linkTransceiver;
     LinkSpecification m_linkSpecification;
     ProtocolDescription m_protocolDescription;

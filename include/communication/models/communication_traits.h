@@ -1,5 +1,5 @@
-#ifndef LINK_TRAITS_H
-#define LINK_TRAITS_H
+#ifndef COMMUNICATION_TRAITS_H
+#define COMMUNICATION_TRAITS_H
 
 #include <QMap>
 #include <QSharedPointer>
@@ -59,4 +59,4 @@ const QVariantMap defaultValues{ { link_parameters::address, QString() },
 } // namespace link_type
 } // namespace md::domain
 
-#endif //LINK_TRAITS_H
+#endif //COMMUNICATION_TRAITS_H

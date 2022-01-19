@@ -3,6 +3,17 @@
 #include "link_transceiver.h"
 #include "link_transceiver_threaded.h"
 
+namespace
+{
+md::domain::ILinkTransceiver* createLinkTranceiver(
+    const md::domain::LinkSpecification& specification, QObject* parent)
+{
+    // TODO: check thread safety for a factory
+    auto linkT = new md::data_source::LinkTransceiver(specification, nullptr);
+    return new md::data_source::LinkTransceiverThreaded(linkT, parent);
+}
+} // namespace
+
 using namespace md::domain;
 
 Communication::Communication(const LinkSpecification& linkSpecification,
@@ -15,7 +26,7 @@ Communication::Communication(const LinkSpecification& linkSpecification,
     m_bytesReceived(0),
     m_bytesSent(0)
 {
-    m_linkTransceiver = createLinkTranceiver(linkSpecification);
+    m_linkTransceiver = ::createLinkTranceiver(linkSpecification, this);
 
     QObject::connect(m_linkTransceiver, &domain::ILinkTransceiver::receivedData,
                      m_protocolDescription.protocol(),
@@ -71,12 +82,4 @@ void Communication::disconnect()
 
     m_connected = false;
     emit connectedChanged(m_connected);
-}
-
-md::domain::ILinkTransceiver* Communication::createLinkTranceiver(
-    const domain::LinkSpecification& specification)
-{
-    // TODO: check thread safety for a factory
-    auto linkT = new data_source::LinkTransceiver(specification, nullptr);
-    return new data_source::LinkTransceiverThreaded(linkT, this);
 }
