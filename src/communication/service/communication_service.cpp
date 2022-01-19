@@ -9,14 +9,14 @@
 #include "link_transceiver.h"
 #include "link_transceiver_threaded.h"
 
-using namespace md::app;
-
 namespace
 {
 constexpr char protocol[] = "protocol";
 constexpr char localPort[] = "local_port";
 
 } // namespace
+
+using namespace md::app;
 
 CommunicationService::CommunicationService(const QString& fileName) :
     m_protocols(),
@@ -27,27 +27,27 @@ CommunicationService::CommunicationService(const QString& fileName) :
 }
 
 void CommunicationService::registerProtocol(const QString& name,
-                                            md::domain::ICommunicationProtocol* protocol)
+                                            md::data_source::ICommunicationProtocol* protocol)
 {
-    for (auto& protocol : m_protocols)
+    domain::ProtocolSpecification protocolSpecification(name);
+
+    //TODO: rewrite properly
+    if (m_protocols.contains(name))
     {
-        if (protocol.name == name)
-        {
-            qCritical() << "Duplicate protocol found!";
-            return;
-        }
+        qCritical() << "Duplicate protocol found!";
+        return;
     }
 
-    domain::ProtocolDescription protocolDescription(protocol, name, this);
-    m_protocols.append(protocolDescription);
+    m_protocols.insert(name, protocol);
+    m_protocolSpecifications.append(protocolSpecification);
 
     //TODO: rewrite after sql implementation
     for (const auto& value : m_json.array())
     {
         QJsonObject communicationConfig = value.toObject();
-        QString protocol = (communicationConfig.value(::protocol).toString());
+        QString protocolName = (communicationConfig.value(::protocol).toString());
 
-        if (protocol == protocolDescription.name())
+        if (protocolName == protocolSpecification.name())
         {
             QString name = (communicationConfig.value(domain::link_parameters::name).toString());
             QString type = (communicationConfig.value(domain::link_parameters::type).toString());
@@ -58,7 +58,8 @@ void CommunicationService::registerProtocol(const QString& name,
                                                         this);
 
             auto communication = new data_source::Communication(linkSpecification,
-                                                                protocolDescription, name, this);
+                                                                protocolSpecification, protocol,
+                                                                name, this);
             communication->start();
             m_communications.insert(name, communication);
         }

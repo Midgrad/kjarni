@@ -1,15 +1,16 @@
 #ifndef COMMUNICATION_SERVICE_H
 #define COMMUNICATION_SERVICE_H
 
+#include "i_service.h"
 #include <QObject>
+
 #include <QScopedPointer>
 #include <QVector>
-
-#include "i_service.h"
 
 #include "communication.h"
 #include "i_communication_protocol.h"
 #include "i_json_source.h"
+#include "protocol_specification.h"
 
 namespace md::app
 {
@@ -22,11 +23,13 @@ class CommunicationService
 public:
     CommunicationService(const QString& fileName);
 
-    void registerProtocol(const QString& name, domain::ICommunicationProtocol* protocol);
+    void registerProtocol(const QString& name, data_source::ICommunicationProtocol* protocol);
 
 private:
-    QVector<domain::ProtocolDescription> m_protocols;
+    QVector<domain::ProtocolSpecification> m_protocolSpecifications;
     QHash<QString, data_source::Communication*> m_communications;
+    // TODO: move to storing ProtocolDescription as a key, by implementing an < operator
+    QMap<QString, data_source::ICommunicationProtocol*> m_protocols;
 
     QScopedPointer<data_source::IJsonSource> m_source;
     QJsonDocument m_json;

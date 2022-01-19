@@ -4,7 +4,7 @@
 #include <QByteArray>
 #include <QObject>
 
-namespace md::domain
+namespace md::data_source
 {
 class ICommunicationProtocol : public QObject
 {
@@ -23,6 +23,6 @@ signals:
     void finished();
     void sendData(QByteArray data);
 };
-} // namespace md::domain
+} // namespace md::data_source
 
 #endif //I_COMMUNICATION_PROTOCOL_H
