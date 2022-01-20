@@ -1,21 +1,15 @@
 #ifndef PROTOCOL_SPECIFICATION_H
 #define PROTOCOL_SPECIFICATION_H
 
-#include <QObject>
 #include <QVariant>
 
 namespace md::domain
 {
-class ProtocolSpecification : public QObject
+class ProtocolSpecification
 {
-    Q_OBJECT
-
 public:
     ProtocolSpecification() = default;
-    ProtocolSpecification(const QString& name, QObject* parent = nullptr);
-    ProtocolSpecification(const ProtocolSpecification& another, QObject* parent = nullptr);
-
-    ProtocolSpecification& operator=(const ProtocolSpecification& another);
+    ProtocolSpecification(const QString& name);
 
     QString name() const;
 

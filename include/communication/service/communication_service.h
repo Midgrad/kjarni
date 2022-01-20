@@ -4,7 +4,6 @@
 #include "i_service.h"
 #include <QObject>
 
-#include <QScopedPointer>
 #include <QVector>
 
 #include "communication.h"
@@ -34,7 +33,7 @@ private:
     QHash<domain::CommunicationDescription*, data_source::Communication*> m_communications;
     // TODO: move to storing ProtocolDescription as a key, by implementing an < operator
     QMap<QString, data_source::ICommunicationProtocol*> m_protocols;
-    
+
     QScopedPointer<data_source::IJsonSource> m_source;
     QJsonDocument m_json;
 };

@@ -24,6 +24,7 @@ public:
                   const domain::ProtocolSpecification& protocolDescription,
                   ICommunicationProtocol* protocol, const QString& name = QString(),
                   QObject* parent = nullptr);
+
     QString type() const override;
     bool isConnected() const override;
     int bytesReceived() const override;
@@ -38,7 +39,7 @@ private:
     ILinkTransceiver* m_linkTransceiver;
     domain::LinkSpecification m_linkSpecification;
     domain::ProtocolSpecification m_protocolDescription;
-    ICommunicationProtocol* m_protocol;
+    const ICommunicationProtocol* m_protocol;
     bool m_connected;
     int m_bytesReceived;
     int m_bytesSent;
