@@ -2,36 +2,37 @@
 
 namespace
 {
-void fillInParameters(QVariantMap& parameters)
+QVariantMap fillInDefaultParameters(const QVariantMap& parameters)
 {
-    if (!parameters.value(md::domain::link_parameters::type).isNull())
+    QVariantMap return_parameters = parameters;
+    if (!return_parameters.value(md::domain::link_parameters::type).isNull())
     {
         for (const QString& parameter : md::domain::link_type::parameters.values(
-                 parameters.value(md::domain::link_parameters::type).toString()))
+                 return_parameters.value(md::domain::link_parameters::type).toString()))
         {
-            if (!parameters.contains(parameter))
+            if (!return_parameters.contains(parameter))
             {
-                parameters.insert(parameter, md::domain::link_type::defaultValues.value(parameter));
+                return_parameters.insert(parameter,
+                                         md::domain::link_type::defaultValues.value(parameter));
             }
         }
     }
+
+    return return_parameters;
 }
 } // namespace
 
 using namespace md::domain;
 
-LinkSpecification::LinkSpecification(const QVariantMap& parameters, QObject* parent) :
-    QObject(parent),
+LinkSpecification::LinkSpecification(const QVariantMap& parameters) :
     m_type(parameters.value(link_parameters::type).toString()),
-    m_parameters(parameters)
+    m_parameters(::fillInDefaultParameters(parameters))
 {
     Q_ASSERT((m_type == link_type::serial) || (m_type == link_type::udp) ||
              (m_type == link_type::tcp));
-    ::fillInParameters(m_parameters);
 }
 
 LinkSpecification::LinkSpecification(const LinkSpecification& another, QObject* parent) :
-    QObject(parent),
     m_type(another.type()),
     m_parameters(another.parameters())
 {

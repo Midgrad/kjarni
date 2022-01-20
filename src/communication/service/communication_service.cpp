@@ -43,8 +43,7 @@ void CommunicationService::createCommunication(data_source::ICommunicationProtoc
             int port = (communicationConfig.value(::localPort).toInt());
 
             domain::LinkSpecification linkSpecification({ { domain::link_parameters::port, port },
-                                                          { domain::link_parameters::type, type } },
-                                                        this);
+                                                          { domain::link_parameters::type, type } });
 
             auto communication = new data_source::Communication(linkSpecification,
                                                                 protocolSpecification, protocol,

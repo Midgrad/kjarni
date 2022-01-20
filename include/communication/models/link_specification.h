@@ -1,20 +1,17 @@
 #ifndef LINK_SPECIFICATION_H
 #define LINK_SPECIFICATION_H
 
-#include "communication_traits.h"
-
-#include <QObject>
 #include <QVariantMap>
+
+#include "communication_traits.h"
 
 namespace md::domain
 {
-class LinkSpecification : public QObject
+class LinkSpecification
 {
-    Q_OBJECT
-
 public:
     LinkSpecification() = default;
-    LinkSpecification(const QVariantMap& parameters, QObject* parent = nullptr);
+    LinkSpecification(const QVariantMap& parameters);
     LinkSpecification(const LinkSpecification& another, QObject* parent = nullptr);
 
     QString type() const;
@@ -23,7 +20,7 @@ public:
 
 private:
     const QString m_type;
-    QVariantMap m_parameters;
+    const QVariantMap m_parameters;
 };
 } // namespace md::domain
 
