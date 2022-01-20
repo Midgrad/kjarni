@@ -1,7 +1,6 @@
 #ifndef COMMUNICATION_SERVICE_H
 #define COMMUNICATION_SERVICE_H
 
-#include "i_service.h"
 #include <QObject>
 
 #include <QVector>
@@ -10,6 +9,7 @@
 #include "communication_description.h"
 #include "i_communication_protocol.h"
 #include "i_json_source.h"
+#include "i_service.h"
 #include "protocol_specification.h"
 
 namespace md::app
