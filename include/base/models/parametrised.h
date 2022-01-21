@@ -7,6 +7,7 @@
 
 namespace md::domain
 {
+// TODO: ParameterDescription VO & Parameter Entity classes
 class Parameter
 {
     Q_GADGET

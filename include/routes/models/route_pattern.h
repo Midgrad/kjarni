@@ -20,7 +20,7 @@ public:
     const GeodeticPath& path() const;
 
     virtual bool isReady() const = 0;
-    virtual QList<RouteItem*> items() = 0;
+    virtual QList<RouteItem*> createItems() = 0;
 
     void setArea(const GeodeticPath& area);
 
