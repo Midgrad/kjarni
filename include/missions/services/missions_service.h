@@ -27,7 +27,7 @@ public:
     QList<const MissionType*> missionTypes() const override;
 
     void startOperation(Mission* mission, MissionOperation::Type type) override;
-    void endOperation(MissionOperation* operation) override;
+    void endOperation(MissionOperation* operation, MissionOperation::State state) override;
 
     void registerMissionType(const MissionType* type) override;
     void unregisterMissionType(const MissionType* type) override;

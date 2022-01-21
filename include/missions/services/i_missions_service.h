@@ -27,7 +27,7 @@ public:
     virtual QList<const MissionType*> missionTypes() const = 0;
 
     virtual void startOperation(Mission* mission, MissionOperation::Type type) = 0;
-    virtual void endOperation(MissionOperation* operation) = 0;
+    virtual void endOperation(MissionOperation* operation, MissionOperation::State state) = 0;
 
     virtual void registerMissionType(const MissionType* type) = 0;
     virtual void unregisterMissionType(const MissionType* type) = 0;

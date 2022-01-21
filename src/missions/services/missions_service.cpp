@@ -63,7 +63,7 @@ void MissionsService::startOperation(Mission* mission, MissionOperation::Type ty
 
     MissionOperation* operation = this->operationForMission(mission);
     if (operation)
-        this->endOperation(operation);
+        this->endOperation(operation, MissionOperation::Canceled);
 
     operation = new MissionOperation(type, mission);
     operation->moveToThread(this->thread());
@@ -72,10 +72,11 @@ void MissionsService::startOperation(Mission* mission, MissionOperation::Type ty
     emit operationStarted(operation);
 }
 
-void MissionsService::endOperation(MissionOperation* operation)
+void MissionsService::endOperation(MissionOperation* operation, MissionOperation::State state)
 {
     QMutexLocker locker(&m_mutex);
 
+    operation->state.set(state);
     emit operationEnded(operation);
     operation->deleteLater();
 }
@@ -122,7 +123,7 @@ void MissionsService::removeMission(Mission* mission)
     // Stop if we have mission operation
     MissionOperation* operation = this->operationForMission(mission);
     if (operation)
-        this->endOperation(operation);
+        this->endOperation(operation, MissionOperation::Canceled);
 
     // Remove home point
     m_homeItemsRepo->remove(mission->home);

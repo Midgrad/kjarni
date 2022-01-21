@@ -21,7 +21,8 @@ public:
     {
         InProgress,
         Succeeded,
-        Failed
+        Failed,
+        Canceled
     };
 
     MissionOperation(Type type, Mission* mission, QObject* parent = nullptr);
