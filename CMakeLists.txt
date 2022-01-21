@@ -19,9 +19,9 @@ file(GLOB_RECURSE SOURCES "include/*" "src/*")
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
 
 # Link with libraries
-target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core Qt5::Sql)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core Qt5::Sql loodsman)
 
 # Tests
-if(TESTS_ENABLED)
+if (TESTS_ENABLED)
     add_subdirectory(tests)
-endif(TESTS_ENABLED)
+endif (TESTS_ENABLED)
