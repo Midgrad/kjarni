@@ -2,7 +2,7 @@
 #define COMMUNICATION_DESCRIPTION_H
 
 #include "i_communication.h"
-#include "named.h"
+#include "named_mixin.hpp"
 
 #include "link_specification.h"
 #include "protocol_specification.h"

@@ -20,4 +20,5 @@ QVariantMap Entity::toVariantMap() const
 void Entity::fromVariantMap(const QVariantMap& map)
 {
     Q_UNUSED(map)
+    emit changed();
 }

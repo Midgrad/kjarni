@@ -4,7 +4,7 @@ using namespace md::domain;
 
 PlainParametrised::PlainParametrised(const QString& name, const QVariant& id,
                                      const QVariantMap& parameters, QObject* parent) :
-    Named(name, id, parent),
+    NamedMixin<Entity>(name, id, parent),
     m_parameters(parameters)
 {
 }
@@ -74,7 +74,7 @@ void PlainParametrised::removeParameter(const QString& key)
 
 QVariantMap PlainParametrised::toVariantMap() const
 {
-    QVariantMap map = Named::toVariantMap();
+    QVariantMap map = NamedMixin<Entity>::toVariantMap();
     map.insert(props::params, m_parameters);
     return map;
 }
@@ -82,5 +82,5 @@ QVariantMap PlainParametrised::toVariantMap() const
 void PlainParametrised::fromVariantMap(const QVariantMap& map)
 {
     m_parameters = map.value(props::params, m_parameters).toMap();
-    Named::fromVariantMap(map); // changed will be emited here
+    NamedMixin<Entity>::fromVariantMap(map); // changed will be emited here
 }

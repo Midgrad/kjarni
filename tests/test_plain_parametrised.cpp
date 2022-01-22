@@ -8,30 +8,30 @@
 
 using namespace md::domain;
 
-struct BaseModelsTestArgs
+struct PlainParametrisedTestArgs
 {
     QVariant id;
     QString name;
     QVariantMap params;
 };
 
-class BaseModelsTest : public ::testing::TestWithParam<BaseModelsTestArgs>
+class PlainParametrisedTest : public ::testing::TestWithParam<PlainParametrisedTestArgs>
 {
 public:
-    BaseModelsTest() = default;
+    PlainParametrisedTest() = default;
 };
 
 INSTANTIATE_TEST_SUITE_P(
-    instantiation, BaseModelsTest,
+    instantiation, PlainParametrisedTest,
     ::testing::Values(
-        BaseModelsTestArgs({ md::utils::generateId(), "Name 665", {} }),
-        BaseModelsTestArgs({ md::utils::generateId(), "some_name", { { "bool", false } } }),
-        BaseModelsTestArgs({ md::utils::generateId(), "entity", { { "int", 34 }, { "float", 34 } } }),
-        BaseModelsTestArgs({ md::utils::generateId(), "", { { "string", "str123" } } })));
+        PlainParametrisedTestArgs({ md::utils::generateId(), "Name 665", {} }),
+        PlainParametrisedTestArgs({ md::utils::generateId(), "some_name", { { "bool", false } } }),
+        PlainParametrisedTestArgs({ md::utils::generateId(), "entity", { { "int", 34 }, { "float", 34 } } }),
+        PlainParametrisedTestArgs({ md::utils::generateId(), "", { { "string", "str123" } } })));
 
-TEST_P(BaseModelsTest, testParameters)
+TEST_P(PlainParametrisedTest, testParameters)
 {
-    BaseModelsTestArgs args = GetParam();
+    PlainParametrisedTestArgs args = GetParam();
     PlainParametrised entity(GetParam().name, GetParam().id, GetParam().params);
 
     QSignalSpy spy(&entity, &Entity::changed);
@@ -59,9 +59,9 @@ TEST_P(BaseModelsTest, testParameters)
     EXPECT_EQ(spy.count(), 3);
 }
 
-TEST_P(BaseModelsTest, testConstructFromMap)
+TEST_P(PlainParametrisedTest, testConstructFromMap)
 {
-    BaseModelsTestArgs args = GetParam();
+    PlainParametrisedTestArgs args = GetParam();
 
     QVariantMap map;
     map.insert(props::id, args.id.toString());
@@ -75,9 +75,9 @@ TEST_P(BaseModelsTest, testConstructFromMap)
     EXPECT_EQ(entity.parameters(), args.params);
 }
 
-TEST_P(BaseModelsTest, testFromVariant)
+TEST_P(PlainParametrisedTest, testFromVariant)
 {
-    BaseModelsTestArgs args = GetParam();
+    PlainParametrisedTestArgs args = GetParam();
     PlainParametrised entity(QString(), args.id);
 
     QVariantMap map;
@@ -90,9 +90,9 @@ TEST_P(BaseModelsTest, testFromVariant)
     EXPECT_EQ(entity.parameters(), args.params);
 }
 
-TEST_P(BaseModelsTest, testToVariant)
+TEST_P(PlainParametrisedTest, testToVariant)
 {
-    BaseModelsTestArgs args = GetParam();
+    PlainParametrisedTestArgs args = GetParam();
     PlainParametrised entity(GetParam().name, GetParam().id, GetParam().params);
 
     QVariantMap map;

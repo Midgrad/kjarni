@@ -1,11 +1,11 @@
 #ifndef PLAIN_PARAMETRISED_H
 #define PLAIN_PARAMETRISED_H
 
-#include "named.h"
+#include "named_mixin.hpp"
 
 namespace md::domain
 {
-class PlainParametrised : public Named
+class PlainParametrised : public NamedMixin<Entity>
 {
     Q_OBJECT
 

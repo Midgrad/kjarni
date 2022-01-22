@@ -8,7 +8,7 @@ using namespace md::domain;
 
 Mission::Mission(const MissionType* type, const QString& name, const QVariant& vehicleId,
                  const QVariant& id, const QVariant& homeId, QObject* parent) :
-    Named(name, id, parent),
+    NamedMixin<Entity>(name, id, parent),
     type(type),
     vehicleId(vehicleId),
     home(new RouteItem(type->homePointType, type->homePointType->name, homeId)),
@@ -24,7 +24,7 @@ Mission::Mission(const MissionType* type, const QVariantMap& map, QObject* paren
 
 QVariantMap Mission::toVariantMap() const
 {
-    QVariantMap map = Named::toVariantMap();
+    QVariantMap map = NamedMixin<Entity>::toVariantMap();
 
     map.insert(props::type, this->type()->id);
     map.insert(props::vehicle, this->vehicleId());

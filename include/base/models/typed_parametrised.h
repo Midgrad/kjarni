@@ -1,7 +1,7 @@
 #ifndef PARAMETRISED_H
 #define PARAMETRISED_H
 
-#include "named.h"
+#include "named_mixin.hpp"
 
 #include <QVector>
 

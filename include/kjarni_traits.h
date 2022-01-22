@@ -10,11 +10,13 @@ namespace props
 constexpr char id[] = "id";
 constexpr char name[] = "name";
 constexpr char icon[] = "icon";
+constexpr char createdAt[] = "created_at";
+constexpr char updatedAt[] = "updated_at";
 constexpr char params[] = "params";
-constexpr char position[] = "position";
 constexpr char value[] = "value";
 constexpr char type[] = "type";
 constexpr char state[] = "state";
+constexpr char position[] = "position";
 
 constexpr char defaultValue[] = "defaultValue";
 constexpr char minValue[] = "minValue";
