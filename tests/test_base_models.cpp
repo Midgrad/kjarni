@@ -4,7 +4,7 @@
 #include <QSignalSpy>
 
 #include "kjarni_traits.h"
-#include "parametrised.h"
+#include "plain_parametrised.h"
 
 using namespace md::domain;
 
@@ -25,16 +25,14 @@ INSTANTIATE_TEST_SUITE_P(
     instantiation, BaseModelsTest,
     ::testing::Values(
         BaseModelsTestArgs({ md::utils::generateId(), "Name 665", {} }),
-        BaseModelsTestArgs({ md::utils::generateId(), "some_name", { { "bool_propery", false } } }),
-        BaseModelsTestArgs({ md::utils::generateId(),
-                             "entity",
-                             { { "int_propery", 34 }, { "float_propery", 34 } } }),
-        BaseModelsTestArgs({ md::utils::generateId(), "", { { "string_propery", "str123" } } })));
+        BaseModelsTestArgs({ md::utils::generateId(), "some_name", { { "bool", false } } }),
+        BaseModelsTestArgs({ md::utils::generateId(), "entity", { { "int", 34 }, { "float", 34 } } }),
+        BaseModelsTestArgs({ md::utils::generateId(), "", { { "string", "str123" } } })));
 
 TEST_P(BaseModelsTest, testParameters)
 {
     BaseModelsTestArgs args = GetParam();
-    Parametrised entity(GetParam().id, GetParam().name, GetParam().params);
+    PlainParametrised entity(GetParam().name, GetParam().id, GetParam().params);
 
     QSignalSpy spy(&entity, &Entity::changed);
 
@@ -70,7 +68,7 @@ TEST_P(BaseModelsTest, testConstructFromMap)
     map.insert(props::name, args.name);
     map.insert(props::params, QJsonValue::fromVariant(args.params));
 
-    Parametrised entity(map);
+    PlainParametrised entity(map);
 
     EXPECT_EQ(entity.id, args.id);
     EXPECT_EQ(entity.name, args.name);
@@ -80,7 +78,7 @@ TEST_P(BaseModelsTest, testConstructFromMap)
 TEST_P(BaseModelsTest, testFromVariant)
 {
     BaseModelsTestArgs args = GetParam();
-    Parametrised entity(args.id, QString());
+    PlainParametrised entity(QString(), args.id);
 
     QVariantMap map;
     map.insert(props::name, args.name);
@@ -95,7 +93,7 @@ TEST_P(BaseModelsTest, testFromVariant)
 TEST_P(BaseModelsTest, testToVariant)
 {
     BaseModelsTestArgs args = GetParam();
-    Parametrised entity(GetParam().id, GetParam().name, GetParam().params);
+    PlainParametrised entity(GetParam().name, GetParam().id, GetParam().params);
 
     QVariantMap map;
     map.insert(props::id, args.id);

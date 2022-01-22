@@ -1,12 +1,12 @@
 #ifndef VEHICLE_H
 #define VEHICLE_H
 
-#include "parametrised.h"
+#include "plain_parametrised.h"
 #include "vehicle_type.h"
 
 namespace md::domain
 {
-class Vehicle : public Parametrised
+class Vehicle : public PlainParametrised
 {
     Q_OBJECT
 

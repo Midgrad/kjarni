@@ -7,7 +7,7 @@
 
 namespace md::domain
 {
-class RoutePattern : public Parametrised
+class RoutePattern : public PlainParametrised
 {
     Q_OBJECT
 

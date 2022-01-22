@@ -2,11 +2,12 @@
 #define ROUTE_ITEM_H
 
 #include "geodetic.h"
+#include "plain_parametrised.h"
 #include "route_item_type.h"
 
 namespace md::domain
 {
-class RouteItem : public Parametrised
+class RouteItem : public PlainParametrised
 {
     Q_OBJECT
 

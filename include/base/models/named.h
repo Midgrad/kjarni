@@ -10,8 +10,7 @@ class Named : public Entity
     Q_OBJECT
 
 public:
-    explicit Named(const QString& name = QString(), const QVariant& id = utils::generateId(),
-          QObject* parent = nullptr);
+    Named(const QString& name, const QVariant& id = utils::generateId(), QObject* parent = nullptr);
 
     utils::Property<QString> name;
 

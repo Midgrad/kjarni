@@ -9,7 +9,7 @@ using namespace md::domain;
 RouteItem::RouteItem(const RouteItemType* type, const QString& name, const QVariant& id,
                      QVariantMap params, const Geodetic& position, const QVariantMap& calcData,
                      bool current, bool reached, QObject* parent) :
-    Parametrised(id, name, params, parent),
+    PlainParametrised(name, id, params, parent),
     position(position, std::bind(&Entity::changed, this)),
     calcData(calcData, std::bind(&Entity::changed, this)),
     current(current, std::bind(&Entity::changed, this)),
@@ -29,7 +29,7 @@ RouteItem::RouteItem(const RouteItemType* type, const QVariantMap& map, QObject*
 
 QVariantMap RouteItem::toVariantMap() const
 {
-    QVariantMap map = Parametrised::toVariantMap();
+    QVariantMap map = PlainParametrised::toVariantMap();
 
     map.insert(props::type, m_type->id);
 
@@ -48,7 +48,7 @@ void RouteItem::fromVariantMap(const QVariantMap& map)
     current = map.value(props::current, this->current()).toBool();
     reached = map.value(props::reached, this->reached()).toBool();
 
-    Parametrised::fromVariantMap(map);
+    PlainParametrised::fromVariantMap(map);
 }
 
 const RouteItemType* RouteItem::type() const
@@ -99,7 +99,7 @@ void RouteItem::syncParameters()
     QVariantMap parameters = this->parameters();
 
     // Add parameters defaulted by type
-    for (const Parameter* parameter : m_type->parameters)
+    for (const ParameterType* parameter : m_type->parameters)
     {
         if (!parameters.contains(parameter->id))
             parameters.insert(parameter->id, parameter->defaultValue);

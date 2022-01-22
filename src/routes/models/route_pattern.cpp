@@ -3,7 +3,7 @@
 using namespace md::domain;
 
 RoutePattern::RoutePattern(const RoutePatternType* type, QObject* parent) :
-    Parametrised(utils::generateId(), type->name, type->defaultParameters()),
+    PlainParametrised(type->name, utils::generateId(), type->defaultParameters()),
     type(type)
 {
     connect(this, &RoutePattern::changed, this, &RoutePattern::calculate);
