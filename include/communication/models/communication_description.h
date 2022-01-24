@@ -14,12 +14,18 @@ class CommunicationDescription : public ICommunication
 public:
     CommunicationDescription(const LinkSpecification& specification,
                              const ProtocolSpecification& protocolDescription,
-                             const QString& name = QString(), QObject* parent = nullptr);
-    
+                             bool connected = false, const QString& name = QString(),
+                             QObject* parent = nullptr);
+
     QString type() const override;
     bool isConnected() const override;
     int bytesReceived() const override;
     int bytesSent() const override;
+
+    const LinkSpecification& linkSpecification() const;
+    const ProtocolSpecification& protocolSpecification() const;
+
+    QVariantMap toVariantMap() const override;
 
 public slots:
     void setConnected(bool connected) override;

@@ -4,10 +4,13 @@ using namespace md::domain;
 
 md::domain::CommunicationDescription::CommunicationDescription(
     const LinkSpecification& specification, const ProtocolSpecification& protocolDescription,
-    const QString& name, QObject* parent) :
+    bool connected, const QString& name, QObject* parent) :
     domain::ICommunication(name, parent),
-    m_protocolSpecification(),
-    m_linkSpecification()
+    m_linkSpecification(specification),
+    m_protocolSpecification(protocolDescription),
+    m_connected(connected),
+    m_bytesReceived(0),
+    m_bytesSent(0)
 {
 }
 
@@ -44,7 +47,7 @@ void CommunicationDescription::setBytesReceived(int bytesReceived)
 {
     if (m_bytesReceived == bytesReceived)
         return;
-    
+
     m_bytesReceived = bytesReceived;
     emit bytesReceivedChanged(m_bytesReceived);
 }
@@ -56,4 +59,23 @@ void CommunicationDescription::setBytesSent(int bytesSent)
 
     m_bytesSent = bytesSent;
     emit bytesSentChanged(m_bytesSent);
+}
+QVariantMap CommunicationDescription::toVariantMap() const
+{
+    QVariantMap map = Named::toVariantMap();
+
+    map.insert(props::state, this->isConnected());
+    map.insert(props::type, this->m_linkSpecification.type());
+    map.insert(props::params, this->m_linkSpecification.parameters());
+    map.insert(props::protocol, this->m_protocolSpecification.name());
+
+    return map;
+}
+const LinkSpecification& CommunicationDescription::linkSpecification() const
+{
+    return m_linkSpecification;
+}
+const ProtocolSpecification& CommunicationDescription::protocolSpecification() const
+{
+    return m_protocolSpecification;
 }

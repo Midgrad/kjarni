@@ -15,6 +15,7 @@ constexpr char position[] = "position";
 constexpr char value[] = "value";
 constexpr char type[] = "type";
 constexpr char state[] = "state";
+constexpr char protocol[] = "protocol";
 
 constexpr char defaultValue[] = "defaultValue";
 constexpr char minValue[] = "minValue";

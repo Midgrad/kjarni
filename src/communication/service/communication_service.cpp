@@ -51,8 +51,8 @@ void CommunicationService::createCommunication(data_source::ICommunicationProtoc
             communication->start();
 
             auto communicationDescription =
-                new domain::CommunicationDescription(linkSpecification, protocolSpecification, name,
-                                                     this);
+                new domain::CommunicationDescription(linkSpecification, protocolSpecification,
+                                                     false, name, this);
 
             m_communications.insert(communicationDescription, communication);
 
