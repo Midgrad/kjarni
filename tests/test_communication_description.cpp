@@ -34,30 +34,31 @@ TEST(communicationDescriptionTest, testConstruct)
     EXPECT_EQ(communicationDescription.name(), name);
 }
 
-//TEST_P(BaseModelsTest, testFromVariant)
-//{
-//    BaseModelsTestArgs args = GetParam();
-//    Parametrised entity(args.id, QString());
-//
-//    QVariantMap map;
-//    map.insert(props::name, args.name);
-//    map.insert(props::params, QJsonValue::fromVariant(args.params));
-//
-//    entity.fromVariantMap(map);
-//    EXPECT_EQ(entity.id, args.id);
-//    EXPECT_EQ(entity.name, args.name);
-//    EXPECT_EQ(entity.parameters(), args.params);
-//}
-//
-//TEST_P(BaseModelsTest, testToVariant)
-//{
-//    BaseModelsTestArgs args = GetParam();
-//    Parametrised entity(GetParam().id, GetParam().name, GetParam().params);
-//
-//    QVariantMap map;
-//    map.insert(props::id, args.id);
-//    map.insert(props::name, args.name);
-//    map.insert(props::params, args.params);
-//
-//    EXPECT_EQ(map, entity.toVariantMap());
-//}
+TEST(communicationDescriptionTest, testToVariant)
+{
+    QString type = ::link_type::udp;
+
+    QVariantMap params = { { ::link_parameters::type, type }, { ::link_parameters::port, 1 } };
+    QVariantMap params_with_default = params.unite(
+        { { ::link_parameters::endpoints, {} }, { ::link_parameters::autoResponse, false } });
+
+    QString protocol = "test link";
+
+    LinkSpecification linkSpecification(params);
+    ProtocolSpecification protocolSpecification(protocol);
+
+    QString name = "test communication";
+
+    CommunicationDescription communicationDescription(linkSpecification, protocolSpecification,
+                                                      false, name);
+
+    QVariantMap map;
+    map.insert(props::id, communicationDescription.id);
+    map.insert(props::name, name);
+    map.insert(props::params, params_with_default);
+    map.insert(props::state, false);
+    map.insert(props::type, type);
+    map.insert(props::protocol, protocol);
+
+    EXPECT_EQ(map, communicationDescription.toVariantMap());
+}
