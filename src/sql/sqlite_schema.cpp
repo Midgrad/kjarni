@@ -83,5 +83,13 @@ void SqliteSchema::setup()
                "mission UUID, "
                "FOREIGN KEY(mission) REFERENCES missions(id) ON DELETE CASCADE);");
 
+    query.exec("CREATE TABLE communication_descriptions ("
+               "id UUID PRIMARY KEY NOT NULL, "
+               "name STRING, "
+               "params TEXT, "
+               "type STRING, "
+               "state BOOL, "
+               "protocol STRING);");
+
     query.exec("INSERT INTO schema_version (version) VALUES (\'17.14.00_09.11.2021\')");
 }

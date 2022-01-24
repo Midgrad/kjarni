@@ -7,6 +7,7 @@
 
 #include "communication.h"
 #include "communication_description.h"
+#include "i_communication_description_repository.h"
 #include "i_communication_protocol.h"
 #include "i_json_source.h"
 #include "i_service.h"
@@ -21,9 +22,17 @@ class CommunicationService
     Q_OBJECT
 
 public:
-    CommunicationService(const QString& fileName);
+    CommunicationService(const QString& fileName,
+                         domain::ICommunicationDescriptionRepository* repository);
 
     void registerProtocol(const QString& name, data_source::ICommunicationProtocol* protocol);
+
+public slots:
+    void readAll();
+    void saveAll();
+    //    void removeCommunication(domain::CommunicationDescription* communication);
+    //    void restoreCommunication(domain::CommunicationDescription* communication);
+    //    void saveCommunication(domain::CommunicationDescription* communication);
 
 private:
     void createCommunication(data_source::ICommunicationProtocol* protocol,
@@ -34,6 +43,7 @@ private:
     // TODO: move to storing ProtocolDescription as a key, by implementing an < operator
     QMap<QString, data_source::ICommunicationProtocol*> m_protocols;
 
+    domain::ICommunicationDescriptionRepository* m_repository;
     QScopedPointer<data_source::IJsonSource> m_source;
     QJsonDocument m_json;
 };

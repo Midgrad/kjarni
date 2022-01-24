@@ -4,14 +4,14 @@
 
 namespace
 {
-constexpr char communicationDescription[] = "communication_description";
+constexpr char communicationDescriptions[] = "communication_descriptions";
 } // namespace
 
 using namespace md::data_source;
 
 CommunicationDescriptionRepositorySql::CommunicationDescriptionRepositorySql(QSqlDatabase* database) :
     domain::ICommunicationDescriptionRepository(),
-    m_communicationDescriptionTable(database, ::communicationDescription, { domain::props::params })
+    m_communicationDescriptionTable(database, ::communicationDescriptions, { domain::props::params })
 {
 }
 
