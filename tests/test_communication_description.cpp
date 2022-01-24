@@ -23,7 +23,7 @@ TEST(communicationDescriptionTest, testConstruct)
     QString name = "test communication";
 
     CommunicationDescription communicationDescription(linkSpecification, protocolSpecification,
-                                                      false, name);
+                                                      false, md::utils::generateId(), name);
 
     EXPECT_EQ(communicationDescription.type(), type);
     EXPECT_EQ(communicationDescription.linkSpecification().parameters(), params_with_default);
@@ -50,7 +50,7 @@ TEST(communicationDescriptionTest, testToVariant)
     QString name = "test communication";
 
     CommunicationDescription communicationDescription(linkSpecification, protocolSpecification,
-                                                      false, name);
+                                                      false, md::utils::generateId(), name);
 
     QVariantMap map;
     map.insert(props::id, communicationDescription.id);

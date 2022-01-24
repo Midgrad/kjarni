@@ -10,7 +10,9 @@ class ICommunication : public Named
     Q_OBJECT
 
 public:
-    ICommunication(const QString& name, QObject* parent) : Named(name, utils::generateId(), parent)
+    ICommunication(const QString& name, const QVariant& id = utils::generateId(),
+                   QObject* parent = nullptr) :
+        Named(name, id, parent)
     {
     }
     virtual ~ICommunication() = default;

@@ -14,8 +14,8 @@ class CommunicationDescription : public ICommunication
 public:
     CommunicationDescription(const LinkSpecification& specification,
                              const ProtocolSpecification& protocolDescription,
-                             bool connected = false, const QString& name = QString(),
-                             QObject* parent = nullptr);
+                             bool connected = false, const QVariant& id = utils::generateId(),
+                             const QString& name = QString(), QObject* parent = nullptr);
 
     QString type() const override;
     bool isConnected() const override;

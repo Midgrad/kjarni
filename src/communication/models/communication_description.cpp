@@ -4,8 +4,8 @@ using namespace md::domain;
 
 md::domain::CommunicationDescription::CommunicationDescription(
     const LinkSpecification& specification, const ProtocolSpecification& protocolDescription,
-    bool connected, const QString& name, QObject* parent) :
-    domain::ICommunication(name, parent),
+    bool connected, const QVariant& id, const QString& name, QObject* parent) :
+    domain::ICommunication(name, id, parent),
     m_linkSpecification(specification),
     m_protocolSpecification(protocolDescription),
     m_connected(connected),

@@ -20,7 +20,7 @@ Communication::Communication(const domain::LinkSpecification& linkSpecification,
                              const domain::ProtocolSpecification& protocolDescription,
                              ICommunicationProtocol* protocol, const QString& name,
                              QObject* parent) :
-    domain::ICommunication(name, parent),
+    domain::ICommunication(name, utils::generateId(), parent),
     m_linkSpecification(linkSpecification),
     m_protocolDescription(protocolDescription),
     m_protocol(protocol),
