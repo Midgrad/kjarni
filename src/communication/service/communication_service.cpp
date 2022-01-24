@@ -24,48 +24,36 @@ CommunicationService::CommunicationService(const QString& fileName,
     m_protocols(),
     m_communications(),
     m_source(new data_source::JsonSourceFile(fileName)),
-    m_repository(repository),
-    m_json(m_source->read())
+    m_repository(repository)
+//    m_json(m_source->read())
 {
+    this->readAll();
 }
 
 void CommunicationService::createCommunication(data_source::ICommunicationProtocol* protocol,
                                                domain::ProtocolSpecification protocolSpecification)
 {
-    //TODO: rewrite after sql implementation
-    for (const auto& value : m_json.array())
+    QMutableHashIterator<domain::CommunicationDescription*, data_source::Communication*> i(
+        m_communications);
+    while (i.hasNext())
     {
-        QJsonObject communicationConfig = value.toObject();
-        QString protocolName = (communicationConfig.value(::protocol).toString());
+        i.next();
 
-        if (protocolName == protocolSpecification.name())
+        if (i.key()->protocolSpecification().name() == protocolSpecification.name())
         {
-            QString name = (communicationConfig.value(domain::link_parameters::name).toString());
-            QString type = (communicationConfig.value(domain::link_parameters::type).toString());
-            int port = (communicationConfig.value(::localPort).toInt());
-
-            domain::LinkSpecification linkSpecification({ { domain::link_parameters::port, port },
-                                                          { domain::link_parameters::type, type } });
-
-            auto communication = new data_source::Communication(linkSpecification,
-                                                                protocolSpecification, protocol,
-                                                                name, this);
+            auto communication = new data_source::Communication(i.key()->linkSpecification(),
+                                                                i.key()->protocolSpecification(),
+                                                                protocol, i.key()->name, this);
             communication->start();
 
-            auto communicationDescription =
-                new domain::CommunicationDescription(linkSpecification, protocolSpecification,
-                                                     false, utils::generateId(), name, this);
+            i.value() = communication;
 
-            m_communications.insert(communicationDescription, communication);
-
-            QObject::connect(communication, &domain::ICommunication::bytesReceivedChanged,
-                             communicationDescription,
+            QObject::connect(communication, &domain::ICommunication::bytesReceivedChanged, i.key(),
                              &domain::CommunicationDescription::setBytesReceived);
-            QObject::connect(communication, &domain::ICommunication::bytesSentChanged,
-                             communicationDescription,
+            QObject::connect(communication, &domain::ICommunication::bytesSentChanged, i.key(),
                              &domain::CommunicationDescription::setBytesSent);
-            QObject::connect(communication, &domain::ICommunication::connectedChanged,
-                             communicationDescription, &domain::ICommunication::setConnected);
+            QObject::connect(communication, &domain::ICommunication::connectedChanged, i.key(),
+                             &domain::ICommunication::setConnected);
         }
     }
 }
@@ -87,11 +75,17 @@ void CommunicationService::registerProtocol(const QString& name,
 
     this->createCommunication(protocol, protocolSpecification);
 
-    this->saveAll();
+    //    this->saveAll();
 }
+
 void CommunicationService::readAll()
 {
+    for (const QVariant& communicationDescriptionId : m_repository->selectDescriptionIds())
+    {
+        this->readCommunicationDescription(communicationDescriptionId);
+    }
 }
+
 void CommunicationService::saveAll()
 {
     QHashIterator<domain::CommunicationDescription*, data_source::Communication*> i(
@@ -101,4 +95,30 @@ void CommunicationService::saveAll()
         i.next();
         m_repository->insert(i.key());
     }
+}
+
+md::domain::CommunicationDescription* CommunicationService::readCommunicationDescription(
+    const QVariant& id)
+{
+    QVariantMap select = m_repository->select(id);
+    QString type = select.value(domain::props::type).toString();
+
+    if (type == "")
+    {
+        qWarning() << "Unknown communication type: " << type;
+        return nullptr;
+    }
+
+    domain::ProtocolSpecification protocolSpecification(
+        select.value(domain::props::protocol).toString());
+    domain::LinkSpecification linkSpecification(select.value(domain::props::params).toMap());
+    auto* communicationDescription =
+        new domain::CommunicationDescription(linkSpecification, protocolSpecification,
+                                             select.value(domain::props::state).toBool(),
+                                             select.value(domain::props::id).toString(),
+                                             select.value(domain::props::name).toString(), this);
+
+    m_communications.insert(communicationDescription, nullptr);
+
+    return communicationDescription;
 }

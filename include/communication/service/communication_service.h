@@ -37,6 +37,7 @@ public slots:
 private:
     void createCommunication(data_source::ICommunicationProtocol* protocol,
                              domain::ProtocolSpecification protocolSpecification);
+    domain::CommunicationDescription* readCommunicationDescription(const QVariant& id);
 
     QVector<domain::ProtocolSpecification> m_protocolSpecifications;
     QHash<domain::CommunicationDescription*, data_source::Communication*> m_communications;
