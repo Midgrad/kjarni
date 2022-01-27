@@ -7,10 +7,12 @@
 using namespace md::domain;
 
 RouteItemType::RouteItemType(const QString& id, const QString& name, const QString& shortName,
+                             Positioned positioned,
                              const QVector<const ParameterType*>& parameters) :
     id(id),
     name(name),
     shortName(shortName),
+    positioned(positioned),
     parameters(utils::listToMap<ParameterType>(parameters))
 {
 }

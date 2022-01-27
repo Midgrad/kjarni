@@ -5,6 +5,13 @@
 
 namespace md::domain
 {
+enum class Positioned
+{
+    No,
+    Required,
+    Optional
+};
+
 class RouteItem;
 class RouteItemType
 {
@@ -12,7 +19,7 @@ class RouteItemType
 
 public:
     RouteItemType(const QString& id, const QString& name, const QString& shortName,
-                  const QVector<const ParameterType*>& parameters);
+                  Positioned positioned, const QVector<const ParameterType*>& parameters = {});
 
     QVariantMap toVariantMap() const;
 
@@ -22,6 +29,7 @@ public:
     const QString id;
     const QString name;
     const QString shortName;
+    const Positioned positioned;
     const QMap<QString, const ParameterType*> parameters;
 };
 } // namespace md::domain
