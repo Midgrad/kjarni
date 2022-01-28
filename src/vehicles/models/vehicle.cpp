@@ -9,7 +9,8 @@ using namespace md::domain;
 
 Vehicle::Vehicle(const VehicleType* type, const QString& name, const QVariant& id,
                  const QVariantMap& parameters, QObject* parent) :
-    PlainParametrised(name, id, parameters, parent),
+    ParametrisedMixin<NamedMixin<Entity>>(parameters, std::bind(&Entity::changed, this), name,
+                                               id, parent),
     type(type),
     online(false, std::bind(&Entity::changed, this))
 {
@@ -24,7 +25,7 @@ Vehicle::Vehicle(const VehicleType* type, const QVariantMap& map, QObject* paren
 
 QVariantMap Vehicle::toVariantMap() const
 {
-    QVariantMap map = PlainParametrised::toVariantMap();
+    QVariantMap map = ParametrisedMixin<NamedMixin<Entity>>::toVariantMap();
     map.insert(props::type, this->type()->id);
     map.insert(props::online, this->online());
     map.insert(props::icon, this->type()->icon);

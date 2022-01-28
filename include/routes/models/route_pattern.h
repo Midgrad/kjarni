@@ -7,7 +7,7 @@
 
 namespace md::domain
 {
-class RoutePattern : public PlainParametrised
+class RoutePattern : public ParametrisedMixin<NamedMixin<Entity>>
 {
     Q_OBJECT
 
