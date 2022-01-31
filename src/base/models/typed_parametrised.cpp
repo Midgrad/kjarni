@@ -59,7 +59,8 @@ QVariant ParameterType::guard(const QVariant& value) const
 }
 
 TypedParameter::TypedParameter(const ParameterType* type, const QVariant& value, QObject* parent) :
-    Entity(type->id, parent),
+    QObject(parent),
+    id(type->id),
     m_type(type),
     m_value(value)
 {
@@ -67,7 +68,6 @@ TypedParameter::TypedParameter(const ParameterType* type, const QVariant& value,
 
 TypedParameter::TypedParameter(const ParameterType* parameterType, QObject* parent) :
     TypedParameter(parameterType, parameterType->defaultValue, parent)
-
 {
 }
 
@@ -87,5 +87,10 @@ void TypedParameter::setValue(const QVariant& value)
         return;
 
     m_value = m_type->guard(value);
-    emit changed();
+    emit changed(value);
+}
+
+void TypedParameter::reset()
+{
+    this->setValue(m_type->defaultValue);
 }
