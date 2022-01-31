@@ -3,6 +3,7 @@
 
 #include "geodetic_path.h"
 #include "route_item.h"
+#include "parametrised_mixin.hpp"
 #include "route_pattern_type.h"
 
 namespace md::domain

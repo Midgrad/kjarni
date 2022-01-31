@@ -10,8 +10,8 @@ RouteType::RouteType(const QString& id, const QString& name,
                      const QVector<const RoutePatternType*>& patternTypes) :
     id(id),
     name(name),
-    itemTypes(utils::listToMap<RouteItemType>(itemTypes)),
-    patternTypes(utils::listToMap<RoutePatternType>(patternTypes))
+    itemTypes(utils::vecToMap<const RouteItemType*>(itemTypes)),
+    patternTypes(utils::vecToMap<const RoutePatternType*>(patternTypes))
 {
 }
 

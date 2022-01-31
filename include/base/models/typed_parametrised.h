@@ -43,30 +43,73 @@ public:
     Q_ENUM(Type)
 };
 
-class Parameter : public Entity
+class TypedParameter : public Entity
 {
     Q_OBJECT
 
 public:
-    Parameter(const ParameterType* parameterType, const QVariant& value, QObject* parent = nullptr);
-    explicit Parameter(const ParameterType* parameterType, QObject* parent = nullptr);
+    TypedParameter(const ParameterType* type, const QVariant& value, QObject* parent = nullptr);
+    explicit TypedParameter(const ParameterType* parameterType, QObject* parent = nullptr);
 
     const ParameterType* type() const;
     QVariant value() const;
     void setValue(const QVariant& value);
 
+    static fromTypeVector
 private:
-    const ParameterType* m_parameterType;
+    const ParameterType* m_type;
     QVariant m_value;
 };
 
-//class TypedParametrised : public Named
-//{
-//    Q_OBJECT
+template<class Base>
+class TypedParametrisedMixin : public Base
+{
+public:
+    template<typename... Args>
+    TypedParametrisedMixin(const QVector<TypedParameter* const>& parameters, const Args&... args) :
+        Base(args...),
+        m_parameters(utils::vecToMap<TypedParameter* const>(parameters))
+    {
+    }
 
-//protected:
-//    QMap<QString, Parameter*> m_parameters;
-//};
+    template<typename... Args>
+    TypedParametrisedMixin(const QVector<const ParameterType*>& parameterTypes,
+                           const QVariantMap& parameters,
+                           const Args&... args):
+        TypedParametrisedMixin(TypedParameter::fromTypeVector(parameterTypes, parameters), args)
+    {}
+
+    TypedParameter* parameter(const QString& id) const
+    {
+        return m_parameters.value(id, nullptr);
+    }
+
+    QVariantMap toVariantMap() const override
+    {
+        QVariantMap map = Base::toVariantMap();
+        QVariantMap parameters;
+        for (TypedParameter* const parameter: m_parameters)
+        {
+            parameters.insert(parameter->id().toString(), parameter->value());
+        }
+        map.insert(props::params, parameters);
+        return map;
+    }
+
+    void fromVariantMap(const QVariantMap& map) override
+    {
+        QVariantMap parameters = map.value(props::params).toMap();
+        for (TypedParameter* const parameter: m_parameters)
+        {
+            parameter->setValue(parameters.value(parameter->id().toString(), parameter->type()->defaultValue));
+        }
+        Base::fromVariantMap(map);
+    }
+
+private:
+    const QMap<QString, TypedParameter* const> m_parameters;
+};
+
 } // namespace md::domain
 
 #endif // PARAMETRISED_H

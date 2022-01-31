@@ -58,34 +58,34 @@ QVariant ParameterType::guard(const QVariant& value) const
     return value;
 }
 
-Parameter::Parameter(const ParameterType* parameterType, const QVariant& value, QObject* parent) :
-    Entity(parameterType->id, parent),
-    m_parameterType(parameterType),
+TypedParameter::TypedParameter(const ParameterType* type, const QVariant& value, QObject* parent) :
+    Entity(type->id, parent),
+    m_type(type),
     m_value(value)
 {
 }
 
-Parameter::Parameter(const ParameterType* parameterType, QObject* parent) :
-    Parameter(parameterType, parameterType->defaultValue, parent)
+TypedParameter::TypedParameter(const ParameterType* parameterType, QObject* parent) :
+    TypedParameter(parameterType, parameterType->defaultValue, parent)
 
 {
 }
 
-const ParameterType* Parameter::type() const
+const ParameterType* TypedParameter::type() const
 {
-    return m_parameterType;
+    return m_type;
 }
 
-QVariant Parameter::value() const
+QVariant TypedParameter::value() const
 {
     return m_value;
 }
 
-void Parameter::setValue(const QVariant& value)
+void TypedParameter::setValue(const QVariant& value)
 {
     if (m_value == value)
         return;
 
-    m_value = m_parameterType->guard(value);
+    m_value = m_type->guard(value);
     emit changed();
 }

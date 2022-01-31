@@ -7,9 +7,9 @@
 using namespace md::domain;
 
 RouteItem::RouteItem(const RouteItemType* type, const QString& name, const QVariant& id,
-                     QVariantMap params, const Geodetic& position, const QVariantMap& calcData,
+                     const QVariantMap& params, const Geodetic& position, const QVariantMap& calcData,
                      bool current, bool reached, QObject* parent) :
-    ParametrisedMixin<NamedMixin<Entity>>(params, std::bind(&Entity::changed, this), name, id,
+    TypedParametrisedMixin<NamedMixin<Entity>>(type->parameters.values().toVector().params, name, id,
                                                parent),
     position(position, std::bind(&Entity::changed, this)),
     calcData(calcData, std::bind(&Entity::changed, this)),
@@ -30,7 +30,7 @@ RouteItem::RouteItem(const RouteItemType* type, const QVariantMap& map, QObject*
 
 QVariantMap RouteItem::toVariantMap() const
 {
-    QVariantMap map = ParametrisedMixin<NamedMixin<Entity>>::toVariantMap();
+    QVariantMap map = TypedParametrisedMixin<NamedMixin<Entity>>::toVariantMap();
 
     map.insert(props::type, m_type->id);
 
@@ -49,7 +49,7 @@ void RouteItem::fromVariantMap(const QVariantMap& map)
     current = map.value(props::current, this->current()).toBool();
     reached = map.value(props::reached, this->reached()).toBool();
 
-    ParametrisedMixin<NamedMixin<Entity>>::fromVariantMap(map);
+    TypedParametrisedMixin<NamedMixin<Entity>>::fromVariantMap(map);
 }
 
 const RouteItemType* RouteItem::type() const
