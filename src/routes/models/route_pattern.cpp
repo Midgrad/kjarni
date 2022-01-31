@@ -3,7 +3,9 @@
 using namespace md::domain;
 
 RoutePattern::RoutePattern(const RoutePatternType* type, QObject* parent) :
-    Parametrised(utils::generateId(), type->name, type->defaultParameters()),
+    ParametrisedMixin<NamedMixin<Entity>>(type->defaultParameters(),
+                                               std::bind(&Entity::changed, this), type->name,
+                                               utils::generateId()),
     type(type)
 {
     connect(this, &RoutePattern::changed, this, &RoutePattern::calculate);

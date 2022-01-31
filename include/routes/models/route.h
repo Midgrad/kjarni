@@ -6,13 +6,13 @@
 
 namespace md::domain
 {
-class Route : public Named
+class Route : public NamedMixin<Entity>
 {
     Q_OBJECT
 
 public:
     explicit Route(const RouteType* type, const QString& name = QString(),
-          const QVariant& id = utils::generateId(), QObject* parent = nullptr);
+                   const QVariant& id = utils::generateId(), QObject* parent = nullptr);
     Route(const RouteType* type, const QVariantMap& map, QObject* parent = nullptr);
 
     utils::ConstProperty<const RouteType*> type;

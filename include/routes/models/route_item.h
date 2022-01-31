@@ -2,11 +2,12 @@
 #define ROUTE_ITEM_H
 
 #include "geodetic.h"
+#include "parametrised_mixin.hpp"
 #include "route_item_type.h"
 
 namespace md::domain
 {
-class RouteItem : public Parametrised
+class RouteItem : public ParametrisedMixin<NamedMixin<Entity>>
 {
     Q_OBJECT
 

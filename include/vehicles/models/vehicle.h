@@ -1,12 +1,13 @@
 #ifndef VEHICLE_H
 #define VEHICLE_H
 
-#include "parametrised.h"
+#include "named_mixin.hpp"
+#include "parametrised_mixin.hpp"
 #include "vehicle_type.h"
 
 namespace md::domain
 {
-class Vehicle : public Parametrised
+class Vehicle : public ParametrisedMixin<NamedMixin<Entity>>
 {
     Q_OBJECT
 

@@ -30,20 +30,20 @@ constexpr float maxRadius = 1000000.0;
 constexpr int maxTime = 100000; // 86400 sec in a day
 
 // Parameters
-const Parameter distance = {
-    "distance", TR_ROUTE("Distance"), Parameter::Real, 0.0, 0.0, maxDistance, 1
+const ParameterType distance = {
+    "distance", TR_ROUTE("Distance"), ParameterType::Real, 0.0, 0.0, maxDistance, 1
 };
-const Parameter time = { "time", TR_ROUTE("Time"), Parameter::Int, 0, 0, maxTime };
-const Parameter yaw = { "yaw", TR_ROUTE("Yaw"), Parameter::Real, qQNaN(), 0, 360 };
-const Parameter altitude = { "altitude", TR_ROUTE("Altitude"), Parameter::Real,
+const ParameterType time = { "time", TR_ROUTE("Time"), ParameterType::Int, 0, 0, maxTime };
+const ParameterType yaw = { "yaw", TR_ROUTE("Yaw"), ParameterType::Real, qQNaN(), 0, 360 };
+const ParameterType altitude = { "altitude", TR_ROUTE("Altitude"), ParameterType::Real,
                              0,          minAltitude,          maxAltitude };
-const Parameter pitch = { "pitch", TR_ROUTE("Pitch"), Parameter::Real, 15.0, -90.0, 90.0 };
-const Parameter acceptRadius = { "accept_radius", TR_ROUTE("Accept. radius"), Parameter::Real, 0, 0,
+const ParameterType pitch = { "pitch", TR_ROUTE("Pitch"), ParameterType::Real, 15.0, -90.0, 90.0 };
+const ParameterType acceptRadius = { "accept_radius", TR_ROUTE("Accept. radius"), ParameterType::Real, 0, 0,
                                  maxRadius };
-const Parameter radius = { "radius", TR_ROUTE("Radius"), Parameter::Real, 100, 0, maxRadius };
-const Parameter heading = { "heading", TR_ROUTE("Heading"), Parameter::Int, 0, 0, 359 };
-const Parameter spacing = { "spacing", TR_ROUTE("Spacing"), Parameter::Int, 50, 10, 10000 };
-const Parameter doubled = { "doubled", TR_ROUTE("Doubled"), false };
+const ParameterType radius = { "radius", TR_ROUTE("Radius"), ParameterType::Real, 100, 0, maxRadius };
+const ParameterType heading = { "heading", TR_ROUTE("Heading"), ParameterType::Int, 0, 0, 359 };
+const ParameterType spacing = { "spacing", TR_ROUTE("Spacing"), ParameterType::Int, 50, 10, 10000 };
+const ParameterType doubled = { "doubled", TR_ROUTE("Doubled"), false };
 } // namespace route
 } // namespace md::domain
 

@@ -8,7 +8,7 @@
 using namespace md::domain;
 
 Route::Route(const RouteType* type, const QString& name, const QVariant& id, QObject* parent) :
-    Named(name, id, parent),
+    NamedMixin<Entity>(name, id, parent),
     block(QString(), std::bind(&Entity::changed, this)),
     type(type)
 {
@@ -22,7 +22,7 @@ Route::Route(const RouteType* type, const QVariantMap& map, QObject* parent) :
 
 QVariantMap Route::toVariantMap() const
 {
-    QVariantMap map = Named::toVariantMap();
+    QVariantMap map = NamedMixin<Entity>::toVariantMap();
 
     map.insert(props::type, this->type()->id);
     map.insert(props::block, this->block());
@@ -32,7 +32,7 @@ QVariantMap Route::toVariantMap() const
 
 void Route::fromVariantMap(const QVariantMap& map)
 {
-    Named::fromVariantMap(map);
+    NamedMixin<Entity>::fromVariantMap(map);
 }
 
 int Route::count() const

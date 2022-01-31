@@ -1,18 +1,19 @@
 #ifndef I_COMMUNICATION_H
 #define I_COMMUNICATION_H
 
-#include "named.h"
+#include "named_mixin.hpp"
 
 namespace md::domain
 {
-class ICommunication : public Named
+class ICommunication : public NamedMixin<Entity>
 {
     Q_OBJECT
 
 public:
     ICommunication(const QString& name, const QVariant& id = utils::generateId(),
                    QObject* parent = nullptr) :
-        Named(name, id, parent)
+        NamedMixin<Entity>(name, id, parent)
+
     {
     }
     virtual ~ICommunication() = default;

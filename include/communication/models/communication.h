@@ -2,7 +2,7 @@
 #define COMMUNICATION_H
 
 #include "i_communication.h"
-#include "named.h"
+#include "named_mixin.hpp"
 
 #include <QObject>
 #include <QVariantMap>
