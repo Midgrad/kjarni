@@ -1,4 +1,5 @@
 #include "communication_description.h"
+#include "named_mixin.hpp"
 
 using namespace md::domain;
 
@@ -62,7 +63,7 @@ void CommunicationDescription::setBytesSent(int bytesSent)
 }
 QVariantMap CommunicationDescription::toVariantMap() const
 {
-    QVariantMap map = Named::toVariantMap();
+    QVariantMap map = NamedMixin<Entity>::toVariantMap();
 
     map.insert(props::state, this->isConnected());
     map.insert(props::type, this->m_linkSpecification.type());

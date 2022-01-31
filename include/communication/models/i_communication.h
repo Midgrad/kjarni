@@ -13,9 +13,9 @@ public:
     ICommunication(const QString& name, const QVariant& id = utils::generateId(),
                    QObject* parent = nullptr) :
         NamedMixin<Entity>(name, id, parent)
-
     {
     }
+    
     virtual ~ICommunication() = default;
 
     virtual QString type() const = 0;

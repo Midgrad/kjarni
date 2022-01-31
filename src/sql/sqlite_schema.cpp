@@ -1,5 +1,7 @@
 #include "sqlite_schema.h"
 
+#include "utils.h"
+
 #include <QSqlError>
 #include <QSqlQuery>
 
@@ -90,6 +92,12 @@ void SqliteSchema::setup()
                "type STRING, "
                "state BOOL, "
                "protocol STRING);");
+
+    query.exec(QString("INSERT INTO communication_descriptions VALUES "
+                       "(\"%1\", 'test', "
+                       "'{\"autoResponse\": false, \"endpoints\": [], "
+                       "\"port\": 14550, \"type\": \"udp\"}', 'udp', 0, 'Mavlink');")
+                   .arg(utils::generateId().toString()));
 
     query.exec("INSERT INTO schema_version (version) VALUES (\'17.14.00_09.11.2021\')");
 }

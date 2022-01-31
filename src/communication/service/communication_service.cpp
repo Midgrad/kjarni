@@ -19,13 +19,10 @@ constexpr char localPort[] = "local_port";
 
 using namespace md::app;
 
-CommunicationService::CommunicationService(const QString& fileName,
-                                           domain::ICommunicationDescriptionRepository* repository) :
+CommunicationService::CommunicationService(domain::ICommunicationDescriptionRepository* repository) :
     m_protocols(),
     m_communications(),
-    m_source(new data_source::JsonSourceFile(fileName)),
     m_repository(repository)
-//    m_json(m_source->read())
 {
     this->readAll();
 }

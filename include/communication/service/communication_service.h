@@ -22,8 +22,7 @@ class CommunicationService
     Q_OBJECT
 
 public:
-    CommunicationService(const QString& fileName,
-                         domain::ICommunicationDescriptionRepository* repository);
+    CommunicationService(domain::ICommunicationDescriptionRepository* repository);
 
     void registerProtocol(const QString& name, data_source::ICommunicationProtocol* protocol);
 
@@ -45,8 +44,6 @@ private:
     QMap<QString, data_source::ICommunicationProtocol*> m_protocols;
 
     domain::ICommunicationDescriptionRepository* m_repository;
-    QScopedPointer<data_source::IJsonSource> m_source;
-    QJsonDocument m_json;
 };
 
 } // namespace md::app
