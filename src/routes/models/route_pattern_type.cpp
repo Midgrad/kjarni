@@ -10,7 +10,7 @@ RoutePatternType::RoutePatternType(const QString& id, const QString& name, const
     id(id),
     name(name),
     icon(icon),
-    parameters(utils::listToMap<ParameterType>(parameters))
+    parameters(utils::vecToMap<const ParameterType*>(parameters))
 {
 }
 

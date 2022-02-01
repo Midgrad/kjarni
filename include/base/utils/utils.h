@@ -29,10 +29,10 @@ QVariantMap mergeMap(QVariantMap& dest, const QVariantMap& source);
 
 // Convert list to map with ids
 template<typename T>
-QMap<QString, const T*> listToMap(const QVector<const T*>& list)
+QMap<QString, T> vecToMap(const QVector<T>& list)
 {
-    QMap<QString, const T*> map;
-    for (const T* type : list)
+    QMap<QString, T> map;
+    for (T type : list)
     {
         map[type->id] = type;
     }

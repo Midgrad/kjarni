@@ -13,7 +13,7 @@ RouteItemType::RouteItemType(const QString& id, const QString& name, const QStri
     name(name),
     shortName(shortName),
     positioned(positioned),
-    parameters(utils::listToMap<ParameterType>(parameters))
+    parameters(utils::vecToMap<const ParameterType*>(parameters))
 {
 }
 

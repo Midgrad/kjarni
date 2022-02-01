@@ -2,18 +2,17 @@
 #define ROUTE_ITEM_H
 
 #include "geodetic.h"
-#include "parametrised_mixin.hpp"
 #include "route_item_type.h"
 
 namespace md::domain
 {
-class RouteItem : public ParametrisedMixin<NamedMixin<Entity>>
+class RouteItem : public TypedParametrisedMixin<NamedMixin<Entity>>
 {
     Q_OBJECT
 
 public:
     explicit RouteItem(const RouteItemType* type, const QString& name = QString(),
-                       const QVariant& id = utils::generateId(), QVariantMap params = {},
+                       const QVariant& id = utils::generateId(), const QVariantMap& params = {},
                        const Geodetic& position = Geodetic(), const QVariantMap& calcData = {},
                        bool current = false, bool reached = false, QObject* parent = nullptr);
     RouteItem(const RouteItemType* type, const QVariantMap& map, QObject* parent = nullptr);
@@ -30,11 +29,6 @@ public:
 
 public slots:
     void setType(const RouteItemType* type);
-
-    // TODO: to Parametrised or TypeParametrised
-    void setAndCheckParameter(const QString& paramId, const QVariant& value);
-    void resetParameter(const QString& paramId);
-    void resetParameters();
     void syncParameters();
 
 signals:

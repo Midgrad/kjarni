@@ -7,10 +7,10 @@
 using namespace md::domain;
 
 RouteItem::RouteItem(const RouteItemType* type, const QString& name, const QVariant& id,
-                     QVariantMap params, const Geodetic& position, const QVariantMap& calcData,
-                     bool current, bool reached, QObject* parent) :
-    ParametrisedMixin<NamedMixin<Entity>>(params, std::bind(&Entity::changed, this), name, id,
-                                               parent),
+                     const QVariantMap& params, const Geodetic& position,
+                     const QVariantMap& calcData, bool current, bool reached, QObject* parent) :
+    TypedParametrisedMixin<NamedMixin<Entity>>(type->parameters.values().toVector(), params, name,
+                                               id, parent),
     position(position, std::bind(&Entity::changed, this)),
     calcData(calcData, std::bind(&Entity::changed, this)),
     current(current, std::bind(&Entity::changed, this)),
@@ -30,7 +30,7 @@ RouteItem::RouteItem(const RouteItemType* type, const QVariantMap& map, QObject*
 
 QVariantMap RouteItem::toVariantMap() const
 {
-    QVariantMap map = ParametrisedMixin<NamedMixin<Entity>>::toVariantMap();
+    QVariantMap map = TypedParametrisedMixin<NamedMixin<Entity>>::toVariantMap();
 
     map.insert(props::type, m_type->id);
 
@@ -49,7 +49,7 @@ void RouteItem::fromVariantMap(const QVariantMap& map)
     current = map.value(props::current, this->current()).toBool();
     reached = map.value(props::reached, this->reached()).toBool();
 
-    ParametrisedMixin<NamedMixin<Entity>>::fromVariantMap(map);
+    TypedParametrisedMixin<NamedMixin<Entity>>::fromVariantMap(map);
 }
 
 const RouteItemType* RouteItem::type() const
@@ -70,48 +70,7 @@ void RouteItem::setType(const RouteItemType* type)
     this->syncParameters();
 }
 
-void RouteItem::setAndCheckParameter(const QString& paramId, const QVariant& value)
-{
-    QVariant guarded = value;
-    auto parameter = m_type->parameter(paramId);
-    if (parameter)
-    {
-        guarded = parameter->guard(value);
-    }
-    this->setParameter(paramId, guarded);
-}
-
-void RouteItem::resetParameter(const QString& paramId)
-{
-    auto parameter = m_type->parameter(paramId);
-    if (!parameter)
-        return;
-
-    this->setParameter(paramId, parameter->defaultValue);
-}
-
-void RouteItem::resetParameters()
-{
-    this->setParameters(m_type->defaultParameters());
-}
-
 void RouteItem::syncParameters()
 {
-    QVariantMap parameters = this->parameters();
-
-    // Add parameters defaulted by type
-    for (const ParameterType* parameter : m_type->parameters)
-    {
-        if (!parameters.contains(parameter->id))
-            parameters.insert(parameter->id, parameter->defaultValue);
-    }
-
-    // Remove unneeded parameters
-    for (const QString& paramId : parameters.keys())
-    {
-        if (!m_type->parameter(paramId))
-            parameters.remove(paramId);
-    }
-
-    this->setParameters(parameters);
+    this->resetTypeParameters(m_type->parameters.values().toVector());
 }
