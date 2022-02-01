@@ -10,13 +10,6 @@
 #include "json_source_file.h"
 #include "link_transceiver_threaded.h"
 
-namespace
-{
-constexpr char protocol[] = "protocol";
-constexpr char localPort[] = "local_port";
-
-} // namespace
-
 using namespace md::app;
 
 CommunicationService::CommunicationService(domain::ICommunicationDescriptionRepository* repository) :
@@ -27,8 +20,9 @@ CommunicationService::CommunicationService(domain::ICommunicationDescriptionRepo
     this->readAll();
 }
 
-void CommunicationService::createCommunication(data_source::ICommunicationProtocol* protocol,
-                                               domain::ProtocolSpecification protocolSpecification)
+void CommunicationService::createCommunication(
+    data_source::ICommunicationProtocol* protocol,
+    const domain::ProtocolSpecification& protocolSpecification)
 {
     QMutableHashIterator<domain::CommunicationDescription*, data_source::Communication*> i(
         m_communications);
@@ -71,8 +65,6 @@ void CommunicationService::registerProtocol(const QString& name,
     m_protocolSpecifications.append(protocolSpecification);
 
     this->createCommunication(protocol, protocolSpecification);
-
-    //    this->saveAll();
 }
 
 void CommunicationService::readAll()
