@@ -25,6 +25,7 @@ public:
     CommunicationService(domain::ICommunicationDescriptionRepository* repository);
 
     void registerProtocol(const QString& name, data_source::ICommunicationProtocol* protocol);
+    QList<domain::CommunicationDescription*> communicationDescriptions();
 
 public slots:
     void readAll();

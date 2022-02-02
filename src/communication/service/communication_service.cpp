@@ -111,3 +111,7 @@ md::domain::CommunicationDescription* CommunicationService::readCommunicationDes
 
     return communicationDescription;
 }
+QList<md::domain::CommunicationDescription*> CommunicationService::communicationDescriptions()
+{
+    return m_communications.keys();
+}
