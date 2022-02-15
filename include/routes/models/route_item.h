@@ -13,12 +13,11 @@ class RouteItem : public TypedParametrisedMixin<NamedMixin<Entity>>
 public:
     explicit RouteItem(const RouteItemType* type, const QString& name = QString(),
                        const QVariant& id = utils::generateId(), const QVariantMap& params = {},
-                       const Geodetic& position = Geodetic(), const QVariantMap& calcData = {},
-                       bool current = false, bool reached = false, QObject* parent = nullptr);
+                       const Geodetic& position = Geodetic(), bool current = false,
+                       bool reached = false, QObject* parent = nullptr);
     RouteItem(const RouteItemType* type, const QVariantMap& map, QObject* parent = nullptr);
 
     utils::Property<Geodetic> position;
-    utils::Property<QVariantMap> calcData;
     utils::Property<bool> current;
     utils::Property<bool> reached;
 

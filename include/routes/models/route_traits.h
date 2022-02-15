@@ -14,7 +14,6 @@ constexpr char items[] = "items";
 constexpr char item[] = "item";
 constexpr char route[] = "route";
 constexpr char shortName[] = "shortName";
-constexpr char calcData[] = "calcData";
 constexpr char block[] = "block";
 
 constexpr char current[] = "current";
@@ -36,11 +35,14 @@ const ParameterType distance = {
 const ParameterType time = { "time", TR_ROUTE("Time"), ParameterType::Int, 0, 0, maxTime };
 const ParameterType yaw = { "yaw", TR_ROUTE("Yaw"), ParameterType::Real, qQNaN(), 0, 360 };
 const ParameterType altitude = { "altitude", TR_ROUTE("Altitude"), ParameterType::Real,
-                             0,          minAltitude,          maxAltitude };
+                                 0,          minAltitude,          maxAltitude };
 const ParameterType pitch = { "pitch", TR_ROUTE("Pitch"), ParameterType::Real, 15.0, -90.0, 90.0 };
-const ParameterType acceptRadius = { "accept_radius", TR_ROUTE("Accept. radius"), ParameterType::Real, 0, 0,
-                                 maxRadius };
-const ParameterType radius = { "radius", TR_ROUTE("Radius"), ParameterType::Real, 100, 0, maxRadius };
+const ParameterType acceptRadius = {
+    "accept_radius", TR_ROUTE("Accept. radius"), ParameterType::Real, 0, 0, maxRadius
+};
+const ParameterType radius = {
+    "radius", TR_ROUTE("Radius"), ParameterType::Real, 100, 0, maxRadius
+};
 const ParameterType heading = { "heading", TR_ROUTE("Heading"), ParameterType::Int, 0, 0, 359 };
 const ParameterType spacing = { "spacing", TR_ROUTE("Spacing"), ParameterType::Int, 50, 10, 10000 };
 const ParameterType doubled = { "doubled", TR_ROUTE("Doubled"), false };

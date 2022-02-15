@@ -59,7 +59,6 @@ void SqliteSchema::setup()
                "name STRING, "
                "params TEXT, "
                "position TEXT, "
-               "calcData TEXT, "
                "type STRING, "
                "route UUID, "
                "FOREIGN KEY(route) REFERENCES routes(id) ON DELETE CASCADE);");

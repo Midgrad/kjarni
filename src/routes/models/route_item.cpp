@@ -7,12 +7,11 @@
 using namespace md::domain;
 
 RouteItem::RouteItem(const RouteItemType* type, const QString& name, const QVariant& id,
-                     const QVariantMap& params, const Geodetic& position,
-                     const QVariantMap& calcData, bool current, bool reached, QObject* parent) :
+                     const QVariantMap& params, const Geodetic& position, bool current,
+                     bool reached, QObject* parent) :
     TypedParametrisedMixin<NamedMixin<Entity>>(type->parameters.values().toVector(), params, name,
                                                id, parent),
     position(position, std::bind(&Entity::changed, this)),
-    calcData(calcData, std::bind(&Entity::changed, this)),
     current(current, std::bind(&Entity::changed, this)),
     reached(reached, std::bind(&Entity::changed, this)),
     m_type(type)
@@ -23,8 +22,7 @@ RouteItem::RouteItem(const RouteItemType* type, const QString& name, const QVari
 RouteItem::RouteItem(const RouteItemType* type, const QVariantMap& map, QObject* parent) :
     RouteItem(type, map.value(props::name).toString(), map.value(props::id),
               map.value(props::params).toMap(), map.value(props::position).toMap(),
-              map.value(props::calcData).toMap(), map.value(props::current).toBool(),
-              map.value(props::reached).toBool(), parent)
+              map.value(props::current).toBool(), map.value(props::reached).toBool(), parent)
 {
 }
 
@@ -35,7 +33,6 @@ QVariantMap RouteItem::toVariantMap() const
     map.insert(props::type, m_type->id);
 
     map.insert(props::position, this->position().toVariantMap());
-    map.insert(props::calcData, this->calcData());
     map.insert(props::current, this->current());
     map.insert(props::reached, this->reached());
 
@@ -45,7 +42,6 @@ QVariantMap RouteItem::toVariantMap() const
 void RouteItem::fromVariantMap(const QVariantMap& map)
 {
     position = map.value(props::position, this->position().toVariantMap()).toMap();
-    calcData = map.value(props::calcData, this->calcData()).toMap();
     current = map.value(props::current, this->current()).toBool();
     reached = map.value(props::reached, this->reached()).toBool();
 

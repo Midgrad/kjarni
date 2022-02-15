@@ -13,8 +13,7 @@ using namespace md::data_source;
 
 HomeItemsRepositorySql::HomeItemsRepositorySql(QSqlDatabase* database) :
     domain::IHomeItemsRepository(),
-    m_homeItemsTable(database, ::routeItems,
-                     { domain::props::params, domain::props::position, domain::props::calcData })
+    m_homeItemsTable(database, ::routeItems, { domain::props::params, domain::props::position })
 {
 }
 
