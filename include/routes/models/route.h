@@ -3,15 +3,16 @@
 
 #include "route_item.h"
 #include "route_type.h"
+#include "visible_mixin.hpp"
 
 namespace md::domain
 {
-class Route : public NamedMixin<Entity>
+class Route : public NamedMixin<VisibleMixin<Entity>>
 {
     Q_OBJECT
 
 public:
-    explicit Route(const RouteType* type, const QString& name = QString(),
+    explicit Route(const RouteType* type, const QString& name = QString(), bool visible = true,
                    const QVariant& id = utils::generateId(), QObject* parent = nullptr);
     Route(const RouteType* type, const QVariantMap& map, QObject* parent = nullptr);
 

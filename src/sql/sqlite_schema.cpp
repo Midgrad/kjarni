@@ -52,6 +52,7 @@ void SqliteSchema::setup()
     query.exec("CREATE TABLE routes ("
                "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
+               "visible BOOL, "
                "type STRING);");
 
     query.exec("CREATE TABLE route_items ("

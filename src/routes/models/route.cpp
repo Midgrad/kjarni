@@ -7,8 +7,9 @@
 
 using namespace md::domain;
 
-Route::Route(const RouteType* type, const QString& name, const QVariant& id, QObject* parent) :
-    NamedMixin<Entity>(name, id, parent),
+Route::Route(const RouteType* type, const QString& name, bool visible, const QVariant& id,
+             QObject* parent) :
+    NamedMixin<VisibleMixin<Entity>>(name, visible, id, parent),
     block(QString(), std::bind(&Entity::changed, this)),
     type(type)
 {
@@ -16,13 +17,14 @@ Route::Route(const RouteType* type, const QString& name, const QVariant& id, QOb
 }
 
 Route::Route(const RouteType* type, const QVariantMap& map, QObject* parent) :
-    Route(type, map.value(props::name).toString(), map.value(props::id), parent)
+    Route(type, map.value(props::name).toString(), map.value(props::visible).toBool(),
+          map.value(props::id), parent)
 {
 }
 
 QVariantMap Route::toVariantMap() const
 {
-    QVariantMap map = NamedMixin<Entity>::toVariantMap();
+    QVariantMap map = NamedMixin<VisibleMixin<Entity>>::toVariantMap();
 
     map.insert(props::type, this->type()->id);
     map.insert(props::block, this->block());
@@ -32,7 +34,7 @@ QVariantMap Route::toVariantMap() const
 
 void Route::fromVariantMap(const QVariantMap& map)
 {
-    NamedMixin<Entity>::fromVariantMap(map);
+    NamedMixin<VisibleMixin<Entity>>::fromVariantMap(map);
 }
 
 int Route::count() const
