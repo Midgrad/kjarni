@@ -5,6 +5,7 @@
 
 #include <QVector>
 
+// TODO: to remove
 namespace md::domain
 {
 class ParameterType

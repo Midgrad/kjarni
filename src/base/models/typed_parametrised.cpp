@@ -55,7 +55,7 @@ QVariant ParameterType::guard(const QVariant& value) const
     if (!maxValue.isNull())
         result = qMin(result, maxValue);
 
-    return value;
+    return result;
 }
 
 TypedParameter::TypedParameter(const ParameterType* type, const QVariant& value, QObject* parent) :
