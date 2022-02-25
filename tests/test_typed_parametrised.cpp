@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QSignalSpy>
 
-#include "test_mission_traits.h"
+#include "test_route_traits.h"
 #include "typed_parametrised.h"
 #include "utils.h"
 
@@ -27,16 +27,16 @@ INSTANTIATE_TEST_SUITE_P(
     ::testing::Values(
         TypedParametrisedTestArgs({ md::utils::generateId(),
                                     { {} },
-                                    test_mission::changeAltitude.parameters.values().toVector() }),
+                                    test_route::changeAltitude.parameters.values().toVector() }),
         TypedParametrisedTestArgs({ md::utils::generateId(),
-                                    { { test_mission::passthrough.id, false } },
-                                    test_mission::waypoint.parameters.values().toVector() }),
+                                    { { test_route::passthrough.id, false } },
+                                    test_route::waypoint.parameters.values().toVector() }),
         TypedParametrisedTestArgs({ md::utils::generateId(),
-                                    { { test_mission::radius.id, 650 } },
-                                    test_mission::circle.parameters.values().toVector() }),
+                                    { { test_route::radius.id, 650 } },
+                                    test_route::circle.parameters.values().toVector() }),
         TypedParametrisedTestArgs({ md::utils::generateId(),
-                                    { { test_mission::radius.id, 350 } },
-                                    test_mission::loop.parameters.values().toVector() })));
+                                    { { test_route::radius.id, 350 } },
+                                    test_route::loop.parameters.values().toVector() })));
 
 TEST_P(TypedParametrisedTest, testConstructWithoutParameters)
 {

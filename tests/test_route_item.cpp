@@ -4,7 +4,7 @@
 #include <QSignalSpy>
 
 #include "route_item.h"
-#include "test_mission_traits.h"
+#include "test_route_traits.h"
 #include "utils.h"
 
 // TODO: impl after plain and complex item refactoring

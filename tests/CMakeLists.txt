@@ -8,11 +8,15 @@ find_package(Qt5 ${QT_REQUIRED_VERSION} COMPONENTS Test REQUIRED)
 project(test_kjarni)
 
 # Executable
-file(GLOB SOURCES "*.h" "*.cpp")
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-# Includes
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+# Include
+HEADER_DIRECTORIES(INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDES})
+
+# Sources
+file(GLOB_RECURSE SOURCES "*.h" "*.cpp")
+target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
 
 # Link Libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE gtest gmock pthread Qt5::Test kjarni)

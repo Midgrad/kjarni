@@ -4,7 +4,7 @@
 #include <QSignalSpy>
 
 #include "route.h"
-#include "test_mission_traits.h"
+#include "test_route_traits.h"
 
 using namespace md::domain;
 
@@ -15,13 +15,13 @@ public:
     {
         items.append(QVariantMap({ { props::id, md::utils::generateId() },
                                    { props::name, "WPT 1" },
-                                   { props::type, test_mission::waypoint.id } }));
+                                   { props::type, test_route::waypoint.id } }));
         items.append(QVariantMap({ { props::id, md::utils::generateId() },
                                    { props::name, "WPT 2" },
-                                   { props::type, test_mission::waypoint.id } }));
+                                   { props::type, test_route::waypoint.id } }));
         items.append(QVariantMap({ { props::id, md::utils::generateId() },
                                    { props::name, "CRL 3" },
-                                   { props::type, test_mission::circle.id } }));
+                                   { props::type, test_route::circle.id } }));
     }
 
     QVariantList items;
@@ -33,7 +33,7 @@ TEST_F(RouteTest, testConstructFromMap)
     map.insert(props::id, md::utils::generateId());
     map.insert(props::name, "Test route");
 
-    Route route(&test_mission::routeType, map);
+    Route route(&test_route::routeType, map);
 
     EXPECT_EQ(route.id, map.value(props::id));
     EXPECT_EQ(route.name, map.value(props::name).toString());
@@ -41,7 +41,7 @@ TEST_F(RouteTest, testConstructFromMap)
 
 TEST_F(RouteTest, testFromVariant)
 {
-    Route route(&test_mission::routeType, "Invalid name");
+    Route route(&test_route::routeType, "Invalid name");
 
     QVariantMap map;
     map.insert(props::name, "Test route");
@@ -53,11 +53,11 @@ TEST_F(RouteTest, testFromVariant)
 
 TEST_F(RouteTest, testAddWaypoint)
 {
-    Route route(&test_mission::routeType, "Route");
+    Route route(&test_route::routeType, "Route");
 
     EXPECT_TRUE(route.count() == 0);
 
-    auto wpt = new RouteItem(&test_mission::waypoint);
+    auto wpt = new RouteItem(&test_route::waypoint);
     route.addItem(wpt);
 
     ASSERT_TRUE(route.count() == 1);
@@ -69,12 +69,12 @@ TEST_F(RouteTest, testRemoveWaypoint)
     QVariantMap map;
     map.insert(props::name, "Test route");
 
-    Route route(&test_mission::routeType, map);
+    Route route(&test_route::routeType, map);
     for (const QVariant& itemData : items)
     {
         QVariantMap item = itemData.toMap();
         route.addItem(
-            new RouteItem(test_mission::routeType.itemType(item.value(props::type).toString()),
+            new RouteItem(test_route::routeType.itemType(item.value(props::type).toString()),
                           item));
     }
 
@@ -93,12 +93,12 @@ TEST_F(RouteTest, testSetWaypoints)
 {
     QVariantMap map;
     map.insert(props::name, "Test route");
-    Route route(&test_mission::routeType, map);
+    Route route(&test_route::routeType, map);
 
     ASSERT_EQ(route.count(), 0);
 
     QList<RouteItem*> newWaypoints;
-    auto newWpt = new RouteItem(&test_mission::waypoint);
+    auto newWpt = new RouteItem(&test_route::waypoint);
     newWaypoints.append(newWpt);
 
     route.setItems(newWaypoints);

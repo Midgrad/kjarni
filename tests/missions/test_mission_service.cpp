@@ -8,5 +8,5 @@ using namespace md::domain;
 
 class MissionsServiceTest : public ::testing::Test
 {
-    // TODO: test mission
+    // TODO: test mission service
 };

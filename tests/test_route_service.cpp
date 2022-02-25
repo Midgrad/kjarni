@@ -4,7 +4,7 @@
 #include <QSignalSpy>
 
 #include "routes_service.h"
-#include "test_mission_traits.h"
+#include "test_route_traits.h"
 
 using namespace testing;
 using namespace md::domain;
@@ -47,12 +47,12 @@ public:
 
     void SetUp() override
     {
-        service.registerRouteType(&test_mission::routeType);
+        service.registerRouteType(&test_route::routeType);
     }
 
     void TearDown() override
     {
-        service.unregisterRouteType(&test_mission::routeType);
+        service.unregisterRouteType(&test_route::routeType);
     }
 };
 
@@ -74,27 +74,27 @@ TEST_F(RouteServiceTest, testReadAll)
 
     // Select route 1
     EXPECT_CALL(routes, select(route1Id))
-        .WillOnce(Return(QVariantMap({ { props::type, test_mission::routeType.id } })));
+        .WillOnce(Return(QVariantMap({ { props::type, test_route::routeType.id } })));
     EXPECT_CALL(items, selectRouteItemsIds(route1Id))
         .WillOnce(Return(QVariantList({ item11Id, item12Id })));
     // Select item11
     EXPECT_CALL(items, select(item11Id))
-        .WillOnce(Return(QVariantMap({ { props::type, test_mission::waypoint.id } })));
+        .WillOnce(Return(QVariantMap({ { props::type, test_route::waypoint.id } })));
     // Select item12
     EXPECT_CALL(items, select(item12Id))
-        .WillOnce(Return(QVariantMap({ { props::type, test_mission::circle.id } })));
+        .WillOnce(Return(QVariantMap({ { props::type, test_route::circle.id } })));
 
     // Select route 2
     EXPECT_CALL(routes, select(route2Id))
-        .WillOnce(Return(QVariantMap({ { props::type, test_mission::routeType.id } })));
+        .WillOnce(Return(QVariantMap({ { props::type, test_route::routeType.id } })));
     EXPECT_CALL(items, selectRouteItemsIds(route2Id))
         .WillOnce(Return(QVariantList({ item21Id, item22Id })));
     // Select item21
     EXPECT_CALL(items, select(item21Id))
-        .WillOnce(Return(QVariantMap({ { props::type, test_mission::waypoint.id } })));
+        .WillOnce(Return(QVariantMap({ { props::type, test_route::waypoint.id } })));
     // Select item22
     EXPECT_CALL(items, select(item22Id))
-        .WillOnce(Return(QVariantMap({ { props::type, test_mission::waypoint.id } })));
+        .WillOnce(Return(QVariantMap({ { props::type, test_route::waypoint.id } })));
 
     service.readAll();
 
@@ -115,18 +115,18 @@ TEST_F(RouteServiceTest, testInsertRoute)
 {
     QSignalSpy spyAdded(&service, &IRoutesService::routeAdded);
 
-    Route* route = new Route(&test_mission::routeType, "Test route");
-    RouteItem* wpt1 = new RouteItem(&test_mission::waypoint, "WPT 1");
+    Route* route = new Route(&test_route::routeType, "Test route");
+    RouteItem* wpt1 = new RouteItem(&test_route::waypoint, "WPT 1");
     route->addItem(wpt1);
-    RouteItem* wpt2 = new RouteItem(&test_mission::waypoint, "WPT 2");
+    RouteItem* wpt2 = new RouteItem(&test_route::waypoint, "WPT 2");
     route->addItem(wpt2);
-    RouteItem* wpt3 = new RouteItem(&test_mission::changeAltitude, "CH ALT 3");
+    RouteItem* wpt3 = new RouteItem(&test_route::changeAltitude, "CH ALT 3");
     route->addItem(wpt3);
-    RouteItem* wpt4 = new RouteItem(&test_mission::waypoint, "WPT 4");
+    RouteItem* wpt4 = new RouteItem(&test_route::waypoint, "WPT 4");
     route->addItem(wpt4);
-    RouteItem* wpt5 = new RouteItem(&test_mission::changeAltitude, "CH ALT 5");
+    RouteItem* wpt5 = new RouteItem(&test_route::changeAltitude, "CH ALT 5");
     route->addItem(wpt5);
-    RouteItem* wpt6 = new RouteItem(&test_mission::changeSpeed, "CH SPD 6");
+    RouteItem* wpt6 = new RouteItem(&test_route::changeSpeed, "CH SPD 6");
     route->addItem(wpt6);
 
     // Insert route
@@ -151,12 +151,12 @@ TEST_F(RouteServiceTest, testInsertRoute)
 TEST_F(RouteServiceTest, testUpdateRoute)
 {
     // fixture
-    Route* route = new Route(&test_mission::routeType, "Test route");
-    RouteItem* wpt1 = new RouteItem(&test_mission::waypoint, "WPT 1");
+    Route* route = new Route(&test_route::routeType, "Test route");
+    RouteItem* wpt1 = new RouteItem(&test_route::waypoint, "WPT 1");
     route->addItem(wpt1);
-    RouteItem* wpt2 = new RouteItem(&test_mission::waypoint, "WPT 2");
+    RouteItem* wpt2 = new RouteItem(&test_route::waypoint, "WPT 2");
     route->addItem(wpt2);
-    RouteItem* wpt3 = new RouteItem(&test_mission::waypoint, "WPT 4");
+    RouteItem* wpt3 = new RouteItem(&test_route::waypoint, "WPT 4");
     route->addItem(wpt3);
 
     service.addRoute(route);
@@ -164,7 +164,7 @@ TEST_F(RouteServiceTest, testUpdateRoute)
     // test
     QSignalSpy spyChanged(&service, &IRoutesService::routeChanged);
 
-    RouteItem* wpt4 = new RouteItem(&test_mission::waypoint, "WPT 6");
+    RouteItem* wpt4 = new RouteItem(&test_route::waypoint, "WPT 6");
     route->removeItem(wpt1);
     route->removeItem(wpt3);
     route->addItem(wpt4);
@@ -191,12 +191,12 @@ TEST_F(RouteServiceTest, testUpdateRoute)
 TEST_F(RouteServiceTest, testRestoreRoute)
 {
     // fixture
-    Route* route = new Route(&test_mission::routeType, "Test route");
-    RouteItem* wpt1 = new RouteItem(&test_mission::waypoint, "WPT 1");
+    Route* route = new Route(&test_route::routeType, "Test route");
+    RouteItem* wpt1 = new RouteItem(&test_route::waypoint, "WPT 1");
     route->addItem(wpt1);
-    RouteItem* wpt2 = new RouteItem(&test_mission::waypoint, "WPT 2");
+    RouteItem* wpt2 = new RouteItem(&test_route::waypoint, "WPT 2");
     route->addItem(wpt2);
-    RouteItem* wpt3 = new RouteItem(&test_mission::waypoint, "WPT 4");
+    RouteItem* wpt3 = new RouteItem(&test_route::waypoint, "WPT 4");
     route->addItem(wpt3);
 
     service.addRoute(route);
@@ -206,7 +206,7 @@ TEST_F(RouteServiceTest, testRestoreRoute)
 
     route->removeItem(wpt1);
     route->removeItem(wpt3);
-    RouteItem* wpt4 = new RouteItem(&test_mission::waypoint, "WPT 6");
+    RouteItem* wpt4 = new RouteItem(&test_route::waypoint, "WPT 6");
     route->addItem(wpt4);
 
     // Read route
@@ -221,9 +221,9 @@ TEST_F(RouteServiceTest, testRestoreRoute)
 
     // Select wpt1 & wpt3
     EXPECT_CALL(items, select(wpt1->id()))
-        .WillOnce(Return(QVariantMap({ { props::type, test_mission::waypoint.id } })));
+        .WillOnce(Return(QVariantMap({ { props::type, test_route::waypoint.id } })));
     EXPECT_CALL(items, select(wpt3->id()))
-        .WillOnce(Return(QVariantMap({ { props::type, test_mission::waypoint.id } })));
+        .WillOnce(Return(QVariantMap({ { props::type, test_route::waypoint.id } })));
 
     service.restoreRoute(route);
 
@@ -234,12 +234,12 @@ TEST_F(RouteServiceTest, testRestoreRoute)
 TEST_F(RouteServiceTest, testRemoveRoute)
 {
     // fixture
-    Route* route = new Route(&test_mission::routeType, "Test route");
-    RouteItem* wpt1 = new RouteItem(&test_mission::waypoint, "WPT 1");
+    Route* route = new Route(&test_route::routeType, "Test route");
+    RouteItem* wpt1 = new RouteItem(&test_route::waypoint, "WPT 1");
     route->addItem(wpt1);
-    RouteItem* wpt2 = new RouteItem(&test_mission::waypoint, "WPT 2");
+    RouteItem* wpt2 = new RouteItem(&test_route::waypoint, "WPT 2");
     route->addItem(wpt2);
-    RouteItem* wpt3 = new RouteItem(&test_mission::waypoint, "WPT 4");
+    RouteItem* wpt3 = new RouteItem(&test_route::waypoint, "WPT 4");
     route->addItem(wpt3);
 
     service.addRoute(route);
@@ -249,7 +249,7 @@ TEST_F(RouteServiceTest, testRemoveRoute)
 
     route->removeItem(wpt1);
     route->removeItem(wpt3);
-    RouteItem* wpt4 = new RouteItem(&test_mission::waypoint, "WPT 6");
+    RouteItem* wpt4 = new RouteItem(&test_route::waypoint, "WPT 6");
     route->addItem(wpt4);
 
     // Remove route
@@ -273,8 +273,8 @@ TEST_F(RouteServiceTest, testRemoveRoute)
 TEST_F(RouteServiceTest, testUpdateRouteItem)
 {
     // fixture
-    Route* route = new Route(&test_mission::routeType, "Test route");
-    RouteItem* wpt = new RouteItem(&test_mission::waypoint, "WPT 1");
+    Route* route = new Route(&test_route::routeType, "Test route");
+    RouteItem* wpt = new RouteItem(&test_route::waypoint, "WPT 1");
     route->addItem(wpt);
 
     service.addRoute(route);
@@ -296,8 +296,8 @@ TEST_F(RouteServiceTest, testUpdateRouteItem)
 TEST_F(RouteServiceTest, testRestoreRouteItem)
 {
     // fixture
-    Route* route = new Route(&test_mission::routeType, "Test route");
-    RouteItem* wpt = new RouteItem(&test_mission::waypoint, "WPT 1");
+    Route* route = new Route(&test_route::routeType, "Test route");
+    RouteItem* wpt = new RouteItem(&test_route::waypoint, "WPT 1");
     route->addItem(wpt);
 
     service.addRoute(route);

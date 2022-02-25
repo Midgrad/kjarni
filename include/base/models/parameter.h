@@ -44,6 +44,8 @@ public:
     void setAndCheckValue(const QVariant& value);
 };
 
+using ParameterList = QList<Parameter*>;
+
 } // namespace md::domain
 
 #endif // PARAMETER_H

@@ -1,9 +1,9 @@
-#ifndef TEST_MISSION_TRAITS_H
-#define TEST_MISSION_TRAITS_H
+#ifndef TEST_ROUTE_TRAITS_H
+#define TEST_ROUTE_TRAITS_H
 
-#include "mission_traits.h"
+#include "route_traits.h"
 
-namespace md::domain::test_mission
+namespace md::domain::test_route
 {
 // Prameters
 const ParameterType radius = { "radius", "Radius", ParameterType::Real, 100, 0, route::maxRadius };
@@ -19,19 +19,13 @@ const RouteItemType changeSpeed{
 const RouteItemType changeAltitude{
     "ch_speed", "Change alt", "CH ALT", Positioned::Optional, { &altitude }
 };
-const RouteItemType takePhoto{
-    "take_photo", "Take photo", "PHOTO", Positioned::No, {}
-};
+const RouteItemType takePhoto{ "take_photo", "Take photo", "PHOTO", Positioned::No, {} };
 
 const RouteItemType waypoint = {
     "waypoint", "Waypoint", "WPT", Positioned::Required, { &passthrough }
 };
-const RouteItemType circle = {
-    "circle", "Circle", "CRL", Positioned::Required, { &radius }
-};
-const RouteItemType loop = {
-    "circle", "Circle", "CRL", Positioned::Required, { &radius }
-};
+const RouteItemType circle = { "circle", "Circle", "CRL", Positioned::Required, { &radius } };
+const RouteItemType loop = { "circle", "Circle", "CRL", Positioned::Required, { &radius } };
 
 // Routes
 const RouteType routeType = { "test_route",
@@ -39,10 +33,6 @@ const RouteType routeType = { "test_route",
                               { &waypoint, &circle, &loop, &changeSpeed, &changeAltitude,
                                 &takePhoto },
                               {} };
+} // namespace md::domain::test_route
 
-// Mission
-const MissionType missionType = { "test_mission", "Test Mission", &routeType, &waypoint, &waypoint };
-
-} // namespace md::domain::test_mission
-
-#endif // TEST_MISSION_TRAITS_H
+#endif // TEST_ROUTE_TRAITS_H
