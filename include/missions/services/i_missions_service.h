@@ -5,6 +5,7 @@
 #include "mission.h"
 #include "mission_operation.h"
 
+// TODO: MissionsServiceThreaded
 namespace md::domain
 {
 class IMissionsService
@@ -37,6 +38,8 @@ public slots:
     virtual void removeMission(Mission* mission) = 0;
     virtual void restoreMission(Mission* mission) = 0;
     virtual void saveMission(Mission* mission) = 0;
+    virtual void saveItem(Mission* mission, MissionRouteItem* item) = 0;
+    virtual void restoreItem(Mission* mission, MissionRouteItem* item) = 0;
 
 signals:
     void missionTypesChanged();

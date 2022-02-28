@@ -74,7 +74,7 @@ void SqliteSchema::setup()
                "FOREIGN KEY(route) REFERENCES routes(id) ON DELETE CASCADE, "
                "FOREIGN KEY(vehicle) REFERENCES vehicles(id) ON DELETE CASCADE);");
 
-    query.exec("CREATE TABLE home_items ("
+    query.exec("CREATE TABLE mission_route_items ("
                "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
                "params TEXT, "

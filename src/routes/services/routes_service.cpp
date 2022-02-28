@@ -186,7 +186,6 @@ void RoutesService::saveRoute(Route* route)
 
     // Delete removed items
     this->removeItems(itemIds);
-
     added ? emit routeAdded(route) : emit routeChanged(route);
 }
 
@@ -195,7 +194,6 @@ void RoutesService::saveItem(Route* route, RouteItem* item)
     QMutexLocker locker(&m_mutex);
 
     this->saveItemImpl(item, route->id, m_itemsRepo->selectRouteItemsIds(route->id));
-
     emit routeChanged(route);
 }
 

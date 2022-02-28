@@ -5,7 +5,7 @@
 
 namespace md::domain
 {
-class MissionType
+class MissionType // FIXME: replace mission types with factories
 {
     Q_GADGET
 
