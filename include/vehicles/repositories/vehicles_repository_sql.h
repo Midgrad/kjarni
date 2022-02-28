@@ -9,7 +9,7 @@ namespace md::data_source
 class VehiclesRepositorySql : public domain::IVehiclesRepository
 {
 public:
-    VehiclesRepositorySql(QSqlDatabase* database);
+    explicit VehiclesRepositorySql(QSqlDatabase* database);
 
     QVariantList selectVehicleIds() override;
     QVariantMap select(const QVariant& vehicleId) override;

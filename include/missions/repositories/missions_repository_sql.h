@@ -9,7 +9,7 @@ namespace md::data_source
 class MissionsRepositorySql : public domain::IMissionsRepository
 {
 public:
-    MissionsRepositorySql(QSqlDatabase* database);
+    explicit MissionsRepositorySql(QSqlDatabase* database);
 
     QVariantMap select(const QVariant& missionId) override;
     QVariantList selectMissionIds() override;

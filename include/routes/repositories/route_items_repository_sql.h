@@ -9,7 +9,7 @@ namespace md::data_source
 class RouteItemsRepositorySql : public domain::IRouteItemsRepository
 {
 public:
-    RouteItemsRepositorySql(QSqlDatabase* database);
+    explicit RouteItemsRepositorySql(QSqlDatabase* database);
 
     QVariantMap select(const QVariant& itemId) override;
     QVariantList selectRouteItemsIds(const QVariant& routeId) override;
