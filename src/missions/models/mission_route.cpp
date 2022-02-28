@@ -33,6 +33,11 @@ int MissionRoute::index(MissionRouteItem* item) const
     return m_items.indexOf(item);
 }
 
+int MissionRoute::currentIndex() const
+{
+    return m_currentItemIndex;
+}
+
 const QList<MissionRouteItem*>& MissionRoute::items() const
 {
     return m_items;
@@ -40,7 +45,15 @@ const QList<MissionRouteItem*>& MissionRoute::items() const
 
 MissionRouteItem* MissionRoute::item(int index) const
 {
-    return m_items.value(index, nullptr);
+    if (index >= 0 && index < m_items.count())
+        return m_items.value(index, nullptr);
+
+    return nullptr;
+}
+
+MissionRouteItem* MissionRoute::currentItem() const
+{
+    return this->item(m_currentItemIndex);
 }
 
 void MissionRoute::replaceItem(int index, MissionRouteItem* item)
@@ -53,6 +66,10 @@ void MissionRoute::replaceItem(int index, MissionRouteItem* item)
 
     m_items.at(index)->deleteLater();
     m_items.replace(index, item);
+
+    if (index == m_currentItemIndex)
+        item->current.set(true);
+
     emit itemChanged(index, item);
 }
 
@@ -100,4 +117,33 @@ void MissionRoute::clear()
     {
         this->removeItem(item);
     }
+}
+
+void MissionRoute::reachItem(int index)
+{
+    if (index < 0 || index >= m_items.count())
+        return;
+
+    m_items.at(index)->reached.set(true);
+    emit itemReached(index);
+}
+
+void MissionRoute::setCurrent(int index)
+{
+    if (m_currentItemIndex == index)
+        return;
+
+    if (m_currentItemIndex >= 0 && m_currentItemIndex < m_items.count())
+    {
+        m_items.at(m_currentItemIndex)->current.set(true);
+    }
+
+    m_currentItemIndex = index;
+
+    if (index >= 0 && index < m_items.count())
+    {
+        m_items.at(index)->current.set(true);
+    }
+
+    emit currentItemChanged(index);
 }

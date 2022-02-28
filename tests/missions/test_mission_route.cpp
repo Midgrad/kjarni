@@ -8,5 +8,12 @@ using namespace md::domain;
 
 class MissionRouteTest : public ::testing::Test
 {
-    // TODO: test mission route
 };
+
+TEST_F(MissionRouteTest, testSetCurrent)
+{
+    MissionRoute route("Test Route", md::utils::generateId());
+
+    route.setCurrent(5);
+    EXPECT_EQ(route.currentIndex(), 5);
+}
