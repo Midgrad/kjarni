@@ -22,14 +22,14 @@ public:
     QVariantList missionIds() const override;
     QList<Mission*> missions() const override;
     MissionOperation* operationForMission(Mission* mission) const override;
-    const MissionType* missionType(const QString& id) const override;
-    QList<const MissionType*> missionTypes() const override;
+    IMissionsFactory* missionFactory(const QString& type) const override;
+    QStringList missionTypes() const override;
 
     void startOperation(Mission* mission, MissionOperation::Type type) override;
     void endOperation(MissionOperation* operation, MissionOperation::State state) override;
 
-    void registerMissionType(const MissionType* type) override;
-    void unregisterMissionType(const MissionType* type) override;
+    void registerMissionFactory(const QString& type, IMissionsFactory* factory) override;
+    void unregisterMissionFactory(const QString& type) override;
 
 public slots:
     void readAll() override;
@@ -41,7 +41,7 @@ public slots:
 
 private:
     Mission* readMission(const QVariant& id);
-    MissionRouteItem* readItem(const QVariant& id);
+    MissionRouteItem* readItem(const QVariant& id, IMissionsFactory* factory);
     void saveItemImpl(MissionRouteItem* item, const QVariant& parentId, const QVariantList& itemIds);
     void restoreItemImpl(MissionRouteItem* item);
     void removeItems(const QVariantList& itemsIds);
@@ -49,7 +49,7 @@ private:
     IMissionsRepository* const m_missionsRepo;
     IMissionItemsRepository* const m_itemsRepo;
 
-    QMap<QString, const MissionType*> m_missionTypes;
+    QMap<QString, IMissionsFactory*> m_missionFactories;
     QMap<QVariant, Mission*> m_missions;
     QMap<Mission*, MissionOperation*> m_operations;
 

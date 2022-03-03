@@ -7,15 +7,25 @@
 
 namespace md::domain
 {
+class MissionRouteItemType
+{
+public:
+    MissionRouteItemType(const QString& id, const QString& name);
+
+    utils::ConstProperty<QString> id;
+    utils::ConstProperty<QString> name;
+
+    virtual ParameterMap createParameters() = 0;
+};
+
 class MissionRouteItem : public NamedMixin<Entity>
 {
     Q_OBJECT
 
 public:
-    explicit MissionRouteItem(const QString& name, const ParameterList& parameters,
-                              const QVariant& id = utils::generateId(), QObject* parent = nullptr);
+    explicit MissionRouteItem(MissionRouteItemType* type, const QVariant& id = utils::generateId(),
+                              QObject* parent = nullptr);
 
-    utils::ConstProperty<ParameterList> parameters;
     utils::Property<Geodetic> position;
     utils::Property<bool> current;
     utils::Property<bool> reached;
@@ -23,8 +33,19 @@ public:
     QVariantMap toVariantMap() const override;
     void fromVariantMap(const QVariantMap& map) override;
 
+    MissionRouteItemType* type() const;
+    ParameterList parameters() const;
+    Parameter* parameter(const QString& id) const;
+
+    void setType(MissionRouteItemType* type);
+    void syncParameters();
+
 signals:
     void goTo();
+
+private:
+    MissionRouteItemType* m_type;
+    ParameterMap m_parameters;
 };
 } // namespace md::domain
 

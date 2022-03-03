@@ -4,7 +4,7 @@
 
 using namespace md::domain;
 
-Parameter::Parameter(const QVariant& id, const QString& name, Type type,
+Parameter::Parameter(const QString& id, const QString& name, Type type,
                      const QVariant& defaultValue, const QVariant& minValue,
                      const QVariant& maxValue, const QVariant& step, const QVariantList& variants) :
     NamedMixin<Entity>(name, id, nullptr),
@@ -18,12 +18,12 @@ Parameter::Parameter(const QVariant& id, const QString& name, Type type,
 {
 }
 
-Parameter::Parameter(const QVariant& id, const QString& name, bool defaultValue) :
+Parameter::Parameter(const QString& id, const QString& name, bool defaultValue) :
     Parameter(id, name, Bool, defaultValue, QVariant(), QVariant(), QVariant())
 {
 }
 
-Parameter::Parameter(const QVariant& id, const QString& name, const QVariantList& variants,
+Parameter::Parameter(const QString& id, const QString& name, const QVariantList& variants,
                      const QVariant& defaultValue) :
     Parameter(id, name, List, defaultValue, QVariant(), QVariant(), QVariant(), variants)
 {

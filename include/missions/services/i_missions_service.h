@@ -1,6 +1,7 @@
 #ifndef I_MISSIONS_SERVICE_H
 #define I_MISSIONS_SERVICE_H
 
+#include "i_missions_factory.h"
 #include "i_service.h"
 #include "mission.h"
 #include "mission_operation.h"
@@ -24,14 +25,14 @@ public:
     virtual QVariantList missionIds() const = 0;
     virtual QList<Mission*> missions() const = 0;
     virtual MissionOperation* operationForMission(Mission* mission) const = 0;
-    virtual const MissionType* missionType(const QString& id) const = 0;
-    virtual QList<const MissionType*> missionTypes() const = 0;
+    virtual IMissionsFactory* missionFactory(const QString& type) const = 0;
+    virtual QStringList missionTypes() const = 0;
 
     virtual void startOperation(Mission* mission, MissionOperation::Type type) = 0;
     virtual void endOperation(MissionOperation* operation, MissionOperation::State state) = 0;
 
-    virtual void registerMissionType(const MissionType* type) = 0;
-    virtual void unregisterMissionType(const MissionType* type) = 0;
+    virtual void registerMissionFactory(const QString& type, IMissionsFactory* factory) = 0;
+    virtual void unregisterMissionFactory(const QString& type) = 0;
 
 public slots:
     virtual void readAll() = 0;

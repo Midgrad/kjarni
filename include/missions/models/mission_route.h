@@ -17,10 +17,12 @@ public:
     QVariantMap toVariantMap() const override;
     void fromVariantMap(const QVariantMap& map) override;
 
+    bool isEmpty() const;
     int count() const;
     int index(MissionRouteItem* item) const;
     int currentIndex() const;
     const QList<MissionRouteItem*>& items() const;
+    MissionRouteItem* first() const;
     MissionRouteItem* item(int index) const;
     MissionRouteItem* currentItem() const;
 

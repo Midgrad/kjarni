@@ -23,6 +23,11 @@ void MissionRoute::fromVariantMap(const QVariantMap& map)
     NamedMixin<VisibleMixin<Entity>>::fromVariantMap(map);
 }
 
+bool MissionRoute::isEmpty() const
+{
+    return m_items.isEmpty();
+}
+
 int MissionRoute::count() const
 {
     return m_items.count();
@@ -41,6 +46,11 @@ int MissionRoute::currentIndex() const
 const QList<MissionRouteItem*>& MissionRoute::items() const
 {
     return m_items;
+}
+
+MissionRouteItem* MissionRoute::first() const
+{
+    return m_items.isEmpty() ? nullptr : m_items.first();
 }
 
 MissionRouteItem* MissionRoute::item(int index) const

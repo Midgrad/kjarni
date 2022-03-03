@@ -87,7 +87,7 @@ void TypedParameter::setValue(const QVariant& value)
         return;
 
     m_value = m_type->guard(value);
-    emit changed(value);
+    emit changed(m_value);
 }
 
 void TypedParameter::reset()

@@ -21,11 +21,11 @@ public:
     };
     Q_ENUM(Type)
 
-    Parameter(const QVariant& id, const QString& name, Type type, const QVariant& defaultValue,
+    Parameter(const QString& id, const QString& name, Type type, const QVariant& defaultValue,
               const QVariant& minValue, const QVariant& maxValue, const QVariant& step = 1,
               const QVariantList& variants = {});
-    Parameter(const QVariant& id, const QString& name, bool defaultValue = false);
-    Parameter(const QVariant& id, const QString& name, const QVariantList& variants,
+    Parameter(const QString& id, const QString& name, bool defaultValue = false);
+    Parameter(const QString& id, const QString& name, const QVariantList& variants,
               const QVariant& defaultValue);
 
     utils::ConstProperty<Type> type;
@@ -45,6 +45,7 @@ public:
 };
 
 using ParameterList = QList<Parameter*>;
+using ParameterMap = QMap<QString, Parameter*>;
 
 } // namespace md::domain
 

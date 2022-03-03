@@ -45,15 +45,14 @@ MissionOperation* MissionsService::operationForMission(Mission* mission) const
     return m_operations.value(mission, nullptr);
 }
 
-const MissionType* MissionsService::missionType(const QString& id) const
+IMissionsFactory* MissionsService::missionFactory(const QString& type) const
 {
-    return m_missionTypes.value(id, nullptr);
+    return m_missionFactories.value(type, nullptr);
 }
 
-QList<const MissionType*> MissionsService::missionTypes() const
+QStringList MissionsService::missionTypes() const
 {
-    QMutexLocker locker(&m_mutex);
-    return m_missionTypes.values();
+    return m_missionFactories.keys();
 }
 
 void MissionsService::startOperation(Mission* mission, MissionOperation::Type type)
@@ -80,25 +79,25 @@ void MissionsService::endOperation(MissionOperation* operation, MissionOperation
     operation->deleteLater();
 }
 
-void MissionsService::registerMissionType(const MissionType* type)
+void MissionsService::registerMissionFactory(const QString& type, IMissionsFactory* factory)
 {
     QMutexLocker locker(&m_mutex);
 
-    if (m_missionTypes.contains(type->id))
+    if (m_missionFactories.contains(type))
         return;
 
-    m_missionTypes.insert(type->id, type);
+    m_missionFactories.insert(type, factory);
     emit missionTypesChanged();
 }
 
-void MissionsService::unregisterMissionType(const MissionType* type)
+void MissionsService::unregisterMissionFactory(const QString& type)
 {
     QMutexLocker locker(&m_mutex);
 
-    if (!m_missionTypes.contains(type->id))
+    if (!m_missionFactories.contains(type))
         return;
 
-    m_missionTypes.remove(type->id);
+    m_missionFactories.remove(type);
     emit missionTypesChanged();
 }
 
@@ -156,9 +155,10 @@ void MissionsService::restoreMission(Mission* mission)
     }
 
     // Read removed items
+    IMissionsFactory* factory = this->missionFactory(mission->type);
     for (const QVariant& itemId : itemIds)
     {
-        auto item = this->readItem(itemId);
+        auto item = this->readItem(itemId, factory);
         if (item)
             mission->route()->addItem(item); // TODO: valid index
     }
@@ -225,20 +225,21 @@ Mission* MissionsService::readMission(const QVariant& id)
 {
     QVariantMap select = m_missionsRepo->select(id);
     QString typeId = select.value(props::type).toString();
-    const MissionType* const type = m_missionTypes.value(typeId);
-    if (!type)
+
+    IMissionsFactory* factory = this->missionFactory(typeId);
+    if (!factory)
     {
-        qWarning() << "Unknown mission type" << typeId;
+        qWarning() << "No mission factory for type" << typeId;
         return nullptr;
     }
 
-    Mission* mission = new Mission(type, select, this);
+    Mission* mission = factory->createMission(select);
     m_missions.insert(id, mission);
 
     // Read items for route
     for (const QVariant& itemId : m_itemsRepo->selectMissionItemsIds(id))
     {
-        auto item = this->readItem(itemId);
+        auto item = this->readItem(itemId, factory);
         if (item)
             mission->route()->addItem(item);
     }
@@ -247,27 +248,10 @@ Mission* MissionsService::readMission(const QVariant& id)
     return mission;
 }
 
-MissionRouteItem* MissionsService::readItem(const QVariant& id)
+MissionRouteItem* MissionsService::readItem(const QVariant& id, IMissionsFactory* factory)
 {
-    return nullptr; // FIXME
-    //    QVariantMap select = m_itemsRepo->select(id);
-    //    QString itemTypeId = select.value(props::type).toString();
-    //    const RouteItemType* itemType = nullptr;
-    //    for (const RouteType* routeType : qAsConst(m_routeTypes))
-    //    {
-    //        itemType = routeType->itemType(itemTypeId);
-    //        if (itemType)
-    //            break;
-    //    }
-
-    //    if (!itemType)
-    //    {
-    //        qWarning() << "Unknown route item type" << itemTypeId;
-    //        return nullptr;
-    //    }
-
-    //    // Read current item
-    //    return new MissionRouteItem(id);
+    QVariantMap select = m_itemsRepo->select(id);
+    return factory->createMissionRouteItem(select);
 }
 
 void MissionsService::saveItemImpl(MissionRouteItem* item, const QVariant& parentId,
