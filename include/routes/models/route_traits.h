@@ -20,6 +20,7 @@ constexpr char current[] = "current";
 constexpr char reached[] = "reached";
 } // namespace props
 
+// TODO: to remove
 namespace route
 {
 constexpr float minAltitude = -450.0;   // Dead sea level is -417,5
