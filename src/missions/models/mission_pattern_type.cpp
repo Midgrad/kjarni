@@ -1,6 +1,5 @@
-#include "route_pattern_type.h"
+#include "mission_pattern_type.h"
 
-#include "route_traits.h"
 #include "utils.h"
 
 using namespace md::domain;

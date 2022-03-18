@@ -1,32 +1,32 @@
-#include "route_item.h"
+#include "mission_route_item.h"
 
 #include <QDebug>
 
-#include "route_traits.h"
+#include "mission_traits.h"
 
 using namespace md::domain;
 
-RouteItem::RouteItem(const RouteItemType* type, const QString& name, const QVariant& id,
-                     const QVariantMap& params, const Geodetic& position, bool current,
-                     bool reached, QObject* parent) :
+MissionRouteItem::MissionRouteItem(const MissionItemType* type, const QString& name,
+                                   const QVariant& id, const QVariantMap& params,
+                                   const Geodetic& position, QObject* parent) :
     TypedParametrisedMixin<NamedMixin<Entity>>(type->parameters.values().toVector(), params, name,
                                                id, parent),
     position(position, std::bind(&Entity::changed, this)),
-    current(current, std::bind(&Entity::changed, this)),
-    reached(reached, std::bind(&Entity::changed, this)),
+    current(false, std::bind(&Entity::changed, this)),
+    reached(false, std::bind(&Entity::changed, this)),
     m_type(type)
 {
     Q_ASSERT(type);
 }
 
-RouteItem::RouteItem(const RouteItemType* type, const QVariantMap& map, QObject* parent) :
-    RouteItem(type, map.value(props::name).toString(), map.value(props::id),
-              map.value(props::params).toMap(), map.value(props::position).toMap(),
-              map.value(props::current).toBool(), map.value(props::reached).toBool(), parent)
+MissionRouteItem::MissionRouteItem(const MissionItemType* type, const QVariantMap& map,
+                                   QObject* parent) :
+    MissionRouteItem(type, map.value(props::name).toString(), map.value(props::id),
+                     map.value(props::params).toMap(), map.value(props::position).toMap(), parent)
 {
 }
 
-QVariantMap RouteItem::toVariantMap() const
+QVariantMap MissionRouteItem::toVariantMap() const
 {
     QVariantMap map = TypedParametrisedMixin<NamedMixin<Entity>>::toVariantMap();
 
@@ -39,7 +39,7 @@ QVariantMap RouteItem::toVariantMap() const
     return map;
 }
 
-void RouteItem::fromVariantMap(const QVariantMap& map)
+void MissionRouteItem::fromVariantMap(const QVariantMap& map)
 {
     position = map.value(props::position, this->position().toVariantMap()).toMap();
     current = map.value(props::current, this->current()).toBool();
@@ -48,12 +48,12 @@ void RouteItem::fromVariantMap(const QVariantMap& map)
     TypedParametrisedMixin<NamedMixin<Entity>>::fromVariantMap(map);
 }
 
-const RouteItemType* RouteItem::type() const
+const MissionItemType* MissionRouteItem::type() const
 {
     return m_type;
 }
 
-void RouteItem::setType(const RouteItemType* type)
+void MissionRouteItem::setType(const MissionItemType* type)
 {
     Q_ASSERT(type);
 
@@ -66,7 +66,7 @@ void RouteItem::setType(const RouteItemType* type)
     this->syncParameters();
 }
 
-void RouteItem::syncParameters()
+void MissionRouteItem::syncParameters()
 {
     this->resetTypeParameters(m_type->parameters.values().toVector());
 }

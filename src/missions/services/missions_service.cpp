@@ -7,12 +7,11 @@
 
 using namespace md::domain;
 
-MissionsService::MissionsService(IRoutesService* routes, IMissionsRepository* missionsRepo,
-                                 IHomeItemsRepository* itemsRepo, QObject* parent) :
+MissionsService::MissionsService(IMissionsRepository* missionsRepo,
+                                 IMissionItemsRepository* itemsRepo, QObject* parent) :
     IMissionsService(parent),
-    m_routes(routes),
     m_missionsRepo(missionsRepo),
-    m_homeItemsRepo(itemsRepo),
+    m_itemsRepo(itemsRepo),
     m_mutex(QMutex::Recursive)
 {
 }
@@ -55,6 +54,15 @@ QList<const MissionType*> MissionsService::missionTypes() const
 {
     QMutexLocker locker(&m_mutex);
     return m_missionTypes.values();
+}
+
+RoutePattern* MissionsService::createRoutePattern(const QString& routePatternId)
+{
+    IRoutePatternFactory* factory = m_patternFactories.value(routePatternId, nullptr);
+    if (!factory)
+        return nullptr;
+
+    return factory->create(routePatternId);
 }
 
 void MissionsService::startOperation(Mission* mission, MissionOperation::Type type)
@@ -103,6 +111,17 @@ void MissionsService::unregisterMissionType(const MissionType* type)
     emit missionTypesChanged();
 }
 
+void MissionsService::registerRoutePatternFactory(const QString& routePatternId,
+                                                  IRoutePatternFactory* factory)
+{
+    m_patternFactories[routePatternId] = factory;
+}
+
+void MissionsService::unregisterRoutePatternFactory(const QString& routePatternId)
+{
+    m_patternFactories.remove(routePatternId);
+}
+
 void MissionsService::readAll()
 {
     QMutexLocker locker(&m_mutex);
@@ -125,8 +144,8 @@ void MissionsService::removeMission(Mission* mission)
     if (operation)
         this->endOperation(operation, MissionOperation::Canceled);
 
-    // Remove home point
-    m_homeItemsRepo->remove(mission->home);
+    // Delete items first
+    this->removeItems(m_itemsRepo->selectMissionItemsIds(mission->route()->id));
 
     // Remove mission
     m_missionsRepo->remove(mission);
@@ -140,11 +159,32 @@ void MissionsService::restoreMission(Mission* mission)
 {
     QMutexLocker locker(&m_mutex);
 
+    QVariantList itemIds = m_itemsRepo->selectMissionItemsIds(mission->route()->id);
+    for (MissionRouteItem* item : mission->route()->items())
+    {
+        // Restore stored item
+        if (itemIds.contains(item->id))
+        {
+            this->restoreItemImpl(item);
+            itemIds.removeOne(item->id);
+        }
+        // Remove newbie items
+        else
+        {
+            mission->route()->removeItem(item);
+        }
+    }
+
+    // Read removed items
+    for (const QVariant& itemId : itemIds)
+    {
+        auto item = this->readItem(itemId);
+        if (item)
+            mission->route()->addItem(item); // TODO: valid index
+    }
+
     // Restore mission
     m_missionsRepo->read(mission);
-
-    // Restore home point
-    m_homeItemsRepo->read(mission->home);
 
     emit missionChanged(mission);
 }
@@ -152,32 +192,52 @@ void MissionsService::restoreMission(Mission* mission)
 void MissionsService::saveMission(Mission* mission)
 {
     QMutexLocker locker(&m_mutex);
+    bool added;
 
-    // Threads nd parents
-    mission->moveToThread(this->thread());
-    mission->setParent(this);
-
-    // TODO: remove extra cals to routes
-    // Save mission route
-    if (mission->route())
-        m_routes->saveRoute(mission->route());
-
-    // Finaly save mission
+    // Update or insert route
     if (m_missions.contains(mission->id))
     {
         m_missionsRepo->update(mission);
-        m_homeItemsRepo->update(mission->home);
-
-        emit missionChanged(mission);
+        added = false;
     }
     else
     {
         m_missionsRepo->insert(mission);
-        m_homeItemsRepo->insert(mission->home, mission->id);
-
         m_missions.insert(mission->id, mission);
-        emit missionAdded(mission);
+
+        mission->moveToThread(this->thread());
+        mission->setParent(this);
+        added = true;
     }
+
+    // Update or insert items
+    QVariantList itemIds = m_itemsRepo->selectMissionItemsIds(mission->route()->id);
+    for (MissionRouteItem* item : mission->route()->items())
+    {
+        this->saveItemImpl(item, mission->route()->id, itemIds);
+        itemIds.removeOne(item->id);
+    }
+
+    // Delete removed items
+    this->removeItems(itemIds);
+
+    added ? emit missionAdded(mission) : emit missionChanged(mission);
+}
+
+void MissionsService::saveItem(MissionRoute* route, MissionRouteItem* item)
+{
+    QMutexLocker locker(&m_mutex);
+
+    this->saveItemImpl(item, route->id, m_itemsRepo->selectMissionItemsIds(route->id));
+}
+
+void MissionsService::restoreItem(MissionRoute* route, MissionRouteItem* item)
+{
+    Q_UNUSED(route)
+
+    QMutexLocker locker(&m_mutex);
+
+    this->restoreItemImpl(item);
 }
 
 Mission* MissionsService::readMission(const QVariant& id)
@@ -192,17 +252,68 @@ Mission* MissionsService::readMission(const QVariant& id)
         return nullptr;
     }
 
-    // Read home id for mission
-    map[props::home] = m_homeItemsRepo->selectMissionItemId(id);
-
+    // Create mission
     Mission* mission = new Mission(type, map);
-    m_homeItemsRepo->read(mission->home);
-
     m_missions.insert(id, mission);
+
+    // Read items for route
+    for (const QVariant& itemId : m_itemsRepo->selectMissionItemsIds(id))
+    {
+        auto item = this->readItem(itemId);
+        if (item)
+            mission->route()->addItem(item);
+    }
+
     emit missionAdded(mission);
-
-    Route* route = m_routes->route(map.value(props::route));
-    mission->assignRoute(route);
-
     return mission;
+}
+
+MissionRouteItem* MissionsService::readItem(const QVariant& id)
+{
+    QVariantMap select = m_itemsRepo->select(id);
+    QString itemTypeId = select.value(props::type).toString();
+    const MissionItemType* itemType = nullptr;
+    for (const MissionType* routeType : qAsConst(m_missionTypes))
+    {
+        itemType = routeType->itemType(itemTypeId);
+        if (itemType)
+            break;
+    }
+
+    if (!itemType)
+    {
+        qWarning() << "Unknown route item type" << itemTypeId;
+        return nullptr;
+    }
+
+    // Read current item
+    return new MissionRouteItem(itemType, select);
+}
+
+void MissionsService::saveItemImpl(MissionRouteItem* item, const QVariant& parentId,
+                                   const QVariantList& itemIds)
+{
+    // Update stored item
+    if (itemIds.contains(item->id))
+    {
+        m_itemsRepo->update(item);
+    }
+    // Insert newbie items
+    else
+    {
+        m_itemsRepo->insert(item, parentId);
+    }
+}
+
+void MissionsService::restoreItemImpl(MissionRouteItem* item)
+{
+    m_itemsRepo->read(item);
+}
+
+void MissionsService::removeItems(const QVariantList& itemsIds)
+{
+    for (const QVariant& itemId : itemsIds)
+    {
+        m_itemsRepo->removeById(itemId);
+    }
 }

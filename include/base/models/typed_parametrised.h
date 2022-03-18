@@ -148,7 +148,9 @@ public:
             }
 
             // Add new params
-            auto parameter = new TypedParameter(type, type->defaultValue, this);
+            auto parameter = new TypedParameter(type, type->defaultValue);
+            parameter->moveToThread(this->thread());
+            parameter->setParent(this);
             m_parameters.insert(type->id, parameter);
             QObject::connect(parameter, &TypedParameter::changed, this, &Base::changed);
         }

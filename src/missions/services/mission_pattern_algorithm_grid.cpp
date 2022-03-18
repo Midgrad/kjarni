@@ -1,6 +1,6 @@
-#include "route_pattern_algorithm_grid.h"
+#include "mission_pattern_algorithm_grid.h"
 
-#include "route_traits.h"
+#include "mission_traits.h"
 
 using namespace md::domain;
 
@@ -9,10 +9,10 @@ QVector<Cartesian> RoutePatternAlgorithmGrid::calculate(const QVector<Cartesian>
 {
     QVector<Cartesian> path;
     // Params
-    const float heading = parameters.value(route::heading.id, route::heading.defaultValue).toFloat();
-    const bool doubled = parameters.value(route::doubled.id, route::doubled.defaultValue).toBool();
-    const int spacing = parameters.value(route::spacing.id, route::spacing.defaultValue).toInt();
-    const float altitude = parameters.value(route::altitude.id, route::altitude.defaultValue)
+    const float heading = parameters.value(mission::heading.id, mission::heading.defaultValue).toFloat();
+    const bool doubled = parameters.value(mission::doubled.id, mission::doubled.defaultValue).toBool();
+    const int spacing = parameters.value(mission::spacing.id, mission::spacing.defaultValue).toInt();
+    const float altitude = parameters.value(mission::altitude.id, mission::altitude.defaultValue)
                                .toFloat();
 
     path += this->trace(heading, altitude, spacing, area);

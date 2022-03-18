@@ -1,14 +1,14 @@
-#include "route_item_type.h"
+#include "mission_item_type.h"
 
-#include "route_item.h"
-#include "route_traits.h"
+#include "mission_route_item.h"
+#include "mission_traits.h"
 #include "utils.h"
 
 using namespace md::domain;
 
-RouteItemType::RouteItemType(const QString& id, const QString& name, const QString& shortName,
-                             Positioned positioned,
-                             const QVector<const ParameterType*>& parameters) :
+MissionItemType::MissionItemType(const QString& id, const QString& name, const QString& shortName,
+                                 Positioned positioned,
+                                 const QVector<const ParameterType*>& parameters) :
     id(id),
     name(name),
     shortName(shortName),
@@ -17,7 +17,7 @@ RouteItemType::RouteItemType(const QString& id, const QString& name, const QStri
 {
 }
 
-QVariantMap RouteItemType::toVariantMap() const
+QVariantMap MissionItemType::toVariantMap() const
 {
     QVariantMap map;
     map.insert(props::id, id);
@@ -26,12 +26,12 @@ QVariantMap RouteItemType::toVariantMap() const
     return map;
 }
 
-const ParameterType* RouteItemType::parameter(const QString& id) const
+const ParameterType* MissionItemType::parameter(const QString& id) const
 {
     return this->parameters.value(id, nullptr);
 }
 
-QVariantMap RouteItemType::defaultParameters() const
+QVariantMap MissionItemType::defaultParameters() const
 {
     QVariantMap map;
     for (const ParameterType* parameter : parameters)

@@ -48,33 +48,16 @@ void SqliteSchema::setup()
                "params TEXT, "
                "type STRING);");
 
-    // Routes
-    query.exec("CREATE TABLE routes ("
-               "id UUID PRIMARY KEY NOT NULL, "
-               "name STRING, "
-               "visible BOOL, "
-               "type STRING);");
-
-    query.exec("CREATE TABLE route_items ("
-               "id UUID PRIMARY KEY NOT NULL, "
-               "name STRING, "
-               "params TEXT, "
-               "position TEXT, "
-               "type STRING, "
-               "route UUID, "
-               "FOREIGN KEY(route) REFERENCES routes(id) ON DELETE CASCADE);");
-
     // Missions
     query.exec("CREATE TABLE missions ("
                "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
                "type STRING, "
-               "route UUID, "
+               "visible BOOL, "
                "vehicle UUID, "
-               "FOREIGN KEY(route) REFERENCES routes(id) ON DELETE CASCADE, "
                "FOREIGN KEY(vehicle) REFERENCES vehicles(id) ON DELETE CASCADE);");
 
-    query.exec("CREATE TABLE home_items ("
+    query.exec("CREATE TABLE mission_items ("
                "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
                "params TEXT, "

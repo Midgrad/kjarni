@@ -1,5 +1,5 @@
-#ifndef ROUTE_ITEM_TYPE_H
-#define ROUTE_ITEM_TYPE_H
+#ifndef MISSION_ITEM_TYPE_H
+#define MISSION_ITEM_TYPE_H
 
 #include "typed_parametrised.h"
 
@@ -12,14 +12,14 @@ enum class Positioned
     Optional
 };
 
-class RouteItem;
-class RouteItemType
+class MissionRouteItem;
+class MissionItemType
 {
     Q_GADGET
 
 public:
-    RouteItemType(const QString& id, const QString& name, const QString& shortName,
-                  Positioned positioned, const QVector<const ParameterType*>& parameters = {});
+    MissionItemType(const QString& id, const QString& name, const QString& shortName,
+                    Positioned positioned, const QVector<const ParameterType*>& parameters = {});
 
     QVariantMap toVariantMap() const;
 
@@ -34,4 +34,4 @@ public:
 };
 } // namespace md::domain
 
-#endif // ROUTE_ITEM_TYPE_H
+#endif // MISSION_ITEM_TYPE_H

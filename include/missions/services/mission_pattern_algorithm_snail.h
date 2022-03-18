@@ -1,7 +1,7 @@
 #ifndef ROUTE_PATTERN_ALGORITHM_SNAIL_H
 #define ROUTE_PATTERN_ALGORITHM_SNAIL_H
 
-#include "i_route_pattern_algorithm.h"
+#include "i_mission_pattern_algorithm.h"
 
 namespace md::domain
 {

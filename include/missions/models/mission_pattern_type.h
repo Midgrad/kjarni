@@ -1,5 +1,5 @@
-#ifndef ROUTE_PATTERN_TYPE_H
-#define ROUTE_PATTERN_TYPE_H
+#ifndef MISSION_PATTERN_TYPE_H
+#define MISSION_PATTERN_TYPE_H
 
 #include "typed_parametrised.h"
 
@@ -25,4 +25,4 @@ public:
 };
 } // namespace md::domain
 
-#endif // ROUTE_PATTERN_TYPE_H
+#endif // MISSION_PATTERN_TYPE_H

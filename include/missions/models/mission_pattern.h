@@ -1,10 +1,10 @@
-#ifndef ROUTE_PATTERN_H
-#define ROUTE_PATTERN_H
+#ifndef MISSION_PATTERN_H
+#define MISSION_PATTERN_H
 
 #include "geodetic_path.h"
-#include "route_item.h"
+#include "mission_route_item.h"
+#include "mission_pattern_type.h"
 #include "parametrised_mixin.hpp"
-#include "route_pattern_type.h"
 
 namespace md::domain
 {
@@ -21,7 +21,7 @@ public:
     const GeodeticPath& path() const;
 
     virtual bool isReady() const = 0;
-    virtual QList<RouteItem*> createItems() = 0;
+    virtual QList<MissionRouteItem*> createItems() = 0;
 
     void setArea(const GeodeticPath& area);
 
@@ -46,4 +46,4 @@ public:
 };
 } // namespace md::domain
 
-#endif // ROUTE_PATTERN_H
+#endif // MISSION_PATTERN_H
