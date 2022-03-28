@@ -122,6 +122,12 @@ void MissionsService::unregisterRoutePatternFactory(const QString& routePatternI
     m_patternFactories.remove(routePatternId);
 }
 
+void MissionsService::addMission(Mission* mission)
+{
+    m_missions.insert(mission->id(), mission);
+    mission->setParent(this);
+}
+
 void MissionsService::readAll()
 {
     QMutexLocker locker(&m_mutex);
@@ -145,7 +151,7 @@ void MissionsService::removeMission(Mission* mission)
         this->endOperation(operation, MissionOperation::Canceled);
 
     // Delete items first
-    this->removeItems(m_itemsRepo->selectMissionItemsIds(mission->route()->id));
+    this->removeItems(m_itemsRepo->selectMissionRouteItemIds(mission->route()->id));
 
     // Remove mission
     m_missionsRepo->remove(mission);
@@ -159,7 +165,7 @@ void MissionsService::restoreMission(Mission* mission)
 {
     QMutexLocker locker(&m_mutex);
 
-    QVariantList itemIds = m_itemsRepo->selectMissionItemsIds(mission->route()->id);
+    QVariantList itemIds = m_itemsRepo->selectMissionRouteItemIds(mission->route()->id);
     for (MissionRouteItem* item : mission->route()->items())
     {
         // Restore stored item
@@ -211,7 +217,7 @@ void MissionsService::saveMission(Mission* mission)
     }
 
     // Update or insert items
-    QVariantList itemIds = m_itemsRepo->selectMissionItemsIds(mission->route()->id);
+    QVariantList itemIds = m_itemsRepo->selectMissionRouteItemIds(mission->route()->id);
     for (MissionRouteItem* item : mission->route()->items())
     {
         this->saveItemImpl(item, mission->route()->id, itemIds);
@@ -228,7 +234,7 @@ void MissionsService::saveItem(MissionRoute* route, MissionRouteItem* item)
 {
     QMutexLocker locker(&m_mutex);
 
-    this->saveItemImpl(item, route->id, m_itemsRepo->selectMissionItemsIds(route->id));
+    this->saveItemImpl(item, route->id, m_itemsRepo->selectMissionRouteItemIds(route->id));
 }
 
 void MissionsService::restoreItem(MissionRoute* route, MissionRouteItem* item)
@@ -257,7 +263,7 @@ Mission* MissionsService::readMission(const QVariant& id)
     m_missions.insert(id, mission);
 
     // Read items for route
-    for (const QVariant& itemId : m_itemsRepo->selectMissionItemsIds(id))
+    for (const QVariant& itemId : m_itemsRepo->selectMissionRouteItemIds(id))
     {
         auto item = this->readItem(itemId);
         if (item)

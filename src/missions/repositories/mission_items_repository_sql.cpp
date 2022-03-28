@@ -22,7 +22,7 @@ QVariantMap MissionItemsRepositorySql::select(const QVariant& itemId)
     return m_routeItemsTable.selectById(itemId);
 }
 
-QVariantList MissionItemsRepositorySql::selectMissionItemsIds(const QVariant& missionId)
+QVariantList MissionItemsRepositorySql::selectMissionRouteItemIds(const QVariant& missionId)
 {
     return m_routeItemsTable.selectOne({ { domain::props::mission, missionId } }, domain::props::id);
 }

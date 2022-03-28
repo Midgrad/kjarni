@@ -12,7 +12,7 @@ public:
     virtual ~IMissionItemsRepository() = default;
 
     virtual QVariantMap select(const QVariant& itemId) = 0;
-    virtual QVariantList selectMissionItemsIds(const QVariant& missionId) = 0;
+    virtual QVariantList selectMissionRouteItemIds(const QVariant& missionId) = 0;
 
     virtual void insert(MissionRouteItem* item, const QVariant& missionId) = 0;
     virtual void read(MissionRouteItem* item) = 0;

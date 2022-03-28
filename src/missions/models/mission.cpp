@@ -10,7 +10,7 @@ Mission::Mission(const MissionType* type, const QString& name, const QVariant& v
                  const QVariant& id, const QVariant& homeId, QObject* parent) :
     NamedMixin<Entity>(name, id, parent),
     type(type),
-    vehicleId(vehicleId),
+    vehicleId(vehicleId, std::bind(&Entity::changed, this)),
     route(new MissionRoute(name, true, id, this))
 {
     connect(route, &MissionRoute::changed, this, &Mission::changed);

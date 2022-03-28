@@ -37,6 +37,9 @@ public:
                                      IRoutePatternFactory* factory) override;
     void unregisterRoutePatternFactory(const QString& routePatternId) override;
 
+    // For tests
+    void addMission(Mission* mission);
+
 public slots:
     void readAll() override;
     void removeMission(Mission* mission) override;

@@ -11,13 +11,13 @@ class Mission : public NamedMixin<Entity>
     Q_OBJECT
 
 public:
-    Mission(const MissionType* type, const QString& name, const QVariant& vehicleId,
+    Mission(const MissionType* type, const QString& name, const QVariant& vehicleId = QVariant(),
             const QVariant& id = utils::generateId(), const QVariant& homeId = utils::generateId(),
             QObject* parent = nullptr);
     Mission(const MissionType* type, const QVariantMap& map, QObject* parent = nullptr);
 
     utils::ConstProperty<MissionType const*> type;
-    utils::ConstProperty<QVariant> vehicleId;
+    utils::Property<QVariant> vehicleId;
     utils::ConstProperty<MissionRoute*> route;
 
     QVariantMap toVariantMap() const override;

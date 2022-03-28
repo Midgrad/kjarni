@@ -12,7 +12,7 @@ public:
     explicit MissionItemsRepositorySql(QSqlDatabase* database);
 
     QVariantMap select(const QVariant& itemId) override;
-    QVariantList selectMissionItemsIds(const QVariant& missionId) override;
+    QVariantList selectMissionRouteItemIds(const QVariant& missionId) override;
 
     void insert(domain::MissionRouteItem* item, const QVariant& missionId) override;
     void read(domain::MissionRouteItem* item) override;
