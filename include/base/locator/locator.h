@@ -3,6 +3,7 @@
 
 #include "i_service.h"
 
+#include <typeinfo>
 #include <unordered_map>
 
 namespace md::app
