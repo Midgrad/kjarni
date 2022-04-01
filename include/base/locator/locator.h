@@ -8,7 +8,7 @@
 
 namespace md::app
 {
-using ServiceMap = std::unordered_map<size_t, domain::IService*>;
+using ServiceMap = std::unordered_map<std::size_t, domain::IService*>;
 
 class Locator
 {
