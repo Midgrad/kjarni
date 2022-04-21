@@ -25,16 +25,16 @@ public:
 
 public slots:
     virtual void readAll() = 0;
-    virtual void removeVehicle(Vehicle* vehicle) = 0;
-    virtual void restoreVehicle(Vehicle* vehicle) = 0;
-    virtual void saveVehicle(Vehicle* vehicle) = 0;
-    virtual void addVehicleType(const VehicleType* type) = 0;
-    virtual void removeVehicleType(const VehicleType* type) = 0;
+    virtual void removeVehicle(md::domain::Vehicle* vehicle) = 0;
+    virtual void restoreVehicle(md::domain::Vehicle* vehicle) = 0;
+    virtual void saveVehicle(md::domain::Vehicle* vehicle) = 0;
+    virtual void addVehicleType(const md::domain::VehicleType* type) = 0;
+    virtual void removeVehicleType(const md::domain::VehicleType* type) = 0;
 
 signals:
-    void vehicleAdded(Vehicle* vehicle);
-    void vehicleChanged(Vehicle* vehicle);
-    void vehicleRemoved(Vehicle* vehicle);
+    void vehicleAdded(md::domain::Vehicle* vehicle);
+    void vehicleChanged(md::domain::Vehicle* vehicle);
+    void vehicleRemoved(md::domain::Vehicle* vehicle);
     void vehicleTypesChanged();
 };
 } // namespace md::domain

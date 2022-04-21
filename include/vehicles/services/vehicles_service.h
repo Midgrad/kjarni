@@ -13,7 +13,7 @@ class VehiclesService : public IVehiclesService
     Q_OBJECT
 
 public:
-    VehiclesService(IVehiclesRepository* vehiclesRepo, QObject* parent = nullptr);
+    explicit VehiclesService(IVehiclesRepository* vehiclesRepo, QObject* parent = nullptr);
 
     Vehicle* vehicle(const QVariant& id) const override;
     QVariantList vehicleIds() const override;
@@ -23,11 +23,11 @@ public:
 
 public slots:
     void readAll() override;
-    void removeVehicle(Vehicle* vehicle) override;
-    void restoreVehicle(Vehicle* vehicle) override;
-    void saveVehicle(Vehicle* vehicle) override;
-    void addVehicleType(const VehicleType* type) override;
-    void removeVehicleType(const VehicleType* type) override;
+    void removeVehicle(md::domain::Vehicle* vehicle) override;
+    void restoreVehicle(md::domain::Vehicle* vehicle) override;
+    void saveVehicle(md::domain::Vehicle* vehicle) override;
+    void addVehicleType(const md::domain::VehicleType* type) override;
+    void removeVehicleType(const md::domain::VehicleType* type) override;
 
 private:
     Vehicle* readVehicle(const QVariant& id);
