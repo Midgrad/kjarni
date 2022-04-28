@@ -7,7 +7,7 @@
 using namespace md::domain;
 
 Mission::Mission(const MissionType* type, const QString& name, const QVariant& vehicleId,
-                 const QVariant& id, const QVariant& homeId, QObject* parent) :
+                 const QVariant& id, QObject* parent) :
     NamedMixin<Entity>(name, id, parent),
     type(type),
     vehicleId(vehicleId, std::bind(&Entity::changed, this)),
@@ -18,7 +18,7 @@ Mission::Mission(const MissionType* type, const QString& name, const QVariant& v
 
 Mission::Mission(const MissionType* type, const QVariantMap& map, QObject* parent) :
     Mission(type, map.value(props::name).toString(), map.value(props::vehicle),
-            map.value(props::id), map.value(props::home), parent)
+            map.value(props::id), parent)
 {
 }
 

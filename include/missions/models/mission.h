@@ -12,8 +12,7 @@ class Mission : public NamedMixin<Entity>
 
 public:
     Mission(const MissionType* type, const QString& name, const QVariant& vehicleId = QVariant(),
-            const QVariant& id = utils::generateId(), const QVariant& homeId = utils::generateId(),
-            QObject* parent = nullptr);
+            const QVariant& id = utils::generateId(), QObject* parent = nullptr);
     Mission(const MissionType* type, const QVariantMap& map, QObject* parent = nullptr);
 
     utils::ConstProperty<MissionType const*> type;

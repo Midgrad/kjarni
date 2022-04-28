@@ -53,7 +53,6 @@ void SqliteSchema::setup()
                "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
                "type STRING, "
-               "visible BOOL, "
                "vehicle UUID, "
                "FOREIGN KEY(vehicle) REFERENCES vehicles(id) ON DELETE CASCADE);");
 
