@@ -42,21 +42,21 @@ public:
 
 public slots:
     virtual void readAll() = 0;
-    virtual void removeMission(Mission* mission) = 0;
-    virtual void restoreMission(Mission* mission) = 0;
-    virtual void saveMission(Mission* mission) = 0;
-    virtual void saveItem(MissionRoute* route, MissionRouteItem* item) = 0;
-    virtual void restoreItem(MissionRoute* route, MissionRouteItem* item) = 0;
+    virtual void removeMission(domain::Mission* mission) = 0;
+    virtual void restoreMission(domain::Mission* mission) = 0;
+    virtual void saveMission(domain::Mission* mission) = 0;
+    virtual void saveItem(domain::MissionRoute* route, domain::MissionRouteItem* item) = 0;
+    virtual void restoreItem(domain::MissionRoute* route, domain::MissionRouteItem* item) = 0;
 
 signals:
     void missionTypesChanged();
 
-    void missionAdded(Mission* mission);
-    void missionChanged(Mission* mission);
-    void missionRemoved(Mission* mission);
+    void missionAdded(domain::Mission* mission);
+    void missionChanged(domain::Mission* mission);
+    void missionRemoved(domain::Mission* mission);
 
-    void operationStarted(MissionOperation* operation);
-    void operationEnded(MissionOperation* operation);
+    void operationStarted(domain::MissionOperation* operation);
+    void operationEnded(domain::MissionOperation* operation);
 };
 } // namespace md::domain
 
