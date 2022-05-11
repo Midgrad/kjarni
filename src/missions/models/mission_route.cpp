@@ -7,14 +7,13 @@
 
 using namespace md::domain;
 
-MissionRoute::MissionRoute(const QString& name, bool visible, const QVariant& id, QObject* parent) :
-    NamedMixin<VisibleMixin<Entity>>(name, visible, id, parent)
+MissionRoute::MissionRoute(const QString& name, const QVariant& id, QObject* parent) :
+    NamedMixin<Entity>(name, id, parent)
 {
 }
 
 MissionRoute::MissionRoute(const QVariantMap& map, QObject* parent) :
-    MissionRoute(map.value(props::name).toString(), map.value(props::visible).toBool(),
-                 map.value(props::id), parent)
+    MissionRoute(map.value(props::name).toString(), map.value(props::id), parent)
 {
 }
 

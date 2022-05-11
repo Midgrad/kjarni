@@ -6,13 +6,14 @@
 
 namespace md::domain
 {
-class Mission : public NamedMixin<Entity>
+class Mission : public NamedMixin<VisibleMixin<Entity>>
 {
     Q_OBJECT
 
 public:
     Mission(const MissionType* type, const QString& name, const QVariant& vehicleId = QVariant(),
-            const QVariant& id = utils::generateId(), QObject* parent = nullptr);
+            const QVariant& id = utils::generateId(), bool visible = true,
+            QObject* parent = nullptr);
     Mission(const MissionType* type, const QVariantMap& map, QObject* parent = nullptr);
 
     utils::ConstProperty<MissionType const*> type;

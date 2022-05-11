@@ -54,6 +54,7 @@ void SqliteSchema::setup()
                "name STRING, "
                "type STRING, "
                "vehicle UUID, "
+               "visible BOOL, "
                "FOREIGN KEY(vehicle) REFERENCES vehicles(id) ON DELETE CASCADE);");
 
     query.exec("CREATE TABLE mission_items ("
