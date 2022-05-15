@@ -21,7 +21,6 @@ public:
     }
 
     virtual Mission* mission(const QVariant& id) const = 0;
-    virtual Mission* missionForVehicle(const QVariant& vehicleId) const = 0;
     virtual QVariantList missionIds() const = 0;
     virtual QList<Mission*> missions() const = 0;
     virtual MissionOperation* operationForMission(Mission* mission) const = 0;

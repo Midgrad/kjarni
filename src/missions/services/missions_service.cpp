@@ -22,12 +22,6 @@ Mission* MissionsService::mission(const QVariant& id) const
     return m_missions.value(id, nullptr);
 }
 
-Mission* MissionsService::missionForVehicle(const QVariant& vehicleId) const
-{
-    QMutexLocker locker(&m_mutex);
-    return this->mission(m_missionsRepo->selectMissionIdForVehicle(vehicleId));
-}
-
 QVariantList MissionsService::missionIds() const
 {
     QMutexLocker locker(&m_mutex);
