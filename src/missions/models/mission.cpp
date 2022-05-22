@@ -13,7 +13,6 @@ Mission::Mission(const MissionType* type, const QString& name, const QVariant& v
     vehicleId(vehicleId, std::bind(&Entity::changed, this)),
     route(new MissionRoute(name, id, this))
 {
-    connect(route, &MissionRoute::changed, this, &Mission::changed);
 }
 
 Mission::Mission(const MissionType* type, const QVariantMap& map, QObject* parent) :
