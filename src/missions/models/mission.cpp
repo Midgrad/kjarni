@@ -27,7 +27,6 @@ QVariantMap Mission::toVariantMap() const
 
     map.insert(props::type, this->type()->id);
     map.insert(props::vehicle, this->vehicleId());
-    map.insert(props::vehicle, this->vehicleId());
 
     return map;
 }

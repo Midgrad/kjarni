@@ -3,10 +3,12 @@
 using namespace md::domain;
 
 MissionType::MissionType(const QString& id, const QString& name,
+                         const MissionItemType* const homeItemType,
                          const QVector<const MissionItemType*>& itemTypes,
                          const QVector<const RoutePatternType*>& patternTypes) :
     id(id),
     name(name),
+    homeItemType(homeItemType),
     itemTypes(utils::vecToMap<const MissionItemType*>(itemTypes)),
     patternTypes(utils::vecToMap<const RoutePatternType*>(patternTypes))
 {
