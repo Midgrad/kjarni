@@ -30,6 +30,7 @@ const MissionItemType loop = { "circle", "Circle", "CRL", Positioned::Required, 
 // Missions
 const MissionType missionType = { "test_mission",
                                   "Test Mission",
+                                  &waypoint,
                                   { &waypoint, &circle, &loop, &changeSpeed, &changeAltitude,
                                     &takePhoto },
                                   {} };

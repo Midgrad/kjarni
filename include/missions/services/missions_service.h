@@ -18,7 +18,6 @@ public:
                     QObject* parent = nullptr);
 
     Mission* mission(const QVariant& id) const override;
-    Mission* missionForVehicle(const QVariant& vehicleId) const override;
     QVariantList missionIds() const override;
     QList<Mission*> missions() const override;
     MissionOperation* operationForMission(Mission* mission) const override;

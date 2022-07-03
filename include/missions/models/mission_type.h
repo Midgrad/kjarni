@@ -12,6 +12,7 @@ class MissionType
 
 public:
     MissionType(const QString& id, const QString& name,
+                const MissionItemType* const homeItemType,
                 const QVector<const MissionItemType*>& itemTypes,
                 const QVector<const RoutePatternType*>& patternTypes);
 
@@ -22,6 +23,7 @@ public:
 
     const QString id;
     const QString name;
+    const MissionItemType* const homeItemType;
     const QMap<QString, const MissionItemType*> itemTypes;
     const QMap<QString, const RoutePatternType*> patternTypes;
 };

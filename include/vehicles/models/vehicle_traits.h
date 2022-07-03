@@ -20,7 +20,7 @@ const VehicleType generic = { "generic", "Generic", "generic_aircraft.svg", "gen
 
 namespace features
 {
-constexpr char dashboard[] = "dashboard";
+constexpr char instruments[] = "instruments";
 }
 } // namespace md::domain
 

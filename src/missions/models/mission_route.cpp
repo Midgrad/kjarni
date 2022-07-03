@@ -7,14 +7,13 @@
 
 using namespace md::domain;
 
-MissionRoute::MissionRoute(const QString& name, bool visible, const QVariant& id, QObject* parent) :
-    NamedMixin<VisibleMixin<Entity>>(name, visible, id, parent)
+MissionRoute::MissionRoute(const QString& name, const QVariant& id, QObject* parent) :
+    NamedMixin<Entity>(name, id, parent)
 {
 }
 
 MissionRoute::MissionRoute(const QVariantMap& map, QObject* parent) :
-    MissionRoute(map.value(props::name).toString(), map.value(props::visible).toBool(),
-                 map.value(props::id), parent)
+    MissionRoute(map.value(props::name).toString(), map.value(props::id), parent)
 {
 }
 
@@ -95,6 +94,7 @@ void MissionRoute::addItem(MissionRouteItem* item)
 
     connect(item, &MissionRouteItem::changed, this, [item, this]() {
         emit itemChanged(this->index(item), item);
+        emit changed();
     });
     connect(item, &MissionRouteItem::goTo, this, [item, this]() {
         emit goTo(this->index(item));
@@ -102,6 +102,7 @@ void MissionRoute::addItem(MissionRouteItem* item)
 
     m_items.append(item);
     emit itemAdded(m_items.count() - 1, item);
+    emit changed();
 }
 
 void MissionRoute::removeItem(MissionRouteItem* item)
@@ -117,6 +118,7 @@ void MissionRoute::removeItem(MissionRouteItem* item)
 
     m_items.removeOne(item);
     emit itemRemoved(index, item);
+    emit changed();
     item->deleteLater();
 }
 

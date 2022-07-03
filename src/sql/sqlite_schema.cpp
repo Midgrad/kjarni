@@ -53,8 +53,8 @@ void SqliteSchema::setup()
                "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
                "type STRING, "
+               "vehicle UUID NOT NULL, "
                "visible BOOL, "
-               "vehicle UUID, "
                "FOREIGN KEY(vehicle) REFERENCES vehicles(id) ON DELETE CASCADE);");
 
     query.exec("CREATE TABLE mission_items ("
@@ -63,7 +63,7 @@ void SqliteSchema::setup()
                "params TEXT, "
                "position TEXT, "
                "type STRING, "
-               "mission UUID, "
+               "mission UUID NOT NULL, "
                "FOREIGN KEY(mission) REFERENCES missions(id) ON DELETE CASCADE);");
 
     query.exec("INSERT INTO schema_version (version) VALUES (\'17.14.00_09.11.2021\')");

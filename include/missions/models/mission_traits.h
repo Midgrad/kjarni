@@ -12,7 +12,6 @@ namespace props
 {
 constexpr char vehicle[] = "vehicle";
 constexpr char mission[] = "mission";
-constexpr char home[] = "home";
 constexpr char items[] = "items";
 constexpr char item[] = "item";
 constexpr char route[] = "route";
@@ -40,17 +39,19 @@ const ParameterType distance = {
 };
 const ParameterType time = { "time", TR_MISSION("Time"), ParameterType::Int, 0, 0, maxTime };
 const ParameterType yaw = { "yaw", TR_MISSION("Yaw"), ParameterType::Real, qQNaN(), 0, 360 };
-const ParameterType altitude = { "altitude", TR_MISSION("Altitude"), ParameterType::Real,
-                                 0,          minAltitude,          maxAltitude };
+const ParameterType altitude = { "altitude",          TR_MISSION("Altitude"),
+                                 ParameterType::Real, 0,
+                                 minAltitude,         maxAltitude };
 const ParameterType pitch = { "pitch", TR_MISSION("Pitch"), ParameterType::Real, 15.0, -90.0, 90.0 };
 const ParameterType acceptRadius = {
     "accept_radius", TR_MISSION("Accept. radius"), ParameterType::Real, 0, 0, maxRadius
 };
-const ParameterType radius = {
-    "radius", TR_MISSION("Radius"), ParameterType::Real, 100, 0, maxRadius
-};
+const ParameterType radius = { "radius", TR_MISSION("Radius"), ParameterType::Real, 100, 0,
+                               maxRadius };
 const ParameterType heading = { "heading", TR_MISSION("Heading"), ParameterType::Int, 0, 0, 359 };
-const ParameterType spacing = { "spacing", TR_MISSION("Spacing"), ParameterType::Int, 50, 10, 10000 };
+const ParameterType spacing = {
+    "spacing", TR_MISSION("Spacing"), ParameterType::Int, 50, 10, 10000
+};
 const ParameterType doubled = { "doubled", TR_MISSION("Doubled"), false };
 
 } // namespace mission
