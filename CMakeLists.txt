@@ -8,7 +8,7 @@ include(cmake/RecurseSubdirs.cmake)
 find_package(Qt5 ${QT_REQUIRED_VERSION} COMPONENTS Core Sql REQUIRED)
 
 # Target
-add_library(${PROJECT_NAME} SHARED "")
+add_library(${PROJECT_NAME} SHARED)
 
 # Include
 HEADER_DIRECTORIES(INCLUDES "include")

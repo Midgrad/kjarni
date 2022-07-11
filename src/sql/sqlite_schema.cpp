@@ -39,7 +39,16 @@ void SqliteSchema::setup()
 
     query.exec("PRAGMA FOREIGN_KEYS=ON;");
 
+    // Version
     query.exec("CREATE TABLE schema_version (version STRING NOT NULL UNIQUE)");
+
+    // Links
+    query.exec("CREATE TABLE links ("
+               "id UUID PRIMARY KEY NOT NULL, "
+               "name STRING, "
+               "params TEXT, "
+               "protocol STRING, "
+               "type STRING);");
 
     // Vehicles
     query.exec("CREATE TABLE vehicles ("
