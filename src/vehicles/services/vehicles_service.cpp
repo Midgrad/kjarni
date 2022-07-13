@@ -10,6 +10,7 @@ VehiclesService::VehiclesService(IVehiclesRepository* vehiclesRepo, QObject* par
     m_vehiclesRepo(vehiclesRepo),
     m_mutex(QMutex::Recursive)
 {
+    qRegisterMetaType<Vehicle*>("md::domain::Vehicle*");
 }
 
 Vehicle* VehiclesService::vehicle(const QVariant& id) const

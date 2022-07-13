@@ -42,8 +42,8 @@ void SqliteSchema::setup()
     // Version
     query.exec("CREATE TABLE schema_version (version STRING NOT NULL UNIQUE)");
 
-    // Links
-    query.exec("CREATE TABLE links ("
+    // Comm Links
+    query.exec("CREATE TABLE comm_links ("
                "id UUID PRIMARY KEY NOT NULL, "
                "name STRING, "
                "params TEXT, "
