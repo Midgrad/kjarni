@@ -12,7 +12,9 @@ CommLink::CommLink(const CommLinkType* type, const QString& name, const QVariant
     ParametrisedMixin<NamedMixin<Entity>>(parameters, std::bind(&Entity::changed, this), name, id,
                                           parent),
     type(type),
-    protocol(protocol, std::bind(&Entity::changed, this))
+    protocol(protocol, std::bind(&Entity::changed, this)),
+    connected(false, std::bind(&Entity::changed, this)),
+    online(false, std::bind(&Entity::changed, this))
 {
     Q_ASSERT(type);
 }
@@ -29,6 +31,8 @@ QVariantMap CommLink::toVariantMap() const
 
     map.insert(props::type, this->type()->id);
     map.insert(props::protocol, this->protocol());
+    map.insert(props::connected, this->protocol());
+    map.insert(props::online, this->protocol());
 
     return map;
 }

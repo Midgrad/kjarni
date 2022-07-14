@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <QMutexLocker>
 
+#include "comm_links_traits.h"
+
 using namespace md::domain;
 
 CommLinksService::CommLinksService(ICommLinksRepository* commLinksRepo, QObject* parent) :
@@ -11,6 +13,11 @@ CommLinksService::CommLinksService(ICommLinksRepository* commLinksRepo, QObject*
     m_mutex(QMutex::Recursive)
 {
     qRegisterMetaType<CommLink*>("md::domain::CommLink*");
+
+    for (auto type : comm_link::defaultTypes)
+    {
+        this->addCommLinkType(type);
+    }
 }
 
 CommLink* CommLinksService::commLink(const QVariant& id) const

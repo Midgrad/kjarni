@@ -48,6 +48,7 @@ void SqliteSchema::setup()
                "name STRING, "
                "params TEXT, "
                "protocol STRING, "
+               "connected BOOL, "
                "type STRING);");
 
     // Vehicles
