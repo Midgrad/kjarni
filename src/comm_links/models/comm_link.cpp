@@ -8,13 +8,14 @@
 using namespace md::domain;
 
 CommLink::CommLink(const CommLinkType* type, const QString& name, const QVariant& id,
-                   const QString& protocol, const QVariantMap& parameters, QObject* parent) :
-    ParametrisedMixin<NamedMixin<Entity>>(parameters, std::bind(&Entity::changed, this), name, id,
-                                          parent),
+                   const QString& protocol, const QVariantMap& params, QObject* parent) :
+    TypedParametrisedMixin<NamedMixin<Entity>>(type->parameters().toVector(), params, name, id,
+                                               parent),
     type(type),
     protocol(protocol, std::bind(&Entity::changed, this)),
     connected(false, std::bind(&Entity::changed, this)),
-    online(false, std::bind(&Entity::changed, this))
+    online(false, std::bind(&Entity::changed, this)),
+    m_type(type)
 {
     Q_ASSERT(type);
 }
@@ -27,12 +28,29 @@ CommLink::CommLink(const CommLinkType* type, const QVariantMap& map, QObject* pa
 
 QVariantMap CommLink::toVariantMap() const
 {
-    QVariantMap map = ParametrisedMixin<NamedMixin<Entity>>::toVariantMap();
+    QVariantMap map = TypedParametrisedMixin<NamedMixin<Entity>>::toVariantMap();
 
-    map.insert(props::type, this->type()->id);
+    map.insert(props::type, this->type()->id());
     map.insert(props::protocol, this->protocol());
     map.insert(props::connected, this->protocol());
     map.insert(props::online, this->protocol());
 
     return map;
+}
+
+void CommLink::setType(const CommLinkType* type)
+{
+    Q_ASSERT(type);
+
+    if (m_type == type)
+        return;
+
+    m_type = type;
+
+    this->resertToDefaultParameters();
+}
+
+void CommLink::resertToDefaultParameters()
+{
+    this->resetTypeParameters(m_type->parameters().toVector());
 }

@@ -1,6 +1,7 @@
 #ifndef COMM_LINKS_SERVICE_H
 #define COMM_LINKS_SERVICE_H
 
+#include "i_comm_link_types_repository.h"
 #include "i_comm_links_repository.h"
 #include "i_comm_links_service.h"
 
@@ -13,7 +14,10 @@ class CommLinksService : public ICommLinksService
     Q_OBJECT
 
 public:
-    explicit CommLinksService(ICommLinksRepository* commLinksRepo, QObject* parent = nullptr);
+    explicit CommLinksService(ICommLinksRepository* commLinksRepo,
+                              ICommLinkTypesRepository* commLinkTypesRepo,
+                              QObject* parent = nullptr);
+    ~CommLinksService() override;
 
     CommLink* commLink(const QVariant& id) const override;
     QVariantList commLinkIds() const override;
@@ -26,13 +30,12 @@ public slots:
     void removeCommLink(md::domain::CommLink* commLink) override;
     void restoreCommLink(md::domain::CommLink* commLink) override;
     void saveCommLink(md::domain::CommLink* commLink) override;
-    void addCommLinkType(const md::domain::CommLinkType* type) override;
-    void removeCommLinkType(const md::domain::CommLinkType* type) override;
 
 private:
     CommLink* readCommLink(const QVariant& id);
 
     ICommLinksRepository* const m_commLinksRepo;
+    ICommLinkTypesRepository* m_commLinkTypesRepo;
     QMap<QString, const CommLinkType*> m_commLinkTypes;
     QMap<QVariant, CommLink*> m_commLinks;
 

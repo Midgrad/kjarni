@@ -7,17 +7,25 @@
 
 using namespace md::domain;
 
-CommLinksService::CommLinksService(ICommLinksRepository* commLinksRepo, QObject* parent) :
+CommLinksService::CommLinksService(ICommLinksRepository* commLinksRepo,
+                                   ICommLinkTypesRepository* commLinkTypesRepo, QObject* parent) :
     ICommLinksService(parent),
     m_commLinksRepo(commLinksRepo),
+    m_commLinkTypesRepo(commLinkTypesRepo),
     m_mutex(QMutex::Recursive)
 {
     qRegisterMetaType<CommLink*>("md::domain::CommLink*");
 
-    for (auto type : comm_link::defaultTypes)
+    for (const CommLinkType* type : commLinkTypesRepo->selectCommLinkTypes())
     {
-        this->addCommLinkType(type);
+        m_commLinkTypes.insert(type->id(), type);
     }
+}
+
+CommLinksService::~CommLinksService()
+{
+    // TODO: replace with smart ptr or store by value
+    qDeleteAll(m_commLinkTypes);
 }
 
 CommLink* CommLinksService::commLink(const QVariant& id) const
@@ -97,24 +105,6 @@ void CommLinksService::saveCommLink(CommLink* commLink)
         commLink->setParent(this);
         emit commLinkAdded(commLink);
     }
-}
-
-void CommLinksService::addCommLinkType(const CommLinkType* type)
-{
-    if (m_commLinkTypes.contains(type->id))
-        return;
-
-    m_commLinkTypes.insert(type->id, type);
-    emit commLinkTypesChanged();
-}
-
-void CommLinksService::removeCommLinkType(const CommLinkType* type)
-{
-    if (!m_commLinkTypes.contains(type->id))
-        return;
-
-    m_commLinkTypes.remove(type->id);
-    emit commLinkTypesChanged();
 }
 
 CommLink* CommLinksService::readCommLink(const QVariant& id)

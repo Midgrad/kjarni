@@ -28,14 +28,11 @@ public slots:
     virtual void removeCommLink(md::domain::CommLink* commLink) = 0;
     virtual void restoreCommLink(md::domain::CommLink* commLink) = 0;
     virtual void saveCommLink(md::domain::CommLink* commLink) = 0;
-    virtual void addCommLinkType(const md::domain::CommLinkType* type) = 0;
-    virtual void removeCommLinkType(const md::domain::CommLinkType* type) = 0;
 
 signals:
     void commLinkAdded(md::domain::CommLink* commLink);
     void commLinkChanged(md::domain::CommLink* commLink);
     void commLinkRemoved(md::domain::CommLink* commLink);
-    void commLinkTypesChanged();
 };
 } // namespace md::domain
 

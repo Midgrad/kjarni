@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QVariantMap>
 
+#include "typed_parametrised.h"
+
 namespace md::domain
 {
 class CommLinkType
@@ -11,12 +13,21 @@ class CommLinkType
     Q_GADGET
 
 public:
-    CommLinkType(const QString& id, const QString& name);
+    CommLinkType(const QString& id, const QString& name,
+                 const QVector<const ParameterType*>& parameters);
+    ~CommLinkType();
+
+    utils::ConstProperty<QString> id;
+    utils::ConstProperty<QString> name;
 
     QVariantMap toVariantMap() const;
 
-    const QString id;
-    const QString name;
+    const ParameterType* parameter(const QString& id) const;
+    QList<const ParameterType*> parameters() const;
+    QStringList parameterKeys() const;
+
+private:
+    QMap<QString, const ParameterType*> m_parameters;
 };
 } // namespace md::domain
 

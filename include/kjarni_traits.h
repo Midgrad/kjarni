@@ -13,6 +13,7 @@ constexpr char icon[] = "icon";
 constexpr char visible[] = "visible";
 constexpr char createdAt[] = "created_at";
 constexpr char updatedAt[] = "updated_at";
+constexpr char param[] = "param";
 constexpr char params[] = "params";
 constexpr char value[] = "value";
 constexpr char type[] = "type";

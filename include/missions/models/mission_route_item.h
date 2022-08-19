@@ -26,7 +26,7 @@ public:
     const MissionItemType* type() const;
 
 public slots:
-    void setType(const MissionItemType* type);
+    void setType(const domain::MissionItemType* type);
     void syncParameters();
 
 signals:

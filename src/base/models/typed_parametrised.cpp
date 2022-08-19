@@ -1,6 +1,17 @@
 #include "typed_parametrised.h"
 
+#include <QMetaEnum>
+
 using namespace md::domain;
+
+namespace
+{
+ParameterType::Type typeEnumFromString(const QString& str)
+{
+    QMetaEnum metaEnum = QMetaEnum::fromType<ParameterType::Type>();
+    return static_cast<ParameterType::Type>(metaEnum.keyToValue(str.toUtf8().constData()));
+}
+} // namespace
 
 ParameterType::ParameterType(const QString& id, const QString& name, Type type,
                              const QVariant& defaultValue, const QVariant& minValue,
@@ -22,9 +33,23 @@ ParameterType::ParameterType(const QString& id, const QString& name, bool defaul
 {
 }
 
+ParameterType::ParameterType(const QString& id, const QString& name, const QString& defaultValue) :
+    ParameterType(id, name, Text, defaultValue, QVariant(), QVariant(), QVariant())
+{
+}
+
 ParameterType::ParameterType(const QString& id, const QString& name, const QVariantList& variants,
                              const QVariant& defaultValue) :
     ParameterType(id, name, Combo, defaultValue, QVariant(), QVariant(), QVariant(), variants)
+{
+}
+
+ParameterType::ParameterType(const QVariantMap& map) :
+    ParameterType(map.value(props::id).toString(), map.value(props::name).toString(),
+                  ::typeEnumFromString(map.value(props::type).toString()),
+                  map.value(props::defaultValue), map.value(props::minValue),
+                  map.value(props::maxValue), map.value(props::step),
+                  map.value(props::variants).toList())
 {
 }
 
