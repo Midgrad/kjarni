@@ -6,6 +6,8 @@
 
 namespace md::utils
 {
+constexpr char comma[] = ", ";
+
 QVariant generateId()
 {
     // NOTE: .toString() is a workaround, cause QVariant loses {} SOMETIMES
@@ -86,6 +88,26 @@ QVariantMap mergeMap(QVariantMap& dest, const QVariantMap& source)
         dest[it.key()] = it.value();
     }
     return dest;
+}
+
+QString joinFromVariantList(const QVariantList& list)
+{
+    QStringList strings;
+    for (const QVariant& var : list)
+    {
+        strings.append(var.toString());
+    }
+    return strings.join(comma);
+}
+
+QVariantList variantListFromJoin(const QString& str)
+{
+    QVariantList list;
+    for (const QString& word : str.split(comma))
+    {
+        list.append(word);
+    }
+    return list;
 }
 
 } // namespace md::utils

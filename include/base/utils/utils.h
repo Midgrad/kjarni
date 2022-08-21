@@ -27,6 +27,12 @@ QString nameFromType(const QString& type, const QStringList& occupiedNames);
 // Merge 2 varinat maps to one
 QVariantMap mergeMap(QVariantMap& dest, const QVariantMap& source);
 
+// Join QVariantList with commas and convert to QString
+QString joinFromVariantList(const QVariantList& list);
+
+// Split QString with commas and convert to QVariantList
+QVariantList variantListFromJoin(const QString& str);
+
 // Convert list to map with ids
 template<typename T>
 QMap<QString, T> vecToMap(const QVector<T>& list)

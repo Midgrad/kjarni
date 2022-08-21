@@ -53,7 +53,7 @@ void SqliteSchema::setup()
                "minValue STRING, "
                "maxValue STRING, "
                "step STRING, "
-               "variants TEXT, "
+               "options TEXT, "
                "type STRING );");
 
     query.exec("CREATE TABLE comm_link_type_params ("
@@ -76,14 +76,15 @@ void SqliteSchema::setup()
     query.exec("INSERT INTO comm_link_types (id, name) VALUES (\'tcp\', \'TCP\')");
     query.exec("INSERT INTO comm_link_types (id, name) VALUES (\'uart\', \'UART\')");
 
-    query.exec("INSERT INTO comm_link_params (id, name, type, minValue, maxValue) "
-               "VALUES (\'port\', \'Port\', \'int\', 1024, 65535)");
+    query.exec("INSERT INTO comm_link_params (id, name, type, minValue, maxValue, step) "
+               "VALUES (\'port\', \'Port\', \'Int\', 1024, 65535, 1)");
     query.exec("INSERT INTO comm_link_params (id, name, type) "
-               "VALUES (\'address\', \'Address\', \'string\')");
+               "VALUES (\'address\', \'Address\', \'Text\')");
     query.exec("INSERT INTO comm_link_params (id, name, type) "
-               "VALUES (\'device\', \'Device\', \'string\')");
-    query.exec("INSERT INTO comm_link_params (id, name, type) "
-               "VALUES (\'baud_rate\', \'Baud rate\', \'int\')");
+               "VALUES (\'device\', \'Device\', \'Combo\')");
+    query.exec("INSERT INTO comm_link_params (id, name, type, options) "
+               "VALUES (\'baud_rate\', \'Baud rate\', \'Combo\', "
+               "\'2400, 4800, 9600, 14400, 19200, 38400, 57600, 115200\')");
 
     query.exec("INSERT INTO comm_link_type_params (type, param, defaultValue) "
                "VALUES (\'udp\', \'port\', 14550)");

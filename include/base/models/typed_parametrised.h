@@ -24,10 +24,10 @@ public:
 
     ParameterType(const QString& id, const QString& name, Type type, const QVariant& defaultValue,
                   const QVariant& minValue, const QVariant& maxValue, const QVariant& step = 1,
-                  const QVariantList& variants = {});
+                  const QVariantList& options = {});
     ParameterType(const QString& id, const QString& name, bool defaultValue = false);
     ParameterType(const QString& id, const QString& name, const QString& defaultValue = QString());
-    ParameterType(const QString& id, const QString& name, const QVariantList& variants,
+    ParameterType(const QString& id, const QString& name, const QVariantList& options,
                   const QVariant& defaultValue);
     ParameterType(const QVariantMap& map);
 
@@ -41,7 +41,7 @@ public:
     const QVariant minValue;
     const QVariant maxValue;
     const QVariant step;
-    const QVariantList variants;
+    const QVariantList options;
 
     Q_ENUM(Type)
 };

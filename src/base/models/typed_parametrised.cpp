@@ -1,5 +1,6 @@
 #include "typed_parametrised.h"
 
+#include <QDebug>
 #include <QMetaEnum>
 
 using namespace md::domain;
@@ -16,7 +17,7 @@ ParameterType::Type typeEnumFromString(const QString& str)
 ParameterType::ParameterType(const QString& id, const QString& name, Type type,
                              const QVariant& defaultValue, const QVariant& minValue,
                              const QVariant& maxValue, const QVariant& step,
-                             const QVariantList& variants) :
+                             const QVariantList& options) :
     id(id),
     name(name),
     type(type),
@@ -24,7 +25,7 @@ ParameterType::ParameterType(const QString& id, const QString& name, Type type,
     minValue(minValue),
     maxValue(maxValue),
     step(step),
-    variants(variants)
+    options(options)
 {
 }
 
@@ -38,9 +39,9 @@ ParameterType::ParameterType(const QString& id, const QString& name, const QStri
 {
 }
 
-ParameterType::ParameterType(const QString& id, const QString& name, const QVariantList& variants,
+ParameterType::ParameterType(const QString& id, const QString& name, const QVariantList& options,
                              const QVariant& defaultValue) :
-    ParameterType(id, name, Combo, defaultValue, QVariant(), QVariant(), QVariant(), variants)
+    ParameterType(id, name, Combo, defaultValue, QVariant(), QVariant(), QVariant(), options)
 {
 }
 
@@ -49,7 +50,7 @@ ParameterType::ParameterType(const QVariantMap& map) :
                   ::typeEnumFromString(map.value(props::type).toString()),
                   map.value(props::defaultValue), map.value(props::minValue),
                   map.value(props::maxValue), map.value(props::step),
-                  map.value(props::variants).toList())
+                  utils::variantListFromJoin(map.value(props::options).toString()))
 {
 }
 
@@ -62,7 +63,7 @@ QVariantMap ParameterType::toVariantMap() const
     map.insert(props::minValue, minValue);
     map.insert(props::maxValue, maxValue);
     map.insert(props::step, step);
-    map.insert(props::variants, variants);
+    map.insert(props::options, utils::joinFromVariantList(options));
     map.insert(props::type, QVariant::fromValue(type).toString());
     return map;
 }
