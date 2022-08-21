@@ -1,4 +1,5 @@
 #include "comm_link_type.h"
+
 #include "comm_links_traits.h"
 
 using namespace md::domain;

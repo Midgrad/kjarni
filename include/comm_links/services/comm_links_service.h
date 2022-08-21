@@ -25,11 +25,16 @@ public:
     QList<const CommLinkType*> commLinkTypes() const override;
     const CommLinkType* commLinkType(const QString& typeId) const override;
 
+    QList<CommProtocol> protocols() const override;
+
 public slots:
     void readAll() override;
     void removeCommLink(md::domain::CommLink* commLink) override;
     void restoreCommLink(md::domain::CommLink* commLink) override;
     void saveCommLink(md::domain::CommLink* commLink) override;
+
+    void addProtocol(const CommProtocol& protocol) override;
+    void removeProtocol(const CommProtocol& protocol) override;
 
 private:
     CommLink* readCommLink(const QVariant& id);
@@ -38,6 +43,8 @@ private:
     ICommLinkTypesRepository* m_commLinkTypesRepo;
     QMap<QString, const CommLinkType*> m_commLinkTypes;
     QMap<QVariant, CommLink*> m_commLinks;
+
+    QMap<QString, CommProtocol> m_protocols;
 
     mutable QMutex m_mutex;
 };

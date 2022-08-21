@@ -56,6 +56,11 @@ const CommLinkType* CommLinksService::commLinkType(const QString& typeId) const
     return m_commLinkTypes.value(typeId, nullptr);
 }
 
+QList<CommProtocol> CommLinksService::protocols() const
+{
+    return m_protocols.values();
+}
+
 void CommLinksService::readAll()
 {
     QMutexLocker locker(&m_mutex);
@@ -105,6 +110,24 @@ void CommLinksService::saveCommLink(CommLink* commLink)
         commLink->setParent(this);
         emit commLinkAdded(commLink);
     }
+}
+
+void CommLinksService::addProtocol(const CommProtocol& protocol)
+{
+    if (m_protocols.contains(protocol.id))
+        return;
+
+    m_protocols.insert(protocol.id, protocol);
+    emit protocolsChanged();
+}
+
+void CommLinksService::removeProtocol(const CommProtocol& protocol)
+{
+    if (!m_protocols.contains(protocol.id))
+        return;
+
+    m_protocols.remove(protocol.id);
+    emit protocolsChanged();
 }
 
 CommLink* CommLinksService::readCommLink(const QVariant& id)

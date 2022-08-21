@@ -2,6 +2,7 @@
 #define I_COMM_LINKS_SERVICE_H
 
 #include "comm_link.h"
+#include "comm_protocol.h"
 #include "i_service.h"
 
 namespace md::domain
@@ -23,16 +24,23 @@ public:
     virtual QList<const CommLinkType*> commLinkTypes() const = 0;
     virtual const CommLinkType* commLinkType(const QString& typeId) const = 0;
 
+    virtual QList<CommProtocol> protocols() const = 0;
+
 public slots:
     virtual void readAll() = 0;
     virtual void removeCommLink(md::domain::CommLink* commLink) = 0;
     virtual void restoreCommLink(md::domain::CommLink* commLink) = 0;
     virtual void saveCommLink(md::domain::CommLink* commLink) = 0;
 
+    virtual void addProtocol(const md::domain::CommProtocol& protocol) = 0;
+    virtual void removeProtocol(const md::domain::CommProtocol& protocol) = 0;
+
 signals:
     void commLinkAdded(md::domain::CommLink* commLink);
     void commLinkChanged(md::domain::CommLink* commLink);
     void commLinkRemoved(md::domain::CommLink* commLink);
+
+    void protocolsChanged();
 };
 } // namespace md::domain
 
