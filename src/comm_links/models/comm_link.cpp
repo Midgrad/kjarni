@@ -32,8 +32,10 @@ QVariantMap CommLink::toVariantMap() const
 
     map.insert(props::type, this->type()->id());
     map.insert(props::protocol, this->protocol());
-    map.insert(props::connected, this->protocol());
-    map.insert(props::online, this->protocol());
+    map.insert(props::autoconnect, this->autoconnect());
+
+    map.insert(props::connected, this->connected());
+    map.insert(props::online, this->online());
 
     return map;
 }

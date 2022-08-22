@@ -18,8 +18,9 @@ public:
 
     utils::ConstProperty<const CommLinkType*> type;
     utils::Property<QString> protocol;
-    utils::Property<bool> connected;
+    utils::Property<bool> autoconnect;
 
+    utils::Property<bool> connected;
     utils::Property<bool> online;
 
     QVariantMap toVariantMap() const override;

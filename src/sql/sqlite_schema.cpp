@@ -68,7 +68,7 @@ void SqliteSchema::setup()
                "name STRING, "
                "params TEXT, "
                "protocol STRING, "
-               "connected BOOL, "
+               "autoconnect BOOL, "
                "type STRING, "
                "FOREIGN KEY(type) REFERENCES comm_link_types(id) ON DELETE CASCADE);");
 

@@ -11,6 +11,7 @@ namespace md::domain
 namespace props
 {
 constexpr char protocol[] = "protocol";
+constexpr char autoconnect[] = "autoconnect";
 
 constexpr char connected[] = "connected";
 constexpr char online[] = "online";
