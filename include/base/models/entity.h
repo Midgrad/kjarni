@@ -1,6 +1,8 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#include "export.h"
+
 #include <QObject>
 #include <QVariantMap>
 
@@ -10,7 +12,7 @@
 
 namespace md::domain
 {
-class Entity : public QObject
+class KJARNI_EXPORT Entity : public QObject
 {
     Q_OBJECT
 

@@ -1,12 +1,14 @@
 #ifndef I_VEHICLES_SERVICE_H
 #define I_VEHICLES_SERVICE_H
 
+#include "export.h"
+
 #include "i_service.h"
 #include "vehicle.h"
 
 namespace md::domain
 {
-class IVehiclesService // TODO: rename to Context, Unit of Work or Registry
+class KJARNI_EXPORT IVehiclesService // TODO: rename to Context, Unit of Work or Registry
     : public QObject
     , public IService
 {

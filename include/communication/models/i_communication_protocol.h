@@ -1,12 +1,14 @@
 #ifndef I_COMMUNICATION_PROTOCOL_H
 #define I_COMMUNICATION_PROTOCOL_H
 
+#include "export.h"
+
 #include <QByteArray>
 #include <QObject>
 
 namespace md::data_source
 {
-class ICommunicationProtocol : public QObject
+class KJARNI_EXPORT ICommunicationProtocol : public QObject
 {
     Q_OBJECT
 

@@ -1,12 +1,14 @@
 #ifndef MISSION_ROUTE_ITEM_H
 #define MISSION_ROUTE_ITEM_H
 
+#include "export.h"
+
 #include "geodetic.h"
 #include "mission_item_type.h"
 
 namespace md::domain
 {
-class MissionRouteItem : public TypedParametrisedMixin<NamedMixin<Entity>>
+class KJARNI_EXPORT MissionRouteItem : public TypedParametrisedMixin<NamedMixin<Entity>>
 {
     Q_OBJECT
 

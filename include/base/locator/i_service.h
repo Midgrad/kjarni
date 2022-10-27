@@ -1,9 +1,11 @@
 #ifndef I_SERVICE_H
 #define I_SERVICE_H
 
+#include "export.h"
+
 namespace md::domain
 {
-class IService
+class KJARNI_EXPORT IService
 {
 public:
     IService() = default;

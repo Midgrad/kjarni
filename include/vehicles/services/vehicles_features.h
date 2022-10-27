@@ -1,13 +1,15 @@
 #ifndef VEHICLES_FEATURES_H
 #define VEHICLES_FEATURES_H
 
+#include "export.h"
+
 #include "i_vehicles_features.h"
 
 #include <QMap>
 
 namespace md::domain
 {
-class VehiclesFeatures : public IVehiclesFeatures
+class KJARNI_EXPORT VehiclesFeatures : public IVehiclesFeatures
 {
     Q_OBJECT
 

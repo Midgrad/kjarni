@@ -1,6 +1,8 @@
 #ifndef VEHICLES_SERVICE_H
 #define VEHICLES_SERVICE_H
 
+#include "export.h"
+
 #include "i_vehicles_repository.h"
 #include "i_vehicles_service.h"
 
@@ -8,7 +10,7 @@
 
 namespace md::domain
 {
-class VehiclesService : public IVehiclesService
+class KJARNI_EXPORT VehiclesService : public IVehiclesService
 {
     Q_OBJECT
 

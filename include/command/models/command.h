@@ -1,6 +1,8 @@
 #ifndef COMMAND_H
 #define COMMAND_H
 
+#include <functional>
+
 #include <QObject>
 
 namespace md::domain

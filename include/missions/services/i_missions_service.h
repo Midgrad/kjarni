@@ -1,6 +1,8 @@
 #ifndef I_MISSIONS_SERVICE_H
 #define I_MISSIONS_SERVICE_H
 
+#include "export.h"
+
 #include "i_service.h"
 #include "mission.h"
 // Mission & operaion to different services
@@ -9,7 +11,7 @@
 
 namespace md::domain
 {
-class IMissionsService
+class KJARNI_EXPORT IMissionsService
     : public QObject
     , public IService
 {

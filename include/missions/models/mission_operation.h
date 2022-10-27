@@ -1,11 +1,13 @@
 #ifndef MISSION_OPERATION_H
 #define MISSION_OPERATION_H
 
+#include "export.h"
+
 #include "mission.h"
 
 namespace md::domain
 {
-class MissionOperation : public Entity
+class KJARNI_EXPORT MissionOperation : public Entity
 {
     Q_OBJECT
 

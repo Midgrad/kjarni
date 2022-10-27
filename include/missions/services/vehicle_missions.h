@@ -1,12 +1,14 @@
 #ifndef VEHICLE_MISSIONS_H
 #define VEHICLE_MISSIONS_H
 
+#include "export.h"
+
 #include "i_vehicle_missions.h"
 #include "i_vehicles_service.h"
 
 namespace md::domain
 {
-class VehicleMissions : public IVehicleMissions
+class KJARNI_EXPORT VehicleMissions : public IVehicleMissions
 {
     Q_OBJECT
 

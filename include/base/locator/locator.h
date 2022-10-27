@@ -1,6 +1,8 @@
 #ifndef LOCATOR_H
 #define LOCATOR_H
 
+#include "export.h"
+
 #include "i_service.h"
 
 #include <typeinfo>
@@ -10,7 +12,7 @@ namespace md::app
 {
 using ServiceMap = std::unordered_map<std::size_t, domain::IService*>;
 
-class Locator
+class KJARNI_EXPORT Locator
 {
 public:
     template<typename ServiceType>

@@ -1,6 +1,8 @@
 #ifndef MISSION_PATTERN_H
 #define MISSION_PATTERN_H
 
+#include "export.h"
+
 #include "geodetic_path.h"
 #include "mission_route_item.h"
 #include "mission_pattern_type.h"
@@ -8,7 +10,7 @@
 
 namespace md::domain
 {
-class RoutePattern : public ParametrisedMixin<NamedMixin<Entity>>
+class KJARNI_EXPORT RoutePattern : public ParametrisedMixin<NamedMixin<Entity>>
 {
     Q_OBJECT
 

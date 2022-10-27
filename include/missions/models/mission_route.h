@@ -1,12 +1,14 @@
 #ifndef MISSION_ROUTE_H
 #define MISSION_ROUTE_H
 
+#include "export.h"
+
 #include "mission_route_item.h"
 #include "visible_mixin.hpp"
 
 namespace md::domain
 {
-class MissionRoute : public NamedMixin<Entity>
+class KJARNI_EXPORT MissionRoute : public NamedMixin<Entity>
 {
     Q_OBJECT
 

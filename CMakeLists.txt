@@ -25,3 +25,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Core Qt5::Sql loodsman)
 if (TESTS_ENABLED)
     add_subdirectory(tests)
 endif (TESTS_ENABLED)
+
+# Set Windows export
+target_compile_definitions(${PROJECT_NAME} PRIVATE -DKJARNI_DLL)

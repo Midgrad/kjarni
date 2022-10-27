@@ -1,13 +1,15 @@
 #ifndef VEHICLE_H
 #define VEHICLE_H
 
+#include "export.h"
+
 #include "named_mixin.hpp"
 #include "parametrised_mixin.hpp"
 #include "vehicle_type.h"
 
 namespace md::domain
 {
-class Vehicle : public ParametrisedMixin<NamedMixin<Entity>>
+class KJARNI_EXPORT Vehicle : public ParametrisedMixin<NamedMixin<Entity>>
 {
     Q_OBJECT
 

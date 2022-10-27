@@ -1,6 +1,8 @@
 #ifndef I_PROPERTY_TREE_H
 #define I_PROPERTY_TREE_H
 
+#include "export.h"
+
 #include "i_service.h"
 
 #include <QObject>
@@ -8,7 +10,7 @@
 
 namespace md::domain
 {
-class IPropertyTree // TODO: ITelemetryService
+class KJARNI_EXPORT IPropertyTree // TODO: ITelemetryService
     : public QObject
     , public IService
 {

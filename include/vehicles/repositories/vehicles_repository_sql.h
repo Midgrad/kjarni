@@ -1,12 +1,14 @@
 #ifndef VEHICLES_REPOSITORY_SQL_H
 #define VEHICLES_REPOSITORY_SQL_H
 
+#include "export.h"
+
 #include "entity_sql_table.h"
 #include "i_vehicles_repository.h"
 
 namespace md::data_source
 {
-class VehiclesRepositorySql : public domain::IVehiclesRepository
+class KJARNI_EXPORT VehiclesRepositorySql : public domain::IVehiclesRepository
 {
 public:
     VehiclesRepositorySql(QSqlDatabase* database);
